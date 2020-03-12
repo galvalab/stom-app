@@ -1,0 +1,46 @@
+<div class="mat-app-background basic-container">
+	<mat-tab-group>
+		<mat-tab label="Information">
+			<br>
+			<form class="example-form">
+				<mat-form-field class="example-full-width">
+					<mat-label>CustomerID</mat-label>
+					<input matInput disabled value="{{ customer[0] }}">
+                </mat-form-field>
+					<mat-form-field class="example-full-width">
+						<mat-label>Customer Name</mat-label>
+						<input matInput disabled value="{{ customer[1] }}">
+                </mat-form-field>
+						<mat-form-field class="example-full-width">
+							<mat-label>Customer Address</mat-label>
+							<textarea matInput disabled value="{{ customer[2] }}"></textarea>
+						</mat-form-field>
+						<mat-form-field class="example-full-width">
+							<mat-label>PIC Name</mat-label>
+							<input matInput disabled value="{{ customer[3] }}">
+                </mat-form-field>
+							<mat-form-field class="example-full-width">
+								<mat-label>PIC Contact No</mat-label>
+								<input matInput disabled value="{{ customer[4] }}">
+                </mat-form-field>
+			</form>
+		</mat-tab>
+		<mat-tab label="Devices">
+			<mat-list *ngFor="let device of devices">
+				<mat-list-item [ngClass]="device[3]" matRipple [routerLink]="[device[2]]">
+					<mat-icon mat-list-icon>print</mat-icon>
+					<h4 mat-line>{{ device[0] }}</h4>
+					<p mat-line>{{ device[1] }}</p>
+				</mat-list-item>
+			</mat-list>
+			<mat-toolbar>
+				<mat-toolbar-row>
+					<span class="example-spacer"></span>
+					<button mat-mini-fab color="primary" (click)="newDevice()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+				</mat-toolbar-row>
+			</mat-toolbar>
+		</mat-tab>
+	</mat-tab-group>
+</div>

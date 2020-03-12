@@ -1,0 +1,74 @@
+<mat-toolbar color="primary">
+	<mat-toolbar-row>
+		<i [routerLink]="[prevroute]" class="material-icons" style="font-size: 28px;">{{ backButton }}</i>
+		<span>{{ headerText }}</span>
+		<span class="example-spacer"></span>
+		<div *ngIf="isCustEditor">
+			<button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+			<mat-menu #menu="matMenu">
+				<button mat-menu-item (click)="modifyCustomer()">
+                    <mat-icon>mode_edit</mat-icon>
+                    <span>Modify</span>
+                </button>
+				<mat-divider></mat-divider>
+				<button mat-menu-item (click)="finishCustomer()">
+                    <mat-icon>lock</mat-icon>
+                    <span>Set as Finish</span>
+                </button>
+				<mat-divider></mat-divider>
+				<button mat-menu-item (click)="deleteCustomer()">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                </button>
+			</mat-menu>
+		</div>
+		<div *ngIf="isDeviceEditor">
+			<button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+			<mat-menu #menu="matMenu">
+				<button mat-menu-item (click)="modifyDevice()">
+                    <mat-icon>mode_edit</mat-icon>
+                    <span>Modify</span>
+                </button>
+				<mat-divider></mat-divider>
+				<button mat-menu-item (click)="finishDevice()">
+                    <mat-icon>lock</mat-icon>
+                    <span>Set as Finish</span>
+                </button>
+				<mat-divider></mat-divider>
+				<button mat-menu-item (click)="deleteDevice()">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                </button>
+			</mat-menu>
+		</div>
+		<div *ngIf="isSNScanSave">
+			<button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+			<mat-menu #menu="matMenu">
+				<button mat-menu-item (click)="saveSNScan()">
+                    <mat-icon>save</mat-icon>
+                    <span>Save</span>
+                </button>
+			</mat-menu>
+		</div>
+		<div *ngIf="isTagScanSave">
+			<button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+			<mat-menu #menu="matMenu">
+				<button mat-menu-item (click)="saveTagScan()">
+                    <mat-icon>save</mat-icon>
+                    <span>Save</span>
+                </button>
+			</mat-menu>
+		</div>
+	</mat-toolbar-row>
+</mat-toolbar>
+<div *ngIf="showProgressBar">
+	<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>

@@ -1,0 +1,10 @@
+<div class="mat-app-background basic-container">
+	<h1 mat-dialog-title>Finish Confirmation</h1>
+	<p>
+		Are you sure to set this Device as finish?
+	</p>
+	<div mat-dialog-actions>
+		<button mat-button (click)="onNoClick()" cdkFocusInitial>Cancel</button>
+		<button mat-button [mat-dialog-close]="data">Ok</button>
+	</div>
+</div>

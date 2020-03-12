@@ -1,0 +1,29 @@
+<div class="mat-app-background basic-container">
+	<h1 mat-dialog-title>Enter Device Detail</h1>
+	<div mat-dialog-content class="example-form">
+		<mat-form-field class="example-full-width">
+			<mat-label>Serial Number</mat-label>
+			<input matInput [(ngModel)]="data.sn" />
+        </mat-form-field>
+			<mat-form-field class="example-full-width">
+				<mat-label>Device Model</mat-label>
+				<input matInput [(ngModel)]="data.model" />
+        </mat-form-field>
+				<mat-form-field class="example-full-width">
+					<mat-label>Shipto Address</mat-label>
+					<textarea matInput [(ngModel)]="data.shipto"></textarea>
+				</mat-form-field>
+				<mat-form-field class="example-full-width">
+					<mat-label>Entity</mat-label>
+					<mat-select [(value)]="data.devOwner">
+						<mat-option value="-">None</mat-option>
+						<mat-option value="EPK">EPK</mat-option>
+						<mat-option value="GTC">GTC</mat-option>
+					</mat-select>
+				</mat-form-field>
+	</div>
+	<div mat-dialog-actions>
+		<button mat-button (click)="onNoClick()">Cancel</button>
+		<button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+	</div>
+</div>

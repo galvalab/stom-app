@@ -1,0 +1,20 @@
+<div class="mat-app-background basic-container">
+	<h1 class="mat-h1">Login Page</h1>
+	<form class="login-form">
+		<mat-form-field class="login-full-width">
+			<mat-label>Username</mat-label>
+			<input matInput #usernameInput />
+    </mat-form-field>
+
+			<mat-form-field class="login-full-width">
+				<mat-label>Password</mat-label>
+				<input matInput #passwordInput [type]="hide ? 'password' : 'text'" />
+				<div mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+					[attr.aria-pressed]="hide">
+					<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+				</div>
+			</mat-form-field>
+	</form>
+
+	<button mat-flat-button color="primary" (click)="getAgentID(usernameInput.value, passwordInput.value)">Submit</button>
+</div>

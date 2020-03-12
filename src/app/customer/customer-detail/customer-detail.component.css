@@ -1,0 +1,29 @@
+.example-tab-icon {
+  margin-right: 8px;
+}
+
+.basic-container {
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.example-icon {
+  padding: 0 14px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.highlight-device {
+  background-color: rgba(0, 139, 139, 0.7);
+}
+
+.device-processed {
+  background-color: #69F0AE;
+}

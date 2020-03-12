@@ -1,0 +1,34 @@
+.basic-container {
+    padding: 10px;
+}
+
+.dummy-avatar {
+    font-size: 48px;
+}
+
+.card-content {
+    max-height: 20px;
+    overflow: hidden;
+}
+
+.example-button-row button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+}
+
+.example-form-field {
+    width: 100%;
+}
+
+.search-input {
+    font-size: small;
+}
+
+.customer-processed {
+    background-color: #69F0AE;
+}
+
+.customer-progress {
+    background-color: lightgray;
+}

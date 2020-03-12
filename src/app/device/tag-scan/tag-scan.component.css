@@ -1,0 +1,11 @@
+.basic-container {
+    padding: 10px;
+}
+
+.example-full-width {
+    width: 100%;
+}
+
+.example-card {
+    max-width: 400px;
+}

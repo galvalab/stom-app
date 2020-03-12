@@ -1,0 +1,11 @@
+<webcam [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
+	[allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable" [videoOptions]="videoOptions"
+	(cameraSwitched)="cameraWasSwitched($event)" (initError)="handleInitError($event)">
+</webcam>
+<mat-toolbar color="background">
+	<mat-toolbar-row>
+		<mat-icon (click)="showNextWebcam(true);">flip_camera_android</mat-icon>
+		<span class="example-spacer"></span>
+		<mat-icon (click)="triggerSnapshot();" class="example-icon" aria-hidden="false">photo_camera</mat-icon>
+	</mat-toolbar-row>
+</mat-toolbar>

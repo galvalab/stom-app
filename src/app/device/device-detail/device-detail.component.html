@@ -1,0 +1,59 @@
+<div class="mat-app-background basic-container">
+	<form class="example-form">
+		<h3>Device Info</h3>
+		<mat-form-field class="example-full-width">
+			<mat-label>Serial Number</mat-label>
+			<input matInput disabled value="{{ sn }}">
+        </mat-form-field>
+			<mat-form-field class="example-full-width">
+				<mat-label>Device Model</mat-label>
+				<input matInput disabled value="{{ model }}">
+        </mat-form-field>
+				<mat-form-field class="example-full-width">
+					<mat-label>Device Location</mat-label>
+					<textarea matInput disabled value="{{ devAddress }}"></textarea>
+				</mat-form-field>
+				<mat-form-field class="example-full-width">
+					<mat-label>Entity</mat-label>
+					<input matInput disabled value="{{ deviceOwner }}">
+        </mat-form-field>
+	</form>
+	<br>
+	<h3>Device Scanning Info</h3>
+	<mat-card class="example-card">
+		<mat-card-header>
+			<div mat-card-avatar>
+				<i class="material-icons dummy-avatar">print</i>
+			</div>
+			<mat-card-title>SN Barcode</mat-card-title>
+			<mat-card-subtitle>{{ snRead }}</mat-card-subtitle>
+		</mat-card-header>
+		<img mat-card-image *ngIf="snPicUrl" src="{{ snPicUrl }}" alt="no sn pic available">
+		<mat-card-content>
+			<p>
+				Geopoint: {{ snGeo }}
+			</p>
+		</mat-card-content>
+		<mat-card-actions>
+			<button mat-button [routerLink]="['sn/scan']">Modify</button>
+		</mat-card-actions>
+	</mat-card>
+	<br>
+	<mat-card class="example-card">
+		<mat-card-header>
+			<div mat-card-avatar>
+				<i class="material-icons dummy-avatar">code</i>
+			</div>
+			<mat-card-title>QR Code Asset Tag</mat-card-title>
+			<mat-card-subtitle>{{ tagRead }}</mat-card-subtitle>
+		</mat-card-header>
+		<img mat-card-image *ngIf="tagPicUrl" src="{{ tagPicUrl }}" alt="no tag pic available">
+		<mat-card-content>
+			<p>QR Sequence Number <b class="ordinal-no">{{ tagOrdinalNo }}</b></p>
+			<p>Geopoint: {{ tagGeo }}</p>
+		</mat-card-content>
+		<mat-card-actions>
+			<button mat-button [routerLink]="['tag/scan']">Modify</button>
+		</mat-card-actions>
+	</mat-card>
+</div>
