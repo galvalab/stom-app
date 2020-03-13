@@ -142,7 +142,11 @@ export class SnScanComponent implements OnInit {
       this.fireStorage.storage
         .refFromURL(imgRefPath)
         .putString(this.snScan.sharedImageCaptured.value, "base64", {
-          contentType: "image/jpeg"
+          contentType: "image/jpeg",
+          customMetadata: {
+            agentid: this.snScan.sharedAgentRef.value,
+            "sn-read": this.snScan.sharedSnReadRead.value
+          }
         })
         .then(() => {
           this.firestore

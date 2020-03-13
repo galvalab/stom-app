@@ -123,9 +123,9 @@ export class TagScanComponent implements OnInit {
       })
       .catch(err => {
         // console.error(err);
-        this.qrResultString = encodeURIComponent("#N/A");
+        this.qrResultString = "#N/A";
 
-        this.tagScan.setTagRead(encodeURIComponent("#N/A"));
+        this.tagScan.setTagRead("#N/A");
       });
   }
 
