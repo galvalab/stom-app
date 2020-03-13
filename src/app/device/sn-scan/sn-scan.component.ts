@@ -10,8 +10,6 @@ import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
 import { SnScanService } from "../../shared/sn-scan.service";
 
-import { BrowserBarcodeReader } from "@zxing/library";
-
 declare var require: any;
 
 @Component({
@@ -22,8 +20,7 @@ declare var require: any;
 export class SnScanComponent implements OnInit {
   scanCoordinate: Position;
   qrResultString: string;
-
-  webcamImage: WebcamImage = null;
+  imageResult;
 
   constructor(
     private actRouter: ActivatedRoute,
@@ -36,6 +33,9 @@ export class SnScanComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.barcodeRead();
+    this.imageCaptured();
+
     this.runLocationService();
 
     this.actRouter.paramMap.subscribe(params => {
@@ -104,34 +104,12 @@ export class SnScanComponent implements OnInit {
     });
   }
 
-  handleImages(webcamImage: WebcamImage) {
-    this.webcamImage = webcamImage;
-
-    // Save image
-    this.snScan.setImageCaptured(webcamImage.imageAsBase64);
-
-    // Read barcode
-    this.barcodeRead(webcamImage.imageAsDataUrl);
-
-    console.log(webcamImage.imageData);
+  barcodeRead() {
+    this.qrResultString = this.snScan.sharedSnRead.value;
   }
 
-  barcodeRead(imgUrl: string) {
-    const barReader = new BrowserBarcodeReader();
-    barReader
-      .decodeFromImage(undefined, imgUrl)
-      .then(result => {
-        this.qrResultString = result.getText();
-
-        this.snScan.setSnRead(result.getText());
-      })
-      .catch(err => {
-        // console.error(err);
-
-        this.qrResultString = "#N/A";
-
-        this.snScan.setSnRead("#N/A");
-      });
+  imageCaptured() {
+    this.imageResult = this.snScan.sharedImageCaptured.value;
   }
 
   snScanSaving(
@@ -141,9 +119,12 @@ export class SnScanComponent implements OnInit {
     imgRefPath: string
   ) {
     if (issnsaving === "saving") {
+      // Default set to Display Loading Animation
+      this.urlpath.setLoadingAnimation(true);
+
       this.fireStorage.storage
         .refFromURL(imgRefPath)
-        .putString(this.snScan.sharedImageCaptured.value, "base64", {
+        .putString(this.snScan.sharedImageCaptured.value, "data_url", {
           contentType: "image/jpeg",
           customMetadata: {
             agentid: this.snScan.sharedAgentRef.value,

@@ -89,6 +89,8 @@ import { CameraComponent } from "./device/camera/camera.component";
 import { SnScanComponent } from "./device/sn-scan/sn-scan.component";
 import { TagScanComponent } from "./device/tag-scan/tag-scan.component";
 import { NgxScannerComponent } from './device/ngx-scanner/ngx-scanner.component';
+import { SnScanBarcodeComponent } from './device/sn-scan-barcode/sn-scan-barcode.component';
+import { SnScanImageComponent } from './device/sn-scan-image/sn-scan-image.component';
 
 @NgModule({
   imports: [
@@ -169,7 +171,9 @@ import { NgxScannerComponent } from './device/ngx-scanner/ngx-scanner.component'
     CameraComponent,
     SnScanComponent,
     TagScanComponent,
-    NgxScannerComponent
+    NgxScannerComponent,
+    SnScanBarcodeComponent,
+    SnScanImageComponent
   ],
   bootstrap: [AppComponent],
   providers: [

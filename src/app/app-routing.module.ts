@@ -7,6 +7,8 @@ import { CustomerDetailComponent } from "./customer/customer-detail/customer-det
 import { DeviceDetailComponent } from "./device/device-detail/device-detail.component";
 import { SnScanComponent } from "./device/sn-scan/sn-scan.component";
 import { TagScanComponent } from "./device/tag-scan/tag-scan.component";
+import { SnScanBarcodeComponent } from "./device/sn-scan-barcode/sn-scan-barcode.component";
+import { SnScanImageComponent } from './device/sn-scan-image/sn-scan-image.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
@@ -36,6 +38,17 @@ const routes: Routes = [
       ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/:snscanning",
     component: SnScanComponent
   },
+  {
+    path:
+      ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/scan/barcode",
+    component: SnScanBarcodeComponent
+  },
+  {
+    path:
+      ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/scan/image",
+    component: SnScanImageComponent
+  },
+
   {
     path:
       ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/:snscanning/:issnsaving",

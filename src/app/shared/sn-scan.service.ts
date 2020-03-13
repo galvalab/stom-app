@@ -5,7 +5,7 @@ import { BehaviorSubject } from "rxjs";
   providedIn: "root"
 })
 export class SnScanService {
-  private snRead = new BehaviorSubject("");
+  private snRead = new BehaviorSubject("#N/A");
   sharedSnRead = this.snRead;
 
   private imageCaptured = new BehaviorSubject("");
