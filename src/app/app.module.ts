@@ -86,6 +86,7 @@ import { WebcamModule } from "ngx-webcam";
 import { CameraComponent } from "./device/camera/camera.component";
 import { SnScanComponent } from './device/sn-scan/sn-scan.component';
 import { TagScanComponent } from './device/tag-scan/tag-scan.component';
+import { Camera2Component } from './device/camera2/camera2.component';
 
 @NgModule({
   imports: [
@@ -163,7 +164,8 @@ import { TagScanComponent } from './device/tag-scan/tag-scan.component';
     DialogFinishDeviceComponent,
     CameraComponent,
     SnScanComponent,
-    TagScanComponent
+    TagScanComponent,
+    Camera2Component
   ],
   bootstrap: [AppComponent],
   providers: [

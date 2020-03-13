@@ -112,6 +112,8 @@ export class SnScanComponent implements OnInit {
 
     // Read barcode
     this.barcodeRead(webcamImage.imageAsDataUrl);
+
+    console.log(webcamImage.imageData);
   }
 
   barcodeRead(imgUrl: string) {
@@ -145,7 +147,7 @@ export class SnScanComponent implements OnInit {
           contentType: "image/jpeg",
           customMetadata: {
             agentid: this.snScan.sharedAgentRef.value,
-            "sn-read": this.snScan.sharedSnReadRead.value
+            "sn-read": this.snScan.sharedSnRead.value
           }
         })
         .then(() => {

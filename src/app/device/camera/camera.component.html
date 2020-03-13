@@ -1,6 +1,6 @@
 <webcam [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
 	[allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable" [videoOptions]="videoOptions"
-	(cameraSwitched)="cameraWasSwitched($event)" (initError)="handleInitError($event)">
+	(cameraSwitched)="cameraWasSwitched($event)" (initError)="handleInitError($event)" [captureImageData]="true">
 </webcam>
 <mat-toolbar color="background">
 	<mat-toolbar-row>
