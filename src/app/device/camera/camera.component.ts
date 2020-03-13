@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  OnDestroy
-} from "@angular/core";
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { Subject } from "rxjs";
 import { Observable } from "rxjs";
 import { WebcamImage, WebcamInitError, WebcamUtil } from "ngx-webcam";
@@ -14,7 +8,7 @@ import { WebcamImage, WebcamInitError, WebcamUtil } from "ngx-webcam";
   templateUrl: "./camera.component.html",
   styleUrls: ["./camera.component.css"]
 })
-export class CameraComponent implements OnInit, OnDestroy {
+export class CameraComponent implements OnInit {
   @Output()
   public pictureTaken = new EventEmitter<WebcamImage>();
 
@@ -37,11 +31,6 @@ export class CameraComponent implements OnInit, OnDestroy {
   >();
 
   constructor() {}
-
-  ngOnDestroy() {
-    // this.pictureTaken.unsubscribe();
-    // this.qrRead.unsubscribe;
-  }
 
   ngOnInit(): void {
     WebcamUtil.getAvailableVideoInputs().then(
