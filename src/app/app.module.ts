@@ -2,6 +2,8 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+
 import { A11yModule } from "@angular/cdk/a11y";
 import { ClipboardModule } from "@angular/cdk/clipboard";
 import { DragDropModule } from "@angular/cdk/drag-drop";
@@ -84,15 +86,17 @@ import {
 
 import { WebcamModule } from "ngx-webcam";
 import { CameraComponent } from "./device/camera/camera.component";
-import { SnScanComponent } from './device/sn-scan/sn-scan.component';
-import { TagScanComponent } from './device/tag-scan/tag-scan.component';
-import { Camera2Component } from './device/camera2/camera2.component';
+import { SnScanComponent } from "./device/sn-scan/sn-scan.component";
+import { TagScanComponent } from "./device/tag-scan/tag-scan.component";
+import { NgxScannerComponent } from './device/ngx-scanner/ngx-scanner.component';
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     BrowserAnimationsModule,
+
+    ZXingScannerModule,
 
     A11yModule,
     ClipboardModule,
@@ -143,7 +147,7 @@ import { Camera2Component } from './device/camera2/camera2.component';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireStorageModule,
-    
+
     WebcamModule
   ],
   declarations: [
@@ -165,7 +169,7 @@ import { Camera2Component } from './device/camera2/camera2.component';
     CameraComponent,
     SnScanComponent,
     TagScanComponent,
-    Camera2Component
+    NgxScannerComponent
   ],
   bootstrap: [AppComponent],
   providers: [
