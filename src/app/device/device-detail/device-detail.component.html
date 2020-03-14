@@ -26,9 +26,15 @@
 				<i class="material-icons dummy-avatar">print</i>
 			</div>
 			<mat-card-title>SN Barcode</mat-card-title>
-			<mat-card-subtitle>{{ snRead }}</mat-card-subtitle>
+			<mat-card-subtitle>
+				<div *ngIf="snRead === '#N/A'; then thenSN else elseSN"></div>
+				<ng-template #thenSN>
+					<b style="color: red; font-size: larger">#N/A</b>
+				</ng-template>
+				<ng-template #elseSN>{{ snRead }}</ng-template>
+			</mat-card-subtitle>
 		</mat-card-header>
-		<img mat-card-image *ngIf="snPicUrl" src="{{ snPicUrl }}" alt="no sn pic available">
+		<img mat-card-image *ngIf=" snPicUrl" src="{{ snPicUrl }}" alt="no sn pic available">
 		<mat-card-content>
 			<p>
 				Geopoint: {{ snGeo }}
@@ -45,7 +51,13 @@
 				<i class="material-icons dummy-avatar">code</i>
 			</div>
 			<mat-card-title>QR Code Asset Tag</mat-card-title>
-			<mat-card-subtitle>{{ tagRead }}</mat-card-subtitle>
+			<mat-card-subtitle>
+				<div *ngIf="tagRead === '#N/A'; then thenTag else elseTag"></div>
+				<ng-template #thenTag>
+					<b style="color: red; font-size: larger">#N/A</b>
+				</ng-template>
+				<ng-template #elseTag>{{ tagRead }}</ng-template>
+			</mat-card-subtitle>
 		</mat-card-header>
 		<img mat-card-image *ngIf="tagPicUrl" src="{{ tagPicUrl }}" alt="no tag pic available">
 		<mat-card-content>

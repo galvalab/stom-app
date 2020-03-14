@@ -1,7 +1,7 @@
 <div class="mat-app-background basic-container">
 	<mat-card class="example-card">
 		<mat-card-title>Tag QR Read</mat-card-title>
-		<mat-card-content *ngIf="qrResultString">{{ qrResultString }}</mat-card-content>
+		<mat-card-content *ngIf="qrResultString"><b>{{ qrResultString }}</b></mat-card-content>
 		<mat-card-actions>
 			<button mat-button [routerLink]="['qrcode/get']">Capture</button>
 		</mat-card-actions>

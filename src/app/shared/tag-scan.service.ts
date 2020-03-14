@@ -5,7 +5,7 @@ import { BehaviorSubject } from "rxjs";
   providedIn: "root"
 })
 export class TagScanService {
-  private tagRead = new BehaviorSubject("");
+  private tagRead = new BehaviorSubject("#N/A");
   sharedTagRead = this.tagRead;
 
   private imageCaptured = new BehaviorSubject("");

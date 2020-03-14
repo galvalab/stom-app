@@ -25,7 +25,6 @@ export class SnScanBarcodeComponent implements OnInit {
       const agentid: string = params.get("agentid");
       const customerid: string = params.get("customerid");
       const deviceid: string = params.get("deviceid");
-      const issnsaving: string = params.get("issnsaving");
 
       // Get previous router path
       const prevurl =

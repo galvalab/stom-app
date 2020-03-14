@@ -31,6 +31,8 @@ export class TagScanComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.qrcodeRead();
+    this.imageCaptured();
     this.runLocationService();
 
     this.actRouter.paramMap.subscribe(params => {
@@ -101,7 +103,7 @@ export class TagScanComponent implements OnInit {
     });
   }
 
-  barcodeRead() {
+  qrcodeRead() {
     this.qrResultString = this.tagScan.sharedTagRead.value;
   }
 
@@ -117,9 +119,12 @@ export class TagScanComponent implements OnInit {
     imgRefName: string
   ) {
     if (istagsaving === "saving") {
+      // Default set to Display Loading Animation
+      this.urlpath.setLoadingAnimation(true);
+      
       this.fireStorage.storage
         .refFromURL(imgRefPath + "/" + imgRefName)
-        .putString(this.tagScan.sharedImageCaptured.value, "base64", {
+        .putString(this.tagScan.sharedImageCaptured.value, "data_url", {
           contentType: "image/jpeg",
           customMetadata: {
             ordinalno: "wait for 3 second, before RE-SCAN!",
