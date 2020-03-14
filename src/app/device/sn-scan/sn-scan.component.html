@@ -3,7 +3,7 @@
 		<mat-card-title>SN Barcode Read</mat-card-title>
 		<mat-card-content *ngIf="qrResultString"><b>{{ qrResultString }}</b></mat-card-content>
 		<mat-card-actions>
-			<button mat-button [routerLink]="['barcode']">Capture</button>
+			<button mat-button [routerLink]="['barcode/get']">Capture</button>
 		</mat-card-actions>
 	</mat-card>
 
@@ -11,7 +11,7 @@
 		<mat-card-title>Image Captured</mat-card-title>
 		<img id="capturedImage" mat-card-image [src]="imageResult" alt="" *ngIf="imageResult">
 		<mat-card-actions>
-			<button mat-button [routerLink]="['image']">Capture</button>
+			<button mat-button [routerLink]="['image/get']">Capture</button>
 		</mat-card-actions>
 	</mat-card>
 

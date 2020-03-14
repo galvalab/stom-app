@@ -82,9 +82,7 @@ export class TopBarComponent implements OnInit {
           typeof this.deviceid !== "undefined" &&
           typeof this.invoiceid === "undefined" &&
           typeof this.snscanning === "undefined" &&
-          typeof this.tagscanning === "undefined" &&
-          typeof this.snbarcodescanning === "undefined" &&
-          typeof this.snimagescanning === "undefined"
+          typeof this.tagscanning === "undefined"
         ) {
           this.isDeviceEditor = true;
         } else {
@@ -95,7 +93,9 @@ export class TopBarComponent implements OnInit {
           typeof this.customerid !== "undefined" &&
           typeof this.deviceid !== "undefined" &&
           typeof this.invoiceid === "undefined" &&
-          typeof this.snscanning !== "undefined"
+          typeof this.snscanning !== "undefined" &&
+          typeof this.snbarcodescanning === "undefined" &&
+          typeof this.snimagescanning === "undefined"
         ) {
           this.isSNScanSave = true;
         } else {

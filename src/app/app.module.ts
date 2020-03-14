@@ -90,6 +90,8 @@ import { SnScanComponent } from "./device/sn-scan/sn-scan.component";
 import { TagScanComponent } from "./device/tag-scan/tag-scan.component";
 import { SnScanBarcodeComponent } from './device/sn-scan-barcode/sn-scan-barcode.component';
 import { SnScanImageComponent } from './device/sn-scan-image/sn-scan-image.component';
+import { TagScanQrcodeComponent } from './device/tag-scan-qrcode/tag-scan-qrcode.component';
+import { TagScanImageComponent } from './device/tag-scan-image/tag-scan-image.component';
 
 @NgModule({
   imports: [
@@ -171,7 +173,9 @@ import { SnScanImageComponent } from './device/sn-scan-image/sn-scan-image.compo
     SnScanComponent,
     TagScanComponent,
     SnScanBarcodeComponent,
-    SnScanImageComponent
+    SnScanImageComponent,
+    TagScanQrcodeComponent,
+    TagScanImageComponent
   ],
   bootstrap: [AppComponent],
   providers: [
