@@ -10,8 +10,6 @@ import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
 import { TagScanService } from "../../shared/tag-scan.service";
 
-import { BrowserQRCodeReader } from "@zxing/library";
-
 @Component({
   selector: "app-tag-scan",
   templateUrl: "./tag-scan.component.html",
@@ -20,8 +18,7 @@ import { BrowserQRCodeReader } from "@zxing/library";
 export class TagScanComponent implements OnInit {
   scanCoordinate: Position;
   qrResultString: string;
-
-  webcamImage: WebcamImage = null;
+  imageResult;
 
   constructor(
     private actRouter: ActivatedRoute,
@@ -104,29 +101,12 @@ export class TagScanComponent implements OnInit {
     });
   }
 
-  handleImages(webcamImage: WebcamImage) {
-    this.webcamImage = webcamImage;
-
-    this.tagScan.setImageCaptured(webcamImage.imageAsBase64);
-
-    this.qrcodeRead(webcamImage.imageAsDataUrl);
+  barcodeRead() {
+    this.qrResultString = this.tagScan.sharedTagRead.value;
   }
 
-  qrcodeRead(imgUrl: string) {
-    const barReader = new BrowserQRCodeReader();
-    barReader
-      .decodeFromImage(undefined, imgUrl)
-      .then(result => {
-        this.qrResultString = encodeURIComponent(result.getText());
-
-        this.tagScan.setTagRead(encodeURIComponent(result.getText()));
-      })
-      .catch(err => {
-        // console.error(err);
-        this.qrResultString = "#N/A";
-
-        this.tagScan.setTagRead("#N/A");
-      });
+  imageCaptured() {
+    this.imageResult = this.tagScan.sharedImageCaptured.value;
   }
 
   tagScanSaving(

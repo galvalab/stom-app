@@ -10,8 +10,6 @@ import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
 import { SnScanService } from "../../shared/sn-scan.service";
 
-declare var require: any;
-
 @Component({
   selector: "app-sn-scan",
   templateUrl: "./sn-scan.component.html",

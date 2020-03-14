@@ -9,8 +9,8 @@ import { SnScanComponent } from "./device/sn-scan/sn-scan.component";
 import { SnScanBarcodeComponent } from "./device/sn-scan-barcode/sn-scan-barcode.component";
 import { SnScanImageComponent } from "./device/sn-scan-image/sn-scan-image.component";
 import { TagScanComponent } from "./device/tag-scan/tag-scan.component";
-import { TagScanQrcodeComponent } from "./device/tag-scan/tag-scan-qrcode.component";
-import { TagScanImageComponent } from "./device/tag-scan/tag-scan-image.component";
+import { TagScanQrcodeComponent } from "./device/tag-scan-qrcode/tag-scan-qrcode.component";
+import { TagScanImageComponent } from "./device/tag-scan-image/tag-scan-image.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
@@ -61,6 +61,16 @@ const routes: Routes = [
     path:
       ":groupid/:agentid/customer/:customerid/device/:deviceid/tag/:tagscanning",
     component: TagScanComponent
+  },
+  {
+    path:
+      ":groupid/:agentid/customer/:customerid/device/:deviceid/tag/:tagscanning/qrcode/:tagqrcodescanning",
+    component: TagScanQrcodeComponent
+  },
+  {
+    path:
+      ":groupid/:agentid/customer/:customerid/device/:deviceid/tag/:tagscanning/image/:tagimagescanning",
+    component: TagScanImageComponent
   },
   {
     path:
