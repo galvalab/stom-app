@@ -20,6 +20,8 @@ export class TopBarComponent implements OnInit {
   invoiceid: string;
 
   snscanning: string;
+  snbarcodescanning: string;
+  snimagescanning: string;
   tagscanning: string;
 
   isCustEditor: boolean;
@@ -62,6 +64,8 @@ export class TopBarComponent implements OnInit {
         this.invoiceid = event.state.root.firstChild.params.invoiceid;
         this.snscanning = event.state.root.firstChild.params.snscanning;
         this.tagscanning = event.state.root.firstChild.params.tagscanning;
+        this.snbarcodescanning = event.state.root.firstChild.params.snbarcodescanning;
+        this.snimagescanning = event.state.root.firstChild.params.snimagescanning;
 
         if (
           typeof this.customerid !== "undefined" &&
@@ -78,7 +82,9 @@ export class TopBarComponent implements OnInit {
           typeof this.deviceid !== "undefined" &&
           typeof this.invoiceid === "undefined" &&
           typeof this.snscanning === "undefined" &&
-          typeof this.tagscanning === "undefined"
+          typeof this.tagscanning === "undefined" &&
+          typeof this.snbarcodescanning === "undefined" &&
+          typeof this.snimagescanning === "undefined"
         ) {
           this.isDeviceEditor = true;
         } else {

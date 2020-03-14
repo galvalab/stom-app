@@ -1,13 +1,10 @@
-import {
-  Component,
-  OnInit,
-  Renderer2,
-  ViewChild,
-  ElementRef
-} from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
+import { UrlPathService } from "../../shared/url-path.service";
 import { SnScanService } from "../../shared/sn-scan.service";
-import { Router } from "@angular/router";
+
+import { WebcamImage } from "ngx-webcam";
 
 @Component({
   selector: "app-sn-scan-image",
@@ -15,79 +12,43 @@ import { Router } from "@angular/router";
   styleUrls: ["./sn-scan-image.component.css"]
 })
 export class SnScanImageComponent implements OnInit {
-  @ViewChild("video", { static: true }) videoElement: ElementRef;
-  @ViewChild("canvas", { static: true }) canvas: ElementRef;
-
-  constraints = {
-    video: {
-      facingMode: "environment",
-      width: { ideal: 4096 },
-      height: { ideal: 2160 }
-    }
-  };
-
-  videoWidth = 0;
-  videoHeight = 0;
-
   constructor(
-    private renderer: Renderer2,
+    private actRouter: ActivatedRoute,
     private snScan: SnScanService,
-    private router: Router
+    private router: Router,
+    private urlpath: UrlPathService
   ) {}
 
   ngOnInit() {
-    this.startCamera();
-  }
+    this.actRouter.paramMap.subscribe(params => {
+      const groupid: string = params.get("groupid");
+      const agentid: string = params.get("agentid");
+      const customerid: string = params.get("customerid");
+      const deviceid: string = params.get("deviceid");
+      const issnsaving: string = params.get("issnsaving");
 
-  startCamera() {
-    if (!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
-      navigator.mediaDevices
-        .getUserMedia(this.constraints)
-        .then(this.attachVideo.bind(this))
-        .catch(this.handleError);
-    } else {
-      alert("Sorry, camera not available.");
-    }
-  }
+      // Get previous router path
+      const prevurl =
+        "/" +
+        groupid +
+        "/" +
+        agentid +
+        "/customer/" +
+        customerid +
+        "/device/" +
+        deviceid +
+        "/sn/scan";
+      this.urlpath.setPrevUrl(prevurl);
 
-  handleError(error) {
-    console.log("Error: ", error);
-  }
-
-  attachVideo(stream) {
-    this.renderer.setProperty(
-      this.videoElement.nativeElement,
-      "srcObject",
-      stream
-    );
-    this.renderer.listen(this.videoElement.nativeElement, "play", event => {
-      this.videoHeight = this.videoElement.nativeElement.videoHeight;
-      this.videoWidth = this.videoElement.nativeElement.videoWidth;
+      // Set Custom Header Text
+      this.urlpath.setHeaderText("SN Image Capture");
     });
   }
 
-  capture() {
-    this.renderer.setProperty(
-      this.canvas.nativeElement,
-      "width",
-      this.videoWidth
-    );
-    this.renderer.setProperty(
-      this.canvas.nativeElement,
-      "height",
-      this.videoHeight
-    );
-    this.canvas.nativeElement
-      .getContext("2d")
-      .drawImage(this.videoElement.nativeElement, 0, 0);
-
-    const prevUrl = String(this.router.url).replace("/image", "");
-
-    this.snScan.setImageCaptured(
-      this.canvas.nativeElement.toDataURL("image/png")
-    );
-
-    // this.renderer.;
-    // this.router.navigateByUrl(prevUrl);
+  handleImages(webcamImage: WebcamImage) {
+    // Save image
+    this.snScan.setImageCaptured(webcamImage.imageAsDataUrl);
+    
+    this.router.navigateByUrl(this.urlpath.sharedPrevUrl.value);
   }
 }

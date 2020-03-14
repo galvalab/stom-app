@@ -1,36 +1,13 @@
-.actionBtn {
-    font-size: 4em;
-    cursor: pointer;
-}
-
-.snapshot {
-    text-align: center;
-}
-
-img {
-    max-width: 800px;
-    max-height: 800px;
-}
-
-ul.links {
-    padding-bottom: 20px;
-}
-
-.example-icon {
-    padding: 0 14px;
-}
-
 .example-spacer {
     flex: 1 1 auto;
 }
-
-/* :host zxing-scanner::ng-deep video {
-    max-height: 35vh;
-    object-fit: contain;
-} */
 
 :host webcam::ng-deep video {
     max-height: 35vh;
     max-width: 95vw;
     object-fit: contain;
+}
+
+.my-mat-toolbar{
+  margin-top: -5px;
 }

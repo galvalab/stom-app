@@ -40,12 +40,12 @@ const routes: Routes = [
   },
   {
     path:
-      ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/scan/barcode",
+      ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/:snscanning/:snbarcodescanning",
     component: SnScanBarcodeComponent
   },
   {
     path:
-      ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/scan/image",
+      ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/:snscanning/:snimagescanning",
     component: SnScanImageComponent
   },
 
