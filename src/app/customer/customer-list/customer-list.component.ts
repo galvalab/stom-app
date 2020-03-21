@@ -8,6 +8,17 @@ import { StomWsService } from "../../shared/stom-ws.service";
 import { Observable, BehaviorSubject, combineLatest } from "rxjs";
 import { switchMap } from "rxjs/operators";
 
+export interface wsResponseType {
+  Header: {
+    Status: string;
+    Description: string;
+  };
+  Body: {
+    ColumnName: Array<string>;
+    Row: Array<Array<string>>;
+  };
+}
+
 @Component({
   selector: "app-customer-list",
   templateUrl: "./customer-list.component.html",
@@ -23,7 +34,7 @@ export class CustomerListComponent implements OnInit {
 
   panelOpenState = false;
 
-  // customers$: Observable<DocumentData[]>;
+  customers$: Observable<wsResponseType>;
   nameFilter$: BehaviorSubject<string | null>;
 
   constructor(
