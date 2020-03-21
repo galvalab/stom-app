@@ -54,7 +54,37 @@ export class CustomerListComponent implements OnInit {
 
       /////////////////////////////////////////////
       this.stomws.getCustomerList(agentid, "0").subscribe(resp => {
-        console.log(resp);
+        // Clear customers first
+        this.customers = [];
+
+        resp.Body.Row.forEach(item => {
+          const custurl =
+            "/" + groupid + "/" + agentid + "/customer/" + item[0];
+
+          const isFinished = false;
+          const isProgress = false;
+
+          let statusCss = "";
+
+          if (isFinished) {
+            statusCss = "customer-processed";
+          } else if (isProgress) {
+            statusCss = "customer-progress";
+          }
+
+          // Display Based on Customer Filter only
+          this.customers.push([
+            custurl,
+            item[1],
+            item[2],
+            String(item[3])
+              .substr(0, 40)
+              .concat("..."),
+            undefined,
+            undefined,
+            statusCss
+          ]);
+        });
 
         this.urlpath.setLoadingAnimation(false);
       });

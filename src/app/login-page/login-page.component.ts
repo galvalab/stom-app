@@ -48,7 +48,7 @@ export class LoginPageComponent implements OnInit {
         localStorage.setItem("agentid", agentid);
         localStorage.setItem("groupid", groupid);
 
-        this.router.navigateByUrl( "/" + agentid + "/" + groupid + "/customer");
+        this.router.navigateByUrl( "/" + groupid + "/" + agentid + "/customer");
       } else {
         this.openSnackBar();
       }
