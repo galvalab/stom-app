@@ -25,4 +25,13 @@ export class StomWsService {
         password
     );
   }
+
+  getCustomerList(agentid: string, cid: string) {
+    return this.http.get<wsResponseType>(
+      "https://dems.galva.co.id/stom/mobile/GetStomCustomers.ashx?agentid=" +
+        agentid +
+        "&cid=" +
+        cid
+    );
+  }
 }

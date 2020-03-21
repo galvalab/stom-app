@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 import { MatSnackBar } from "@angular/material/snack-bar";
 
@@ -15,6 +16,7 @@ export class LoginPageComponent implements OnInit {
   durationInSeconds = 5;
 
   constructor(
+    private router: Router,
     private urlpath: UrlPathService,
     private snackBar: MatSnackBar,
     private stomws: StomWsService
@@ -46,7 +48,7 @@ export class LoginPageComponent implements OnInit {
         localStorage.setItem("agentid", agentid);
         localStorage.setItem("groupid", groupid);
 
-        // this.router.navigateByUrl( "/" + agentid + "/" + groupid + "/customer");
+        this.router.navigateByUrl( "/" + agentid + "/" + groupid + "/customer");
       } else {
         this.openSnackBar();
       }
