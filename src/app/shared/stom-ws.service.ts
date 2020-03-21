@@ -2,19 +2,15 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
-export interface wsHeaderType{
-  Status: string;
-  Description: string;
-}
-
-export interface wsBodyType{
-  ColumnName: Array<string>;
-  Row: Array<Array<string>>;
-}
-
 export interface wsResponseType {
-  Header: wsHeaderType;
-  Body: wsBodyType;
+  Header: {
+    Status: string;
+    Description: string;
+  };
+  Body: {
+    ColumnName: Array<string>;
+    Row: Array<Array<string>>;
+  };
 }
 
 @Injectable()
