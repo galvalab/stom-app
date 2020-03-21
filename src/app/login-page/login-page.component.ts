@@ -6,6 +6,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { AngularFirestore } from "@angular/fire/firestore";
 
 import { UrlPathService } from "../shared/url-path.service";
+import { StomWsService } from "../shared/stom-ws.service";
 
 @Component({
   selector: "app-login-page",
@@ -20,7 +21,8 @@ export class LoginPageComponent implements OnInit {
     private firestore: AngularFirestore,
     private router: Router,
     private urlpath: UrlPathService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private stomws: StomWsService
   ) {}
 
   ngOnInit() {
@@ -35,20 +37,36 @@ export class LoginPageComponent implements OnInit {
   }
 
   getAgentID(username: string, password: string) {
-    this.loginVerification(username, password).then((retval: string) => {
-      if (retval[1] === "") {
-        console.log("Wrong username/password");
+    // Start the animation
+    this.urlpath.setLoadingAnimation(true);
+    this.stomws.mobileLogin(username, password).subscribe(resp => {
+      const logResp = String(resp.Body.Row[0][0]);
 
-        this.openSnackBar();
+      if (logResp === "True") {
+        localStorage.setItem("isAuth", "true");
+
+        this.router.navigateByUrl("/admin");
       } else {
-        console.log('logged in');
-        this.router.navigateByUrl(
-          "/" + retval[0] + "/" + retval[1] + "/customer"
-        );
+        this.openSnackBar();
       }
 
       this.urlpath.setLoadingAnimation(false);
     });
+
+    // this.loginVerification(username, password).then((retval: string) => {
+    //   if (retval[1] === "") {
+    //     console.log("Wrong username/password");
+
+    //     this.openSnackBar();
+    //   } else {
+    //     console.log('logged in');
+    //     this.router.navigateByUrl(
+    //       "/" + retval[0] + "/" + retval[1] + "/customer"
+    //     );
+    //   }
+
+    //   this.urlpath.setLoadingAnimation(false);
+    // });
   }
 
   loginVerification(username: string, password: string) {

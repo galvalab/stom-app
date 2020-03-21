@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HttpClientModule } from "@angular/common/http";
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
@@ -92,12 +93,14 @@ import { SnScanBarcodeComponent } from './device/sn-scan-barcode/sn-scan-barcode
 import { SnScanImageComponent } from './device/sn-scan-image/sn-scan-image.component';
 import { TagScanQrcodeComponent } from './device/tag-scan-qrcode/tag-scan-qrcode.component';
 import { TagScanImageComponent } from './device/tag-scan-image/tag-scan-image.component';
+import { StomWsService } from './shared/stom-ws.service';
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     BrowserAnimationsModule,
+    HttpClientModule,
 
     ZXingScannerModule,
 
@@ -182,7 +185,8 @@ import { TagScanImageComponent } from './device/tag-scan-image/tag-scan-image.co
     UrlPathService,
     TagScanService,
     SnScanService,
-    GeolocationService
+    GeolocationService,
+    StomWsService
   ],
   entryComponents: [
     WrongCredSnackbarComponent,
