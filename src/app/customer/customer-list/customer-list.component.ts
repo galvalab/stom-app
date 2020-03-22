@@ -64,7 +64,7 @@ export class CustomerListComponent implements OnInit {
       this.urlpath.setBackButton(true);
 
       /////////////////////////////////////////////
-      this.stomws.getCustomerList(agentid, "0").subscribe(resp => {
+      this.stomws.getCustomers(agentid, "0").subscribe(resp => {
         // Clear customers first
         this.customers = [];
 

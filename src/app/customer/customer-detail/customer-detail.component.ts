@@ -108,7 +108,7 @@ export class CustomerDetailComponent implements OnInit {
     agentid: string,
     custcommand: string
   ) {
-    this.stomws.getCustomerList(agentid, customerid).subscribe(resp => {
+    this.stomws.getCustomers(agentid, customerid).subscribe(resp => {
       // Clear array first
       this.customer = [];
       this.customer.push(resp.Body.Row[0][1]);
