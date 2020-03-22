@@ -96,9 +96,6 @@ export class CustomerDetailComponent implements OnInit {
 
       // Get Device List
       this.getDeviceList(groupid, customerid, agentid);
-
-      // Get Invoice List
-      this.getInvoiceList(groupid, customerid, agentid);
     });
   }
 
@@ -131,51 +128,30 @@ export class CustomerDetailComponent implements OnInit {
       this.devices = [];
       const snsearch = this.actRouter.snapshot.queryParams[`snsearch`];
 
-      resp.Body.Row.forEach(item => {
-        const nextpath =
-          "/" +
-          groupid +
-          "/" +
-          agentid +
-          "/customer/" +
-          customerid +
-          "/device/" +
-          item[0];
+      if (resp !== null) {
+        resp.Body.Row.forEach(item => {
+          const nextpath =
+            "/" +
+            groupid +
+            "/" +
+            agentid +
+            "/customer/" +
+            customerid +
+            "/device/" +
+            item[0];
 
-        if (typeof snsearch === "undefined" || snsearch === String(item[0])) {
-          const isFinished = Boolean(JSON.parse(item[5]));
+          if (typeof snsearch === "undefined" || snsearch === String(item[0])) {
+            const isFinished = Boolean(JSON.parse(item[5]));
 
-          let finCSS = "";
-          if (isFinished) {
-            finCSS = "device-processed";
+            let finCSS = "";
+            if (isFinished) {
+              finCSS = "device-processed";
+            }
+            this.devices.push([item[1], item[2], nextpath, finCSS]);
           }
-          this.devices.push([item[1], item[2], nextpath, finCSS]);
-        }
-      });
+        });
+      }
     });
-  }
-
-  getInvoiceList(groupid: string, customerid: string, agentid: string) {
-    // const invlist = this.firestore
-    //   .collection('sto-activity').doc(groupid)
-    //   .collection('customer').doc(customerid)
-    //   .collection('invoice').snapshotChanges();
-    // invlist.subscribe(foundinv => {
-    //   // Clear invoices first
-    //   this.invoices = [];
-    //   foundinv.forEach(invoice => {
-    //     const nextpath =
-    //       '/' + groupid +
-    //       '/' + agentid +
-    //       '/customer/' + customerid +
-    //       '/invoice/' + invoice.payload.doc.id;
-    //     this.invoices.push([
-    //       invoice.payload.doc.get('inv-no'),
-    //       invoice.payload.doc.get('shipto'),
-    //       nextpath
-    //     ]);
-    //   });
-    // });
   }
 
   openModifyDialog(standbyRoute: string, docRefPath: string): void {
