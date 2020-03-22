@@ -149,72 +149,77 @@ export class DeviceDetailComponent implements OnInit {
   ) {
     // Get Device Detail
     this.stomws.getDevices(agentid, customerid, deviceid).subscribe(resp => {
-      this.sn = resp.Body.Row[0][1];
-      this.model = resp.Body.Row[0][2];
-      this.devAddress = resp.Body.Row[0][3];
+      console.log(resp);
+      if (resp !== null) {
+        this.sn = resp.Body.Row[0][1];
+        this.model = resp.Body.Row[0][2];
+        this.devAddress = resp.Body.Row[0][3];
 
-      this.deviceOwner = resp.Body.Row[0][4];
+        this.deviceOwner = resp.Body.Row[0][4]; 
 
-      this.snRead = resp.Body.Row[0][11];
-      this.tagRead = resp.Body.Row[0][17];
+        this.snRead = resp.Body.Row[0][11];
+        this.tagRead = resp.Body.Row[0][17];
 
-      this.snGeo = resp.Body.Row[0][17] + ", " + resp.Body.Row[0][17];
+        this.snGeo = resp.Body.Row[0][17] + ", " + resp.Body.Row[0][17];
 
-      if (
-        resp.Body.Row[0][7].length === 0 ||
-        resp.Body.Row[0][8].length === 0
-      ) {
-        this.snGeo = "";
+        if (
+          resp.Body.Row[0][7].length === 0 ||
+          resp.Body.Row[0][8].length === 0
+        ) {
+          this.snGeo = "";
+        } else {
+          this.snGeo = resp.Body.Row[0][7] + ", " + resp.Body.Row[0][8];
+        }
+
+        if (
+          resp.Body.Row[0][13].length === 0 ||
+          resp.Body.Row[0][14].length === 0
+        ) {
+          this.tagGeo = "";
+        } else {
+          this.tagGeo = resp.Body.Row[0][13] + ", " + resp.Body.Row[0][14];
+        }
+
+        // Image of Asset Tagging
+        const snref = resp.Body.Row[0][10];
+        const tagref = resp.Body.Row[0][16];
+
+        if (snref.length === 0) {
+          // do nothing
+        } else {
+          // this.fireStorage.storage
+          //   .refFromURL(snurl)
+          //   .getDownloadURL()
+          //   .then(url => (this.snPicUrl = url))
+          //   .catch(err => {
+          //     console.log(err);
+          //   });
+        }
+
+        if (tagref.length === 0) {
+          // do nothing
+        } else {
+          // this.fireStorage.storage
+          //   .refFromURL(tagurl)
+          //   .getDownloadURL()
+          //   .then(url => {
+          //     this.tagPicUrl = url;
+          //   })
+          //   .catch(err => {
+          //     console.log(err);
+          //   });
+          // this.fireStorage.storage
+          //   .refFromURL(tagurl)
+          //   .getMetadata()
+          //   .then(meta => {
+          //     this.tagOrdinalNo = meta.customMetadata.ordinalno;
+          //   });
+        }
+
+        this.urlpath.setLoadingAnimation(false);
       } else {
-        this.snGeo = resp.Body.Row[0][7] + ", " + resp.Body.Row[0][8];
+        this.urlpath.setLoadingAnimation(false);
       }
-
-      if (
-        resp.Body.Row[0][13].length === 0 ||
-        resp.Body.Row[0][14].length === 0
-      ) {
-        this.tagGeo = "";
-      } else {
-        this.tagGeo = resp.Body.Row[0][13] + ", " + resp.Body.Row[0][14];
-      }
-
-      // Image of Asset Tagging
-      const snref = resp.Body.Row[0][10];
-      const tagref = resp.Body.Row[0][16];
-
-      if (snref.length === 0) {
-        // do nothing
-      } else {
-        // this.fireStorage.storage
-        //   .refFromURL(snurl)
-        //   .getDownloadURL()
-        //   .then(url => (this.snPicUrl = url))
-        //   .catch(err => {
-        //     console.log(err);
-        //   });
-      }
-
-      if (tagref.length === 0) {
-        // do nothing
-      } else {
-        // this.fireStorage.storage
-        //   .refFromURL(tagurl)
-        //   .getDownloadURL()
-        //   .then(url => {
-        //     this.tagPicUrl = url;
-        //   })
-        //   .catch(err => {
-        //     console.log(err);
-        //   });
-        // this.fireStorage.storage
-        //   .refFromURL(tagurl)
-        //   .getMetadata()
-        //   .then(meta => {
-        //     this.tagOrdinalNo = meta.customMetadata.ordinalno;
-        //   });
-      }
-
-      this.urlpath.setLoadingAnimation(false);
     });
   }
 
