@@ -54,15 +54,29 @@ export class StomWsService {
   }
 
   updateCustomer(agentid: string, cid: string, custData: Array<string>) {
-    const url = "https://dems.galva.co.id/stom/mobile/AddStomCustomer.ashx?agentid=" + 
-      agentid + "&cid=" + cid;
-    
+    const url =
+      "https://dems.galva.co.id/stom/mobile/UpdateStomCustomer.ashx?agentid=" +
+      agentid +
+      "&cid=" +
+      cid;
+
     const formData: any = new FormData();
     formData.append("custname", custData[0]);
     formData.append("custaddr", custData[1]);
     formData.append("picname", custData[2]);
     formData.append("picno", custData[3]);
+    formData.append("view", custData[4]);
+    formData.append("finish", custData[5]);
 
-    return this.http.post<wsResponseType>(url,formData);
+    return this.http.post<wsResponseType>(url, formData);
+  }
+
+  deleteCustomer(agentid: string, cid: string) {
+    return this.http.get<wsResponseType>(
+      "https://dems.galva.co.id/stom/mobile/DeleteStomCustomer.ashx?agentid=" +
+        agentid +
+        "&cid=" +
+        cid
+    );
   }
 }

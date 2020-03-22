@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-// import { AngularFirestore } from '@angular/fire/firestore';
 import { StomWsService } from "../../shared/stom-ws.service";
 
 import {
@@ -24,7 +23,11 @@ export interface DeleteDialogData {
 }
 
 export interface FinishDialogData {
-  isFinished: boolean;
+  customerNo: string;
+  customerName: string;
+  customerAddress: string;
+  picName: string;
+  picContact: string;
 }
 
 @Component({
@@ -40,7 +43,6 @@ export class CustomerDetailComponent implements OnInit {
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
-    // private firestore: AngularFirestore,
     private urlpath: UrlPathService,
     public dialog: MatDialog,
     private stomws: StomWsService
@@ -74,7 +76,8 @@ export class CustomerDetailComponent implements OnInit {
       if (params.get("custcommand") === "edit") {
         this.openModifyDialog(
           "/" + groupid + "/" + agentid + "/customer/" + customerid,
-          "/sto-activity/" + groupid + "/customer/" + customerid
+          agentid,
+          customerid
         );
       } else if (params.get("custcommand") === "delete") {
         // console.log('Open delete dialog');
@@ -82,7 +85,8 @@ export class CustomerDetailComponent implements OnInit {
         this.openDeleteDialog(
           "/" + groupid + "/" + agentid + "/customer",
           "/" + groupid + "/" + agentid + "/customer/" + customerid,
-          "/sto-activity/" + groupid + "/customer/" + customerid
+          agentid,
+          customerid
         );
       } else if (params.get("custcommand") === "finish") {
         // console.log('Open finish dialog');
@@ -90,7 +94,8 @@ export class CustomerDetailComponent implements OnInit {
         this.openFinishDialog(
           "/" + groupid + "/" + agentid + "/customer",
           "/" + groupid + "/" + agentid + "/customer/" + customerid,
-          "/sto-activity/" + groupid + "/customer/" + customerid
+          agentid,
+          customerid
         );
       }
 
@@ -113,10 +118,18 @@ export class CustomerDetailComponent implements OnInit {
       this.customer.push(resp.Body.Row[0][3]);
       this.customer.push(resp.Body.Row[0][4]);
       this.customer.push(resp.Body.Row[0][5]);
-      this.urlpath.setLoadingAnimation(false);
 
       // Set the On-Progress to TRUE
-      // HERE
+      const custData = [
+        resp.Body.Row[0][2],
+        resp.Body.Row[0][3],
+        resp.Body.Row[0][4],
+        resp.Body.Row[0][5],
+        "1",
+        "0"
+      ];
+
+      this.stomws.updateCustomer(agentid, customerid, custData).subscribe();
 
       this.urlpath.setLoadingAnimation(false);
     });
@@ -154,100 +167,105 @@ export class CustomerDetailComponent implements OnInit {
     });
   }
 
-  openModifyDialog(standbyRoute: string, docRefPath: string): void {
-    // this.firestore.doc(docRefPath).get().subscribe(fsdata => {
-    //   this.dialog.open(DialogUpdateCustomerComponent, {
-    //     width: '350px',
-    //     data: {
-    //       customerName: fsdata.get('name'),
-    //       customerAddress: fsdata.get('address'),
-    //       picName: fsdata.get('pic-name'),
-    //       picContact: fsdata.get('pic-contact'),
-    //     }
-    //   })
-    //     .afterClosed().subscribe(result => {
-    //       if (typeof (result) === 'undefined') {
-    //         this.router.navigateByUrl(standbyRoute);
-    //         // console.log('Canceling modify');
-    //       } else {
-    //         this.router.navigateByUrl(standbyRoute)
-    //           .then(() => {
-    //             // Write log first
-    //             this.firestore.doc(docRefPath).get().subscribe(item => {
-    //               const logId = String(Date.now());
-    //               Object.keys(item.data()).forEach(key => {
-    //                 this.firestore
-    //                   .doc(docRefPath)
-    //                   .collection('log').doc(logId)
-    //                   .set({
-    //                     [key]: item.get(key),
-    //                   }, {
-    //                     merge: true,
-    //                   });
-    //               });
-    //             });
-    //           })
-    //           .then(() => {
-    //             this.firestore.doc(docRefPath).update({
-    //               address: result.customerAddress,
-    //               name: result.customerName,
-    //               'pic-name': result.picName,
-    //               'pic-contact': result.picContact,
-    //             });
-    //           });
-    //       }
-    //     });
-    // });
+  openModifyDialog(standbyRoute: string, agentid: string, cid: string): void {
+    this.stomws.getCustomers(agentid, cid).subscribe(resp => {
+      this.dialog
+        .open(DialogUpdateCustomerComponent, {
+          width: "350px",
+          data: {
+            customerName: resp.Body.Row[0][2],
+            customerAddress: resp.Body.Row[0][3],
+            picName: resp.Body.Row[0][4],
+            picContact: resp.Body.Row[0][5]
+          }
+        })
+        .afterClosed()
+        .subscribe(result => {
+          if (typeof result === "undefined") {
+            this.router.navigateByUrl(standbyRoute);
+            // console.log('Canceling modify');
+          } else {
+            this.router.navigateByUrl(standbyRoute).then(() => {
+              const custData = [
+                result.customerName,
+                result.customerAddress,
+                result.picName,
+                result.picContact,
+                "1",
+                "0"
+              ];
+
+              this.stomws.updateCustomer(agentid, cid, custData).subscribe();
+            });
+          }
+        });
+    });
   }
 
   openFinishDialog(
     finishRoute: string,
     cancelRoute: string,
-    docRefPath: string
+    agentid: string,
+    cid: string
   ): void {
-    // this.dialog.open(DialogFinishCustomerComponent, {
-    //   width: '350px',
-    //   data: {
-    //     isDeleted: true
-    //   }
-    // })
-    //   .afterClosed().subscribe(result => {
-    //     if (typeof (result) === 'undefined') {
-    //       this.router.navigateByUrl(cancelRoute);
-    //     } else {
-    //       this.router.navigateByUrl(finishRoute)
-    //         .then(() => {
-    //           this.firestore.doc(docRefPath).update({
-    //             'is-finished': true,
-    //           });
-    //         });
-    //     }
-    //   });
+    this.stomws.getCustomers(agentid, cid).subscribe(resp => {
+      this.dialog
+        .open(DialogFinishCustomerComponent, {
+          width: "350px",
+          data: {
+            customerName: resp.Body.Row[0][2],
+            customerAddress: resp.Body.Row[0][3],
+            picName: resp.Body.Row[0][4],
+            picContact: resp.Body.Row[0][5]
+          }
+        })
+        .afterClosed()
+        .subscribe(result => {
+          if (typeof result === "undefined") {
+            this.router.navigateByUrl(cancelRoute);
+            // console.log('Canceling modify');
+          } else {
+            this.router.navigateByUrl(finishRoute).then(() => {
+              const custData = [
+                result.customerName,
+                result.customerAddress,
+                result.picName,
+                result.picContact,
+                "1",
+                "1"
+              ];
+
+              this.stomws.updateCustomer(agentid, cid, custData).subscribe();
+            });
+          }
+        });
+    });
   }
 
   openDeleteDialog(
     deleteRoute: string,
     cancelRoute: string,
-    docRefPath: string
+    agentid: string,
+    cid: string
   ): void {
-    // this.dialog
-    //   .open(DialogDeleteCustomerComponent, {
-    //     width: "350px",
-    //     data: {
-    //       isDeleted: true
-    //     }
-    //   })
-    //   .afterClosed()
-    //   .subscribe(result => {
-    //     if (typeof result === "undefined") {
-    //       this.router.navigateByUrl(cancelRoute);
-    //     } else {
-    //       this.router.navigateByUrl(deleteRoute).then(() => {
-    //         // console.log('Deleting...');
-    //         this.firestore.doc(docRefPath).delete();
-    //       });
-    //     }
-    //   });
+    this.dialog
+      .open(DialogDeleteCustomerComponent, {
+        width: "350px",
+        data: {
+          isDeleted: true
+        }
+      })
+      .afterClosed()
+      .subscribe(result => {
+        if (typeof result === "undefined") {
+          this.router.navigateByUrl(cancelRoute);
+        } else {
+          this.router.navigateByUrl(deleteRoute).then(() => {
+            // console.log('Deleting...');
+            this.stomws.deleteCustomer(agentid, cid).subscribe();
+          });
+        }
+      });
   }
 
   newDevice() {

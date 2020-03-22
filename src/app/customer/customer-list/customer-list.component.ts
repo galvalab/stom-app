@@ -75,6 +75,17 @@ export class CustomerListComponent implements OnInit {
           resp.Body.Row.forEach(item => {
             const fsCustName = item[2].toLowerCase();
 
+            const isFinished = Boolean(JSON.parse(item[7]));
+            const isProgress = Boolean(JSON.parse(item[6]));
+
+            let statusCss = "";
+
+            if (isFinished) {
+              statusCss = "customer-processed";
+            } else if (isProgress) {
+              statusCss = "customer-progress";
+            }
+
             this.stomws.getDevices(agentid, item[0], "0").subscribe(snItem => {
               const custurl =
                 "/" + groupid + "/" + agentid + "/customer/" + item[0];
@@ -84,17 +95,6 @@ export class CustomerListComponent implements OnInit {
                 snItem.Body.Row.forEach(snItemArr => {
                   snList.push([snItemArr[1], snItemArr[0]]);
                 });
-
-                const isFinished = false;
-                const isProgress = false;
-
-                let statusCss = "";
-
-                if (isFinished) {
-                  statusCss = "customer-processed";
-                } else if (isProgress) {
-                  statusCss = "customer-progress";
-                }
 
                 if (fsCustName.search(this.searchKeyword) === -1) {
                   // Display no Customer, unless has SN Data
@@ -130,6 +130,17 @@ export class CustomerListComponent implements OnInit {
                 }
                 this.urlpath.setLoadingAnimation(false);
               } else {
+                // Display customer without SN list
+                this.customers.push([
+                  custurl,
+                  item[1],
+                  item[2],
+                  item[3].substr(0, 40).concat("..."),
+                  undefined,
+                  undefined,
+                  statusCss
+                ]);
+
                 this.urlpath.setLoadingAnimation(false);
               }
             });
