@@ -71,7 +71,7 @@ export class CustomerListComponent implements OnInit {
         // Clear customers first
         this.customers = [];
 
-        try {
+        if (resp.Body.Row.length > 0) {
           resp.Body.Row.forEach(item => {
             const fsCustName = item[2].toLowerCase();
 
@@ -80,58 +80,61 @@ export class CustomerListComponent implements OnInit {
                 "/" + groupid + "/" + agentid + "/customer/" + item[0];
 
               const snList = [];
-
-              snItem.Body.Row.forEach(snItemArr => {
-                snList.push([snItemArr[1], snItemArr[0]]);
-              });
-
-              const isFinished = false;
-              const isProgress = false;
-
-              let statusCss = "";
-
-              if (isFinished) {
-                statusCss = "customer-processed";
-              } else if (isProgress) {
-                statusCss = "customer-progress";
-              }
-
-              if (fsCustName.search(this.searchKeyword) === -1) {
-                // Display no Customer, unless has SN Data
-                snList.forEach(sn => {
-                  if (
-                    String(sn[0])
-                      .toLowerCase()
-                      .search(this.searchKeyword) !== -1 &&
-                    String(this.searchKeyword).length > 0
-                  ) {
-                    this.customers.push([
-                      custurl,
-                      item[1],
-                      item[2],
-                      item[3].substr(0, 20).concat("..."),
-                      "(SN Search: " + String(sn[0]) + ")",
-                      String(sn[1]),
-                      statusCss
-                    ]);
-                  }
+              if (snItem !== null) {
+                snItem.Body.Row.forEach(snItemArr => {
+                  snList.push([snItemArr[1], snItemArr[0]]);
                 });
+
+                const isFinished = false;
+                const isProgress = false;
+
+                let statusCss = "";
+
+                if (isFinished) {
+                  statusCss = "customer-processed";
+                } else if (isProgress) {
+                  statusCss = "customer-progress";
+                }
+
+                if (fsCustName.search(this.searchKeyword) === -1) {
+                  // Display no Customer, unless has SN Data
+                  snList.forEach(sn => {
+                    if (
+                      String(sn[0])
+                        .toLowerCase()
+                        .search(this.searchKeyword) !== -1 &&
+                      String(this.searchKeyword).length > 0
+                    ) {
+                      this.customers.push([
+                        custurl,
+                        item[1],
+                        item[2],
+                        item[3].substr(0, 20).concat("..."),
+                        "(SN Search: " + String(sn[0]) + ")",
+                        String(sn[1]),
+                        statusCss
+                      ]);
+                    }
+                  });
+                } else {
+                  // Display Based on Customer Filter only
+                  this.customers.push([
+                    custurl,
+                    item[1],
+                    item[2],
+                    item[3].substr(0, 40).concat("..."),
+                    undefined,
+                    undefined,
+                    statusCss
+                  ]);
+                }
+                this.urlpath.setLoadingAnimation(false);
               } else {
-                // Display Based on Customer Filter only
-                this.customers.push([
-                  custurl,
-                  item[1],
-                  item[2],
-                  item[3].substr(0, 40).concat("..."),
-                  undefined,
-                  undefined,
-                  statusCss
-                ]);
+                this.urlpath.setLoadingAnimation(false);
               }
-              this.urlpath.setLoadingAnimation(false);
             });
           });
-        } catch {
+        } else {
           this.urlpath.setLoadingAnimation(false);
         }
       });
@@ -147,33 +150,15 @@ export class CustomerListComponent implements OnInit {
       const agentid: string = params.get("agentid");
 
       this.stomws.addCustomer(agentid).subscribe(resp => {
-        console.log(resp);
+        // console.log(resp);
+        const nextRoute =
+          "/" + groupid + "/" + agentid + "/customer/" + resp.Body.Row[0][0];
+
+        this.routeTo.navigateByUrl(nextRoute);
 
         this.urlpath.setLoadingAnimation(false);
       });
     });
-
-    // this.router.paramMap.subscribe(params => {
-    //   const groupid: string = params.get("groupid");
-    //   const agentid: string = params.get("agentid");
-
-    //   this.firestore
-    //     .collection("sto-activity")
-    //     .doc(groupid)
-    //     .collection("customer")
-    //     .add({
-    //       address: "",
-    //       "cust-id": "NEW-" + String(Date.now()),
-    //       name: ""
-    //     })
-    //     .then(thenparams => {
-    //       let nextRoute: string;
-    //       nextRoute =
-    //         "/" + groupid + "/" + agentid + "/customer/" + thenparams.id;
-
-    //       this.routeTo.navigateByUrl(nextRoute);
-    //     });
-    // });
   }
 
   onSearchTyped(event: any) {
