@@ -125,39 +125,35 @@ export class CustomerDetailComponent implements OnInit {
   }
 
   getDeviceList(groupid: string, customerid: string, agentid: string) {
-    console.log("Get Device List");
-    // const devicelist = this.firestore
-    //   .collection('sto-activity').doc(groupid)
-    //   .collection('customer').doc(customerid)
-    //   .collection('device').snapshotChanges();
-    // devicelist.subscribe(foundDevice => {
-    //   // Clear devices first
-    //   this.devices = [];
-    //   const snsearch = this.actRouter.snapshot.queryParams[`snsearch`];
-    //   foundDevice.forEach(device => {
-    //     const nextpath =
-    //       '/' + groupid +
-    //       '/' + agentid +
-    //       '/customer/' + customerid +
-    //       '/device/' + device.payload.doc.id;
-    //     if (
-    //       typeof (snsearch) === 'undefined' ||
-    //       snsearch === String(device.payload.doc.id)
-    //     ) {
-    //       const isFinished = device.payload.doc.get('is-finished');
-    //       let finCSS = '';
-    //       if (isFinished) {
-    //         finCSS = 'device-processed';
-    //       }
-    //       this.devices.push([
-    //         device.payload.doc.get('sn'),
-    //         device.payload.doc.get('model'),
-    //         nextpath,
-    //         finCSS
-    //       ]);
-    //     }
-    //   });
-    // });
+    this.stomws.getDevices(agentid, customerid, "0").subscribe(resp => {
+      console.log(resp);
+
+      // Clear devices first
+      this.devices = [];
+      const snsearch = this.actRouter.snapshot.queryParams[`snsearch`];
+
+      resp.Body.Row.forEach(item => {
+        const nextpath =
+          "/" +
+          groupid +
+          "/" +
+          agentid +
+          "/customer/" +
+          customerid +
+          "/device/" +
+          item[0];
+
+        if (typeof snsearch === "undefined" || snsearch === String(item[0])) {
+          const isFinished = Boolean(JSON.parse(item[5]));
+
+          let finCSS = "";
+          if (isFinished) {
+            finCSS = "device-processed";
+          }
+          this.devices.push([item[1], item[2], nextpath, finCSS]);
+        }
+      });
+    });
   }
 
   getInvoiceList(groupid: string, customerid: string, agentid: string) {
