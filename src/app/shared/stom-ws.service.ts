@@ -45,4 +45,11 @@ export class StomWsService {
         snid
     );
   }
+
+  addCustomer(agentid: string) {
+    return this.http.get<wsResponseType>(
+      "https://dems.galva.co.id/stom/mobile/AddStomCustomer.ashx?agentid=" +
+        agentid
+    );
+  }
 }

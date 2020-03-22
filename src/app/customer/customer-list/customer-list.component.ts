@@ -140,7 +140,18 @@ export class CustomerListComponent implements OnInit {
 
   newCustomer() {
     console.log("Create new customer");
-    // this.urlpath.setLoadingAnimation(true);
+    this.urlpath.setLoadingAnimation(true);
+
+    this.router.paramMap.subscribe(params => {
+      const groupid: string = params.get("groupid");
+      const agentid: string = params.get("agentid");
+
+      this.stomws.addCustomer(agentid).subscribe(resp => {
+        console.log(resp);
+
+        this.urlpath.setLoadingAnimation(false);
+      });
+    });
 
     // this.router.paramMap.subscribe(params => {
     //   const groupid: string = params.get("groupid");
