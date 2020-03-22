@@ -52,4 +52,17 @@ export class StomWsService {
         agentid
     );
   }
+
+  updateCustomer(agentid: string, cid: string, custData: Array<string>) {
+    const url = "https://dems.galva.co.id/stom/mobile/AddStomCustomer.ashx?agentid=" + 
+      agentid + "&cid=" + cid;
+    
+    const formData: any = new FormData();
+    formData.append("custname", custData[0]);
+    formData.append("custaddr", custData[1]);
+    formData.append("picname", custData[2]);
+    formData.append("picno", custData[3]);
+
+    return this.http.post<wsResponseType>(url,formData);
+  }
 }
