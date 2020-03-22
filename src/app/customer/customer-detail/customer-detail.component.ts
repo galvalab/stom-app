@@ -269,7 +269,26 @@ export class CustomerDetailComponent implements OnInit {
   }
 
   newDevice() {
-    // this.urlpath.setLoadingAnimation(true);
+    this.urlpath.setLoadingAnimation(true);
+    this.actRouter.paramMap.subscribe(params => {
+      const groupid: string = params.get("groupid");
+      const agentid: string = params.get("agentid");
+      const customerid: string = params.get("customerid");
+
+      this.stomws.addDevice(agentid, customerid).subscribe(resp => {
+        const nextRoute =
+          "/" +
+          groupid +
+          "/" +
+          agentid +
+          "/customer/" +
+          customerid +
+          "/device/" +
+          resp.Body.Row[0][0];
+        this.router.navigateByUrl(nextRoute);
+      });
+    });
+
     // this.actRouter.paramMap.subscribe(params => {
     //   const groupid: string = params.get("groupid");
     //   const agentid: string = params.get("agentid");
