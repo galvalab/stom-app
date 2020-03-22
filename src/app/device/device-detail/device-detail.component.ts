@@ -1,7 +1,9 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AngularFirestore } from "@angular/fire/firestore";
-import { AngularFireStorage } from "@angular/fire/storage";
+// import { AngularFirestore } from "@angular/fire/firestore";
+// import { AngularFireStorage } from "@angular/fire/storage";
+import { StomWsService } from "../../shared/stom-ws.service";
+
 import {
   MatDialog,
   MatDialogRef,
@@ -49,10 +51,11 @@ export class DeviceDetailComponent implements OnInit {
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
-    private firestore: AngularFirestore,
-    private fireStorage: AngularFireStorage,
+    // private firestore: AngularFirestore,
+    // private fireStorage: AngularFireStorage,
     private urlpath: UrlPathService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private stomws: StomWsService
   ) {}
 
   ngOnInit() {
@@ -72,7 +75,7 @@ export class DeviceDetailComponent implements OnInit {
       // Set Custom Header Text
       this.urlpath.setHeaderText("Device Detail");
 
-      this.getDeviceDetail(groupid, customerid, deviceid);
+      this.getDeviceDetail(groupid, customerid, deviceid, agentid);
 
       // Open Dialog if route contain edit command
       if (params.get("devcommand") === "edit") {
@@ -138,86 +141,77 @@ export class DeviceDetailComponent implements OnInit {
     });
   }
 
-  getDeviceDetail(groupid: string, customerid: string, deviceid: string) {
+  getDeviceDetail(
+    groupid: string,
+    customerid: string,
+    deviceid: string,
+    agentid: string
+  ) {
     // Get Device Detail
-    const devicedetail = this.firestore
-      .collection("sto-activity")
-      .doc(groupid)
-      .collection("customer")
-      .doc(customerid)
-      .collection("device")
-      .doc(deviceid)
-      .snapshotChanges();
+    this.stomws.getDevices(agentid, customerid, deviceid).subscribe(resp => {
+      this.sn = resp.Body.Row[0][1];
+      this.model = resp.Body.Row[0][2];
+      this.devAddress = resp.Body.Row[0][3];
 
-    devicedetail.subscribe(result => {
-      this.sn = result.payload.get("sn");
-      this.model = result.payload.get("model");
-      this.devAddress = result.payload.get("address");
+      this.deviceOwner = resp.Body.Row[0][4];
 
-      this.deviceOwner = result.payload.get("dev-owner");
+      this.snRead = resp.Body.Row[0][11];
+      this.tagRead = resp.Body.Row[0][17];
 
-      this.snRead = result.payload.get("sn-read");
-      this.tagRead = result.payload.get("tag-read");
+      this.snGeo = resp.Body.Row[0][17] + ", " + resp.Body.Row[0][17];
 
       if (
-        typeof result.payload.get("sn-geo-latitude") === "undefined" ||
-        typeof result.payload.get("sn-geo-longitude") === "undefined"
+        resp.Body.Row[0][7].length === 0 ||
+        resp.Body.Row[0][8].length === 0
       ) {
         this.snGeo = "";
       } else {
-        this.snGeo =
-          result.payload.get("sn-geo-latitude") +
-          ", " +
-          result.payload.get("sn-geo-longitude");
+        this.snGeo = resp.Body.Row[0][7] + ", " + resp.Body.Row[0][8];
       }
 
-      this.tagGeo = "";
       if (
-        typeof result.payload.get("tag-geo-latitude") === "undefined" ||
-        typeof result.payload.get("tag-geo-longitude") === "undefined"
+        resp.Body.Row[0][13].length === 0 ||
+        resp.Body.Row[0][14].length === 0
       ) {
         this.tagGeo = "";
       } else {
-        this.tagGeo =
-          result.payload.get("tag-geo-latitude") +
-          ", " +
-          result.payload.get("tag-geo-longitude");
+        this.tagGeo = resp.Body.Row[0][13] + ", " + resp.Body.Row[0][14];
       }
 
-      const snurl = result.payload.get("sn-pic");
-      const tagurl = result.payload.get("tag-pic");
+      // Image of Asset Tagging
+      const snref = resp.Body.Row[0][10];
+      const tagref = resp.Body.Row[0][16];
 
-      if (typeof snurl === "undefined" || String(snurl).length === 0) {
+      if (snref.length === 0) {
         // do nothing
       } else {
-        this.fireStorage.storage
-          .refFromURL(snurl)
-          .getDownloadURL()
-          .then(url => (this.snPicUrl = url))
-          .catch(err => {
-            console.log(err);
-          });
+        // this.fireStorage.storage
+        //   .refFromURL(snurl)
+        //   .getDownloadURL()
+        //   .then(url => (this.snPicUrl = url))
+        //   .catch(err => {
+        //     console.log(err);
+        //   });
       }
 
-      if (typeof tagurl === "undefined" || String(tagurl).length === 0) {
+      if (tagref.length === 0) {
         // do nothing
       } else {
-        this.fireStorage.storage
-          .refFromURL(tagurl)
-          .getDownloadURL()
-          .then(url => {
-            this.tagPicUrl = url;
-          })
-          .catch(err => {
-            console.log(err);
-          });
-
-        this.fireStorage.storage
-          .refFromURL(tagurl)
-          .getMetadata()
-          .then(meta => {
-            this.tagOrdinalNo = meta.customMetadata.ordinalno;
-          });
+        // this.fireStorage.storage
+        //   .refFromURL(tagurl)
+        //   .getDownloadURL()
+        //   .then(url => {
+        //     this.tagPicUrl = url;
+        //   })
+        //   .catch(err => {
+        //     console.log(err);
+        //   });
+        // this.fireStorage.storage
+        //   .refFromURL(tagurl)
+        //   .getMetadata()
+        //   .then(meta => {
+        //     this.tagOrdinalNo = meta.customMetadata.ordinalno;
+        //   });
       }
 
       this.urlpath.setLoadingAnimation(false);
@@ -225,65 +219,64 @@ export class DeviceDetailComponent implements OnInit {
   }
 
   openModifyDialog(standbyRoute: string, docRefPath: string): void {
-    this.firestore
-      .doc(docRefPath)
-      .get()
-      .subscribe(fsdata => {
-        this.dialog
-          .open(DialogUpdateDeviceComponent, {
-            width: "350px",
-            data: {
-              sn: fsdata.get("sn"),
-              model: fsdata.get("model"),
-              shipto: fsdata.get("address"),
-              devOwner: fsdata.get("dev-owner"),
-              isFinished: fsdata.get("is-finished")
-            }
-          })
-          .afterClosed()
-          .subscribe(result => {
-            if (typeof result === "undefined") {
-              this.router.navigateByUrl(standbyRoute);
-              // console.log('Canceling modify');
-            } else {
-              this.router
-                .navigateByUrl(standbyRoute)
-                .then(() => {
-                  this.firestore
-                    .doc(docRefPath)
-                    .get()
-                    .subscribe(item => {
-                      const logId = String(Date.now());
-
-                      // Logging
-                      Object.keys(item.data()).forEach(key => {
-                        this.firestore
-                          .doc(docRefPath)
-                          .collection("log")
-                          .doc(logId)
-                          .set(
-                            {
-                              [key]: item.get(key)
-                            },
-                            {
-                              merge: true
-                            }
-                          );
-                      });
-                    });
-                })
-                .then(() => {
-                  this.firestore.doc(docRefPath).update({
-                    address: result.shipto,
-                    sn: result.sn,
-                    model: result.model,
-                    "dev-owner": result.devOwner,
-                    "is-finished": false
-                  });
-                });
-            }
-          });
-      });
+    // this.firestore
+    //   .doc(docRefPath)
+    //   .get()
+    //   .subscribe(fsdata => {
+    //     this.dialog
+    //       .open(DialogUpdateDeviceComponent, {
+    //         width: "350px",
+    //         data: {
+    //           sn: fsdata.get("sn"),
+    //           model: fsdata.get("model"),
+    //           shipto: fsdata.get("address"),
+    //           devOwner: fsdata.get("dev-owner"),
+    //           isFinished: fsdata.get("is-finished")
+    //         }
+    //       })
+    //       .afterClosed()
+    //       .subscribe(result => {
+    //         if (typeof result === "undefined") {
+    //           this.router.navigateByUrl(standbyRoute);
+    //           // console.log('Canceling modify');
+    //         } else {
+    //           this.router
+    //             .navigateByUrl(standbyRoute)
+    //             .then(() => {
+    //               this.firestore
+    //                 .doc(docRefPath)
+    //                 .get()
+    //                 .subscribe(item => {
+    //                   const logId = String(Date.now());
+    //                   // Logging
+    //                   Object.keys(item.data()).forEach(key => {
+    //                     this.firestore
+    //                       .doc(docRefPath)
+    //                       .collection("log")
+    //                       .doc(logId)
+    //                       .set(
+    //                         {
+    //                           [key]: item.get(key)
+    //                         },
+    //                         {
+    //                           merge: true
+    //                         }
+    //                       );
+    //                   });
+    //                 });
+    //             })
+    //             .then(() => {
+    //               this.firestore.doc(docRefPath).update({
+    //                 address: result.shipto,
+    //                 sn: result.sn,
+    //                 model: result.model,
+    //                 "dev-owner": result.devOwner,
+    //                 "is-finished": false
+    //               });
+    //             });
+    //         }
+    //       });
+    //   });
   }
 
   openDeleteDialog(
@@ -291,24 +284,24 @@ export class DeviceDetailComponent implements OnInit {
     cancelRoute: string,
     docRefPath: string
   ): void {
-    this.dialog
-      .open(DialogDeleteDeviceComponent, {
-        width: "350px",
-        data: {
-          isDeleted: true
-        }
-      })
-      .afterClosed()
-      .subscribe(result => {
-        if (typeof result === "undefined") {
-          this.router.navigateByUrl(cancelRoute);
-        } else {
-          this.router.navigateByUrl(deleteRoute).then(() => {
-            // console.log('Deleting...');
-            this.firestore.doc(docRefPath).delete();
-          });
-        }
-      });
+    // this.dialog
+    //   .open(DialogDeleteDeviceComponent, {
+    //     width: "350px",
+    //     data: {
+    //       isDeleted: true
+    //     }
+    //   })
+    //   .afterClosed()
+    //   .subscribe(result => {
+    //     if (typeof result === "undefined") {
+    //       this.router.navigateByUrl(cancelRoute);
+    //     } else {
+    //       this.router.navigateByUrl(deleteRoute).then(() => {
+    //         // console.log('Deleting...');
+    //         this.firestore.doc(docRefPath).delete();
+    //       });
+    //     }
+    //   });
   }
 
   openFinishDialog(
@@ -316,26 +309,26 @@ export class DeviceDetailComponent implements OnInit {
     cancelRoute: string,
     docRefPath: string
   ): void {
-    this.dialog
-      .open(DialogFinishDeviceComponent, {
-        width: "350px",
-        data: {
-          isFinished: true
-        }
-      })
-      .afterClosed()
-      .subscribe(result => {
-        if (typeof result === "undefined") {
-          this.router.navigateByUrl(cancelRoute);
-        } else {
-          this.router.navigateByUrl(finishRoute).then(() => {
-            // console.log('Finishing...');
-            this.firestore.doc(docRefPath).update({
-              "is-finished": true
-            });
-          });
-        }
-      });
+    // this.dialog
+    //   .open(DialogFinishDeviceComponent, {
+    //     width: "350px",
+    //     data: {
+    //       isFinished: true
+    //     }
+    //   })
+    //   .afterClosed()
+    //   .subscribe(result => {
+    //     if (typeof result === "undefined") {
+    //       this.router.navigateByUrl(cancelRoute);
+    //     } else {
+    //       this.router.navigateByUrl(finishRoute).then(() => {
+    //         // console.log('Finishing...');
+    //         this.firestore.doc(docRefPath).update({
+    //           "is-finished": true
+    //         });
+    //       });
+    //     }
+    //   });
   }
 }
 

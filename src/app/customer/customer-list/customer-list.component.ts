@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-// import { AngularFirestore, DocumentData } from "@angular/fire/firestore";
 
 import { UrlPathService } from "../../shared/url-path.service";
 import { StomWsService } from "../../shared/stom-ws.service";
@@ -40,7 +39,6 @@ export class CustomerListComponent implements OnInit {
   constructor(
     private router: ActivatedRoute,
     private routeTo: Router,
-    // private firestore: AngularFirestore,
     private urlpath: UrlPathService,
     private stomws: StomWsService
   ) {}
@@ -64,130 +62,79 @@ export class CustomerListComponent implements OnInit {
       this.urlpath.setBackButton(true);
 
       /////////////////////////////////////////////
-      this.stomws.getCustomers(agentid, "0").subscribe(resp => {
+      this.nameFilter$ = new BehaviorSubject(null);
+      this.customers$ = combineLatest([this.nameFilter$]).pipe(
+        switchMap(([namekey]) => this.stomws.getCustomers(agentid, "0"))
+      );
+
+      this.customers$.subscribe(resp => {
         // Clear customers first
         this.customers = [];
 
-        resp.Body.Row.forEach(item => {
-          const custurl =
-            "/" + groupid + "/" + agentid + "/customer/" + item[0];
+        try {
+          resp.Body.Row.forEach(item => {
+            const fsCustName = item[2].toLowerCase();
 
-          const isFinished = false;
-          const isProgress = false;
+            this.stomws.getDevices(agentid, item[0], "0").subscribe(snItem => {
+              const custurl =
+                "/" + groupid + "/" + agentid + "/customer/" + item[0];
 
-          let statusCss = "";
+              const snList = [];
 
-          if (isFinished) {
-            statusCss = "customer-processed";
-          } else if (isProgress) {
-            statusCss = "customer-progress";
-          }
+              snItem.Body.Row.forEach(snItemArr => {
+                snList.push([snItemArr[1], snItemArr[0]]);
+              });
 
-          // Display Based on Customer Filter only
-          this.customers.push([
-            custurl,
-            item[1],
-            item[2],
-            String(item[3])
-              .substr(0, 40)
-              .concat("..."),
-            undefined,
-            undefined,
-            statusCss
-          ]);
-        });
+              const isFinished = false;
+              const isProgress = false;
 
-        this.urlpath.setLoadingAnimation(false);
+              let statusCss = "";
+
+              if (isFinished) {
+                statusCss = "customer-processed";
+              } else if (isProgress) {
+                statusCss = "customer-progress";
+              }
+
+              if (fsCustName.search(this.searchKeyword) === -1) {
+                // Display no Customer, unless has SN Data
+                snList.forEach(sn => {
+                  if (
+                    String(sn[0])
+                      .toLowerCase()
+                      .search(this.searchKeyword) !== -1 &&
+                    String(this.searchKeyword).length > 0
+                  ) {
+                    this.customers.push([
+                      custurl,
+                      item[1],
+                      item[2],
+                      item[3].substr(0, 20).concat("..."),
+                      "(SN Search: " + String(sn[0]) + ")",
+                      String(sn[1]),
+                      statusCss
+                    ]);
+                  }
+                });
+              } else {
+                // Display Based on Customer Filter only
+                this.customers.push([
+                  custurl,
+                  item[1],
+                  item[2],
+                  item[3].substr(0, 40).concat("..."),
+                  undefined,
+                  undefined,
+                  statusCss
+                ]);
+              }
+              this.urlpath.setLoadingAnimation(false);
+            });
+          });
+        } catch {
+          this.urlpath.setLoadingAnimation(false);
+        }
       });
-
-      /////////////////////////////////////////////
-      // this.nameFilter$ = new BehaviorSubject(null);
-      // this.customers$ = combineLatest([this.nameFilter$]).pipe(
-      //   switchMap(([namekey]) =>
-      //     this.firestore
-      //       .collection("sto-activity")
-      //       .doc(groupid)
-      //       .collection("customer")
-      //       .snapshotChanges()
-      //   )
-      // );
-
-      // this.customers$.subscribe(result => {
-      //   // Clear customers first
-      //   this.customers = [];
-      //   result.forEach(item => {
-      //     const fsCustName = String(item.payload.doc.get("name")).toLowerCase();
-
-      //     this.firestore
-      //       .collection(item.payload.doc.ref.path + "/device")
-      //       .get()
-      //       .subscribe(snItem => {
-      //         const custurl =
-      //           "/" +
-      //           groupid +
-      //           "/" +
-      //           agentid +
-      //           "/customer/" +
-      //           item.payload.doc.id;
-
-      //         const snList = [];
-
-      //         snItem.forEach(snItemArr => {
-      //           snList.push([snItemArr.get("sn"), snItemArr.id]);
-      //         });
-
-      //         const isFinished = item.payload.doc.get("is-finished");
-      //         const isProgress = item.payload.doc.get("on-progress");
-
-      //         let statusCss = "";
-
-      //         if (isFinished) {
-      //           statusCss = "customer-processed";
-      //         } else if (isProgress) {
-      //           statusCss = "customer-progress";
-      //         }
-
-      //         if (fsCustName.search(this.searchKeyword) === -1) {
-      //           // Display no Customer, unless has SN Data
-      //           snList.forEach(sn => {
-      //             if (
-      //               String(sn[0])
-      //                 .toLowerCase()
-      //                 .search(this.searchKeyword) !== -1 &&
-      //               String(this.searchKeyword).length > 0
-      //             ) {
-      //               this.customers.push([
-      //                 custurl,
-      //                 item.payload.doc.get("cust-id"),
-      //                 item.payload.doc.get("name"),
-      //                 String(item.payload.doc.get("address"))
-      //                   .substr(0, 20)
-      //                   .concat("..."),
-      //                 "(SN Search: " + String(sn[0]) + ")",
-      //                 String(sn[1]),
-      //                 statusCss
-      //               ]);
-      //             }
-      //           });
-      //         } else {
-      //           // Display Based on Customer Filter only
-      //           this.customers.push([
-      //             custurl,
-      //             item.payload.doc.get("cust-id"),
-      //             item.payload.doc.get("name"),
-      //             String(item.payload.doc.get("address"))
-      //               .substr(0, 40)
-      //               .concat("..."),
-      //             undefined,
-      //             undefined,
-      //             statusCss
-      //           ]);
-      //         }
-
-      //         this.urlpath.setLoadingAnimation(false);
-      //       });
-      //   });
-      // });
     });
   }
 

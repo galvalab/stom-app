@@ -119,6 +119,7 @@ export class CustomerDetailComponent implements OnInit {
       this.urlpath.setLoadingAnimation(false);
 
       // Set the On-Progress to TRUE
+      // HERE
 
       this.urlpath.setLoadingAnimation(false);
     });
@@ -126,8 +127,6 @@ export class CustomerDetailComponent implements OnInit {
 
   getDeviceList(groupid: string, customerid: string, agentid: string) {
     this.stomws.getDevices(agentid, customerid, "0").subscribe(resp => {
-      console.log(resp);
-
       // Clear devices first
       this.devices = [];
       const snsearch = this.actRouter.snapshot.queryParams[`snsearch`];

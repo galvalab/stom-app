@@ -37,8 +37,6 @@ export class LoginPageComponent implements OnInit {
     // Start the animation
     this.urlpath.setLoadingAnimation(true);
     this.stomws.mobileLogin(username, password).subscribe(resp => {
-      console.log(resp);
-
       const agentid = String(resp.Body.Row[0][0]);
       const logResp = String(resp.Body.Row[0][1]);
       const groupid = String(resp.Body.Row[0][2]);
