@@ -181,6 +181,9 @@ export class DeviceDetailComponent implements OnInit {
           this.tagGeo = resp.Body.Row[0][13] + ", " + resp.Body.Row[0][14];
         }
 
+        // Get Sequence no
+        this.tagOrdinalNo = resp.Body.Row[0][18];
+
         // Image of Asset Tagging
         const snref = resp.Body.Row[0][10];
         const tagref = resp.Body.Row[0][16];
@@ -200,6 +203,9 @@ export class DeviceDetailComponent implements OnInit {
         if (tagref.length === 0) {
           // do nothing
         } else {
+          this.stomws.getImage(tagref).subscribe(imgResp => {
+            this.tagPicUrl = imgResp.Body.Row[0][2];
+          });
           // this.fireStorage.storage
           //   .refFromURL(tagurl)
           //   .getDownloadURL()

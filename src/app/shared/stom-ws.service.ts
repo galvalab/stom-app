@@ -129,4 +129,12 @@ export class StomWsService {
         snid
     );
   }
+
+  // LOAD IMAGE
+  getImage(storef: string) {
+    return this.http.get<wsResponseType>(
+      "https://dems.galva.co.id/stom/mobile/GetStomImage.ashx?storef=" +
+        storef
+    );
+  }
 }
