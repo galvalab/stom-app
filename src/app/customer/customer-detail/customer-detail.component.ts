@@ -288,44 +288,6 @@ export class CustomerDetailComponent implements OnInit {
         this.router.navigateByUrl(nextRoute);
       });
     });
-
-    // this.actRouter.paramMap.subscribe(params => {
-    //   const groupid: string = params.get("groupid");
-    //   const agentid: string = params.get("agentid");
-    //   const customerid: string = params.get("customerid");
-    //   this.firestore
-    //     .collection("sto-activity")
-    //     .doc(groupid)
-    //     .collection("customer")
-    //     .doc(customerid)
-    //     .collection("device")
-    //     .add({
-    //       address: "",
-    //       "agent-ref": "",
-    //       "created-datetime": "",
-    //       model: "",
-    //       sn: "",
-    //       "sn-geopoint": "",
-    //       "sn-pic": "",
-    //       "sn-read": "",
-    //       "tag-geopoint": "",
-    //       "tag-pic": "",
-    //       "tag-read": ""
-    //     })
-    //     .then(thenparams => {
-    //       let nextRoute: string;
-    //       nextRoute =
-    //         "/" +
-    //         groupid +
-    //         "/" +
-    //         agentid +
-    //         "/customer/" +
-    //         customerid +
-    //         "/device/" +
-    //         thenparams.id;
-    //       this.router.navigateByUrl(nextRoute);
-    //     });
-    // });
   }
 }
 

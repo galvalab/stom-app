@@ -147,7 +147,7 @@ export class CustomerListComponent implements OnInit {
           });
 
           // Short Cutomer by name
-          this.customers.sort
+          this.customers.sort();
         } else {
           this.urlpath.setLoadingAnimation(false);
         }
