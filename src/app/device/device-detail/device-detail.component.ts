@@ -119,12 +119,8 @@ export class DeviceDetailComponent implements OnInit {
             customerid +
             "/device/" +
             deviceid,
-          "/sto-activity/" +
-            groupid +
-            "/customer/" +
-            customerid +
-            "/device/" +
-            deviceid
+          customerid,
+          deviceid
         );
       } else if (params.get("devcommand") === "finish") {
         // console.log('Open finish dialog');
@@ -294,26 +290,27 @@ export class DeviceDetailComponent implements OnInit {
   openDeleteDialog(
     deleteRoute: string,
     cancelRoute: string,
-    docRefPath: string
+    agentid: string,
+    snid: string
   ): void {
-    // this.dialog
-    //   .open(DialogDeleteDeviceComponent, {
-    //     width: "350px",
-    //     data: {
-    //       isDeleted: true
-    //     }
-    //   })
-    //   .afterClosed()
-    //   .subscribe(result => {
-    //     if (typeof result === "undefined") {
-    //       this.router.navigateByUrl(cancelRoute);
-    //     } else {
-    //       this.router.navigateByUrl(deleteRoute).then(() => {
-    //         // console.log('Deleting...');
-    //         this.firestore.doc(docRefPath).delete();
-    //       });
-    //     }
-    //   });
+    this.dialog
+      .open(DialogDeleteDeviceComponent, {
+        width: "350px",
+        data: {
+          isDeleted: true
+        }
+      })
+      .afterClosed()
+      .subscribe(result => {
+        if (typeof result === "undefined") {
+          this.router.navigateByUrl(cancelRoute);
+        } else {
+          this.router.navigateByUrl(deleteRoute).then(() => {
+            // console.log('Deleting...');
+            this.stomws.deleteDevice(agentid, snid).subscribe();
+          });
+        }
+      });
   }
 
   openFinishDialog(
@@ -372,7 +369,7 @@ export class DeviceDetailComponent implements OnInit {
                 resp.Body.Row[0][15],
                 resp.Body.Row[0][16],
                 resp.Body.Row[0][17],
-                resp.Body.Row[0][1],
+                resp.Body.Row[0][1]
               ];
               this.stomws.updateDevice(agentid, snid, snData).subscribe();
             });
