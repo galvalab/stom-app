@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
+import { Guid } from "guid-typescript";
 
 export interface wsResponseType {
   Header: {
@@ -130,11 +131,32 @@ export class StomWsService {
     );
   }
 
-  // LOAD IMAGE
+  ////////////////////////////
+  // IMAGE
   getImage(storef: string) {
     return this.http.get<wsResponseType>(
-      "https://dems.galva.co.id/stom/mobile/GetStomImage.ashx?storef=" +
-        storef
+      "https://dems.galva.co.id/stom/mobile/GetStomImage.ashx?storef=" + storef
+    );
+  }
+
+  addQrcodeImage(snid: string, storef: string, ext: string) {
+    return this.http.get<wsResponseType>(
+      "https://dems.galva.co.id/stom/mobile/AddStomQrcodeImage.ashx?snid=" +
+        snid +
+        "&storef=" +
+        storef +
+        "&ext=" +
+        ext
+    );
+  }
+
+  addBarcodeImage(storef: string, ext: string) {
+    return this.http.get<wsResponseType>(
+      "https://dems.galva.co.id/stom/mobile/AddStomBarcodeImage.ashx?" +
+        "storef=" +
+        storef +
+        "&ext=" +
+        ext
     );
   }
 }

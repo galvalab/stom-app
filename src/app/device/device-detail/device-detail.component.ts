@@ -194,13 +194,6 @@ export class DeviceDetailComponent implements OnInit {
           this.stomws.getImage(snref).subscribe(imgResp => {
             this.snPicUrl = imgResp.Body.Row[0][2];
           });
-          // this.fireStorage.storage
-          //   .refFromURL(snurl)
-          //   .getDownloadURL()
-          //   .then(url => (this.snPicUrl = url))
-          //   .catch(err => {
-          //     console.log(err);
-          //   });
         }
 
         if (tagref.length === 0) {
@@ -209,21 +202,6 @@ export class DeviceDetailComponent implements OnInit {
           this.stomws.getImage(tagref).subscribe(imgResp => {
             this.tagPicUrl = imgResp.Body.Row[0][2];
           });
-          // this.fireStorage.storage
-          //   .refFromURL(tagurl)
-          //   .getDownloadURL()
-          //   .then(url => {
-          //     this.tagPicUrl = url;
-          //   })
-          //   .catch(err => {
-          //     console.log(err);
-          //   });
-          // this.fireStorage.storage
-          //   .refFromURL(tagurl)
-          //   .getMetadata()
-          //   .then(meta => {
-          //     this.tagOrdinalNo = meta.customMetadata.ordinalno;
-          //   });
         }
 
         this.urlpath.setLoadingAnimation(false);
