@@ -6,6 +6,8 @@ import { WebcamImage } from "ngx-webcam";
 // import { AngularFirestore } from "@angular/fire/firestore";
 // import { AngularFireStorage } from "@angular/fire/storage";
 
+import { Guid } from "guid-typescript";
+
 import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
 import { SnScanService } from "../../shared/sn-scan.service";
@@ -132,6 +134,7 @@ export class SnScanComponent implements OnInit {
       // Get Device first
       this.stomws.getDevices(agentid, cid, snid).subscribe(devResp => {
         // console.log(devResp);
+        const picRef = String(Guid.create());
 
         const devData = [
           devResp.Body.Row[0][3],
@@ -142,7 +145,7 @@ export class SnScanComponent implements OnInit {
           String(this.snScan.sharedSnGeoLatitude.value),
           String(this.snScan.sharedSnGeoLongitude.value),
           String(this.snScan.sharedSnGeoTimestamp.value),
-          "sn-pic-ref",
+          picRef,
           this.snScan.sharedSnRead.value,
           devResp.Body.Row[0][12],
           devResp.Body.Row[0][13],
