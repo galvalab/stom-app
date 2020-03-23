@@ -120,4 +120,13 @@ export class StomWsService {
 
     return this.http.post<wsResponseType>(url, formData);
   }
+
+  deleteDevice(agentid: string, snid: string) {
+    return this.http.get<wsResponseType>(
+      "https://dems.galva.co.id/stom/mobile/DeleteStomDevice.ashx?agentid=" +
+        agentid +
+        "&snid=" +
+        snid
+    );
+  }
 }

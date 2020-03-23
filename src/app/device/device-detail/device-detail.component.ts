@@ -139,12 +139,9 @@ export class DeviceDetailComponent implements OnInit {
             customerid +
             "/device/" +
             deviceid,
-          "/sto-activity/" +
-            groupid +
-            "/customer/" +
-            customerid +
-            "/device/" +
-            deviceid
+          agentid,
+          customerid,
+          deviceid
         );
       }
     });
@@ -292,65 +289,6 @@ export class DeviceDetailComponent implements OnInit {
           }
         });
     });
-
-    // this.firestore
-    //   .doc(docRefPath)
-    //   .get()
-    //   .subscribe(fsdata => {
-    //     this.dialog
-    //       .open(DialogUpdateDeviceComponent, {
-    //         width: "350px",
-    //         data: {
-    //           sn: fsdata.get("sn"),
-    //           model: fsdata.get("model"),
-    //           shipto: fsdata.get("address"),
-    //           devOwner: fsdata.get("dev-owner"),
-    //           isFinished: fsdata.get("is-finished")
-    //         }
-    //       })
-    //       .afterClosed()
-    //       .subscribe(result => {
-    //         if (typeof result === "undefined") {
-    //           this.router.navigateByUrl(standbyRoute);
-    //           // console.log('Canceling modify');
-    //         } else {
-    //           this.router
-    //             .navigateByUrl(standbyRoute)
-    //             .then(() => {
-    //               this.firestore
-    //                 .doc(docRefPath)
-    //                 .get()
-    //                 .subscribe(item => {
-    //                   const logId = String(Date.now());
-    //                   // Logging
-    //                   Object.keys(item.data()).forEach(key => {
-    //                     this.firestore
-    //                       .doc(docRefPath)
-    //                       .collection("log")
-    //                       .doc(logId)
-    //                       .set(
-    //                         {
-    //                           [key]: item.get(key)
-    //                         },
-    //                         {
-    //                           merge: true
-    //                         }
-    //                       );
-    //                   });
-    //                 });
-    //             })
-    //             .then(() => {
-    //               this.firestore.doc(docRefPath).update({
-    //                 address: result.shipto,
-    //                 sn: result.sn,
-    //                 model: result.model,
-    //                 "dev-owner": result.devOwner,
-    //                 "is-finished": false
-    //               });
-    //             });
-    //         }
-    //       });
-    //   });
   }
 
   openDeleteDialog(
@@ -381,28 +319,66 @@ export class DeviceDetailComponent implements OnInit {
   openFinishDialog(
     finishRoute: string,
     cancelRoute: string,
-    docRefPath: string
+    agentid: string,
+    cid: string,
+    snid: string
   ): void {
-    // this.dialog
-    //   .open(DialogFinishDeviceComponent, {
-    //     width: "350px",
-    //     data: {
-    //       isFinished: true
-    //     }
-    //   })
-    //   .afterClosed()
-    //   .subscribe(result => {
-    //     if (typeof result === "undefined") {
-    //       this.router.navigateByUrl(cancelRoute);
-    //     } else {
-    //       this.router.navigateByUrl(finishRoute).then(() => {
-    //         // console.log('Finishing...');
-    //         this.firestore.doc(docRefPath).update({
-    //           "is-finished": true
-    //         });
-    //       });
-    //     }
-    //   });
+    this.stomws.getDevices(agentid, cid, snid).subscribe(resp => {
+      this.dialog
+        .open(DialogFinishDeviceComponent, {
+          width: "350px",
+          data: {
+            devaddr: resp.Body.Row[0][3],
+            devmodel: resp.Body.Row[0][2],
+            devowner: resp.Body.Row[0][4],
+            isfinished: Boolean(JSON.parse(resp.Body.Row[0][5])),
+            snacc: resp.Body.Row[0][6],
+            snlat: resp.Body.Row[0][7],
+            snlong: resp.Body.Row[0][8],
+            sntime: resp.Body.Row[0][9],
+            snpicref: resp.Body.Row[0][10],
+            snread: resp.Body.Row[0][11],
+            tagacc: resp.Body.Row[0][12],
+            taglat: resp.Body.Row[0][13],
+            taglong: resp.Body.Row[0][14],
+            tagtime: resp.Body.Row[0][15],
+            tagpicref: resp.Body.Row[0][16],
+            tagread: resp.Body.Row[0][17],
+            sn: resp.Body.Row[0][1]
+          }
+        })
+        .afterClosed()
+        .subscribe(result => {
+          if (typeof result === "undefined") {
+            this.router.navigateByUrl(cancelRoute);
+          } else {
+            this.router.navigateByUrl(finishRoute).then(() => {
+              console.log("Finishing...");
+
+              const snData = [
+                resp.Body.Row[0][3],
+                resp.Body.Row[0][2],
+                resp.Body.Row[0][4],
+                "1",
+                resp.Body.Row[0][6],
+                resp.Body.Row[0][7],
+                resp.Body.Row[0][8],
+                resp.Body.Row[0][9],
+                resp.Body.Row[0][10],
+                resp.Body.Row[0][11],
+                resp.Body.Row[0][12],
+                resp.Body.Row[0][13],
+                resp.Body.Row[0][14],
+                resp.Body.Row[0][15],
+                resp.Body.Row[0][16],
+                resp.Body.Row[0][17],
+                resp.Body.Row[0][1],
+              ];
+              this.stomws.updateDevice(agentid, snid, snData).subscribe();
+            });
+          }
+        });
+    });
   }
 }
 
