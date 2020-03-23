@@ -26,6 +26,8 @@ export class StomWsService {
     );
   }
 
+  /////////////////////////////////////////////
+  // Customer works
   getCustomers(agentid: string, cid: string) {
     return this.http.get<wsResponseType>(
       "https://dems.galva.co.id/stom/mobile/GetStomCustomers.ashx?agentid=" +
@@ -34,18 +36,6 @@ export class StomWsService {
         cid
     );
   }
-
-  getDevices(agentid: string, cid: string, snid: string) {
-    return this.http.get<wsResponseType>(
-      "https://dems.galva.co.id/stom/mobile/GetStomDevices.ashx?agentid=" +
-        agentid +
-        "&cid=" +
-        cid +
-        "&snid=" +
-        snid
-    );
-  }
-
   addCustomer(agentid: string) {
     return this.http.get<wsResponseType>(
       "https://dems.galva.co.id/stom/mobile/AddStomCustomer.ashx?agentid=" +
@@ -80,6 +70,19 @@ export class StomWsService {
     );
   }
 
+  /////////////////////////////////////////////////////////
+  // Device works is below
+  getDevices(agentid: string, cid: string, snid: string) {
+    return this.http.get<wsResponseType>(
+      "https://dems.galva.co.id/stom/mobile/GetStomDevices.ashx?agentid=" +
+        agentid +
+        "&cid=" +
+        cid +
+        "&snid=" +
+        snid
+    );
+  }
+
   addDevice(agentid: string, cid: string) {
     return this.http.get<wsResponseType>(
       "https://dems.galva.co.id/stom/mobile/AddStomDevice.ashx?agentid=" +
@@ -87,5 +90,33 @@ export class StomWsService {
         "&cid=" +
         cid
     );
+  }
+
+  updateDevice(agentid: string, snid: string, snData: Array<string>) {
+    const url =
+      "https://dems.galva.co.id/stom/mobile/UpdateStomDevice.ashx?agentid=" +
+      agentid +
+      "&snid=" +
+      snid;
+
+    const formData: any = new FormData();
+    formData.append("devaddr", snData[0]);
+    formData.append("devmodel", snData[1]);
+    formData.append("devowner", snData[2]);
+    formData.append("isfinished", snData[3]);
+    formData.append("snacc", snData[4]);
+    formData.append("snlat", snData[5]);
+    formData.append("snlong", snData[6]);
+    formData.append("sntime", snData[7]);
+    formData.append("snpicref", snData[8]);
+    formData.append("snread", snData[9]);
+    formData.append("tagacc", snData[10]);
+    formData.append("taglat", snData[11]);
+    formData.append("taglong", snData[12]);
+    formData.append("tagtime", snData[13]);
+    formData.append("tagpicref", snData[14]);
+    formData.append("tagread", snData[15]);
+
+    return this.http.post<wsResponseType>(url, formData);
   }
 }
