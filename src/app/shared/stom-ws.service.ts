@@ -116,6 +116,7 @@ export class StomWsService {
     formData.append("tagtime", snData[13]);
     formData.append("tagpicref", snData[14]);
     formData.append("tagread", snData[15]);
+    formData.append("sn", snData[16]);
 
     return this.http.post<wsResponseType>(url, formData);
   }

@@ -13,11 +13,23 @@ import {
 import { UrlPathService } from "../../shared/url-path.service";
 
 export interface DialogData {
+  devaddr: string;
+  devmodel: string;
+  devowner: string;
+  isfinished: boolean;
+  snacc: string;
+  snlat: string;
+  snlong: string;
+  sntime: string;
+  snpicref: string;
+  snread: string;
+  tagacc: string;
+  taglat: string;
+  taglong: string;
+  tagtime: string;
+  tagpicref: string;
+  tagread: string;
   sn: string;
-  model: string;
-  shipto: string;
-  devOwner: string;
-  isFinished: boolean;
 }
 
 export interface DeleteDialogData {
@@ -90,12 +102,9 @@ export class DeviceDetailComponent implements OnInit {
             customerid +
             "/device/" +
             deviceid,
-          "/sto-activity/" +
-            groupid +
-            "/customer/" +
-            customerid +
-            "/device/" +
-            deviceid
+          agentid,
+          customerid,
+          deviceid
         );
       } else if (params.get("devcommand") === "delete") {
         // console.log('Open delete dialog');
@@ -149,13 +158,12 @@ export class DeviceDetailComponent implements OnInit {
   ) {
     // Get Device Detail
     this.stomws.getDevices(agentid, customerid, deviceid).subscribe(resp => {
-      console.log(resp);
       if (resp !== null) {
         this.sn = resp.Body.Row[0][1];
         this.model = resp.Body.Row[0][2];
         this.devAddress = resp.Body.Row[0][3];
 
-        this.deviceOwner = resp.Body.Row[0][4]; 
+        this.deviceOwner = resp.Body.Row[0][4];
 
         this.snRead = resp.Body.Row[0][11];
         this.tagRead = resp.Body.Row[0][17];
@@ -223,7 +231,68 @@ export class DeviceDetailComponent implements OnInit {
     });
   }
 
-  openModifyDialog(standbyRoute: string, docRefPath: string): void {
+  openModifyDialog(
+    standbyRoute: string,
+    agentid: string,
+    cid: string,
+    snid: string
+  ): void {
+    this.stomws.getDevices(agentid, cid, snid).subscribe(resp => {
+      this.dialog
+        .open(DialogUpdateDeviceComponent, {
+          width: "350px",
+          data: {
+            devaddr: resp.Body.Row[0][3],
+            devmodel: resp.Body.Row[0][2],
+            devowner: resp.Body.Row[0][4],
+            isfinished: Boolean(JSON.parse(resp.Body.Row[0][5])),
+            snacc: resp.Body.Row[0][6],
+            snlat: resp.Body.Row[0][7],
+            snlong: resp.Body.Row[0][8],
+            sntime: resp.Body.Row[0][9],
+            snpicref: resp.Body.Row[0][10],
+            snread: resp.Body.Row[0][11],
+            tagacc: resp.Body.Row[0][12],
+            taglat: resp.Body.Row[0][13],
+            taglong: resp.Body.Row[0][14],
+            tagtime: resp.Body.Row[0][15],
+            tagpicref: resp.Body.Row[0][16],
+            tagread: resp.Body.Row[0][17],
+            sn: resp.Body.Row[0][1]
+          }
+        })
+        .afterClosed()
+        .subscribe(result => {
+          if (typeof result === "undefined") {
+            this.router.navigateByUrl(standbyRoute);
+            // console.log('Canceling modify');
+          } else {
+            this.router.navigateByUrl(standbyRoute).then(() => {
+              const snData = [
+                result.devaddr,
+                result.devmodel,
+                result.devowner,
+                resp.Body.Row[0][5],
+                resp.Body.Row[0][6],
+                resp.Body.Row[0][7],
+                resp.Body.Row[0][8],
+                resp.Body.Row[0][9],
+                resp.Body.Row[0][10],
+                resp.Body.Row[0][11],
+                resp.Body.Row[0][12],
+                resp.Body.Row[0][13],
+                resp.Body.Row[0][14],
+                resp.Body.Row[0][15],
+                resp.Body.Row[0][16],
+                resp.Body.Row[0][17],
+                result.sn
+              ];
+              this.stomws.updateDevice(agentid, snid, snData).subscribe();
+            });
+          }
+        });
+    });
+
     // this.firestore
     //   .doc(docRefPath)
     //   .get()
