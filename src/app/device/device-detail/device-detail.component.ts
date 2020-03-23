@@ -191,6 +191,9 @@ export class DeviceDetailComponent implements OnInit {
         if (snref.length === 0) {
           // do nothing
         } else {
+          this.stomws.getImage(snref).subscribe(imgResp => {
+            this.snPicUrl = imgResp.Body.Row[0][2];
+          });
           // this.fireStorage.storage
           //   .refFromURL(snurl)
           //   .getDownloadURL()
