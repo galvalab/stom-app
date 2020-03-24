@@ -152,6 +152,7 @@ export class DeviceDetailComponent implements OnInit {
     // Get Device Detail
     this.stomws.getDevices(agentid, customerid, deviceid).subscribe(resp => {
       if (resp !== null) {
+
         this.sn = resp.Body.Row[0][1];
         this.model = resp.Body.Row[0][2];
         this.devAddress = resp.Body.Row[0][3];
@@ -192,7 +193,9 @@ export class DeviceDetailComponent implements OnInit {
           // do nothing
         } else {
           this.stomws.getImage(snref).subscribe(imgResp => {
-            this.snPicUrl = imgResp.Body.Row[0][2];
+            if (imgResp !== null) {
+              this.snPicUrl = imgResp.Body.Row[0][2];
+            }
           });
         }
 
@@ -200,7 +203,9 @@ export class DeviceDetailComponent implements OnInit {
           // do nothing
         } else {
           this.stomws.getImage(tagref).subscribe(imgResp => {
-            this.tagPicUrl = imgResp.Body.Row[0][2];
+            if (imgResp !== null) {
+              this.tagPicUrl = imgResp.Body.Row[0][2];
+            }
           });
         }
 
