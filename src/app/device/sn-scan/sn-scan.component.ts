@@ -136,18 +136,21 @@ export class SnScanComponent implements OnInit {
           devResp.Body.Row[0][2],
           devResp.Body.Row[0][4],
           devResp.Body.Row[0][5],
+
           String(this.snScan.sharedSnGeoAccuracy.value),
           String(this.snScan.sharedSnGeoLatitude.value),
           String(this.snScan.sharedSnGeoLongitude.value),
           String(this.snScan.sharedSnGeoTimestamp.value),
           storef,
           this.snScan.sharedSnRead.value,
+          
           devResp.Body.Row[0][12],
           devResp.Body.Row[0][13],
           devResp.Body.Row[0][14],
           devResp.Body.Row[0][15],
           devResp.Body.Row[0][16],
           devResp.Body.Row[0][17],
+          
           devResp.Body.Row[0][1]
         ];
 
