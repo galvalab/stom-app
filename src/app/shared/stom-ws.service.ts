@@ -139,24 +139,26 @@ export class StomWsService {
     );
   }
 
-  addQrcodeImage(snid: string, storef: string, ext: string) {
-    return this.http.get<wsResponseType>(
+  addQrcodeImage(snid: string, storef: string, ext: string, data_url: string) {
+    return this.http.post<wsResponseType>(
       "https://dems.galva.co.id/stom/mobile/AddStomQrcodeImage.ashx?snid=" +
         snid +
         "&storef=" +
         storef +
         "&ext=" +
-        ext
+        ext,
+      data_url
     );
   }
 
-  addBarcodeImage(storef: string, ext: string) {
-    return this.http.get<wsResponseType>(
+  addBarcodeImage(storef: string, ext: string, data_url: string) {
+    return this.http.post<wsResponseType>(
       "https://dems.galva.co.id/stom/mobile/AddStomBarcodeImage.ashx?" +
         "storef=" +
         storef +
         "&ext=" +
-        ext
+        ext,
+      data_url
     );
   }
 }

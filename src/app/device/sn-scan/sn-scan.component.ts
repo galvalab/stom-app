@@ -3,9 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { WebcamImage } from "ngx-webcam";
 
-// import { AngularFirestore } from "@angular/fire/firestore";
-// import { AngularFireStorage } from "@angular/fire/storage";
-
 import { Guid } from "guid-typescript";
 
 import { GeolocationService } from "../../shared/geolocation.service";
@@ -26,8 +23,6 @@ export class SnScanComponent implements OnInit {
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
-    // private firestore: AngularFirestore,
-    // private fireStorage: AngularFireStorage,
     private geoloc: GeolocationService,
     private urlpath: UrlPathService,
     private snScan: SnScanService,
@@ -134,7 +129,7 @@ export class SnScanComponent implements OnInit {
       // Get Device first
       this.stomws.getDevices(agentid, cid, snid).subscribe(devResp => {
         // console.log(devResp);
-        const picRef = String(Guid.create());
+        const storef = String(Guid.create()).toUpperCase();
 
         const devData = [
           devResp.Body.Row[0][3],
@@ -145,7 +140,7 @@ export class SnScanComponent implements OnInit {
           String(this.snScan.sharedSnGeoLatitude.value),
           String(this.snScan.sharedSnGeoLongitude.value),
           String(this.snScan.sharedSnGeoTimestamp.value),
-          picRef,
+          storef,
           this.snScan.sharedSnRead.value,
           devResp.Body.Row[0][12],
           devResp.Body.Row[0][13],
@@ -155,37 +150,23 @@ export class SnScanComponent implements OnInit {
           devResp.Body.Row[0][17],
           devResp.Body.Row[0][1]
         ];
-        // this.stomws.updateDevice(agentid, snid, devData);
-        console.log(devData);
 
-        this.router.navigateByUrl(standbyRoute);
+        const ext = "jpeg";
+        const data_url = this.snScan.sharedImageCaptured.value;
+
+        // Save the image first
+        this.stomws
+          .addBarcodeImage(storef, ext, data_url)
+          .subscribe(imgresp => {
+            // Save the data then
+            this.stomws
+              .updateDevice(agentid, snid, devData)
+              .subscribe(devresp => {
+                // Go to view page
+                this.router.navigateByUrl(standbyRoute);
+              });
+          });
       });
-
-      // this.fireStorage.storage
-      //   .refFromURL(imgRefPath)
-      //   .putString(this.snScan.sharedImageCaptured.value, "data_url", {
-      //     contentType: "image/jpeg",
-      //     customMetadata: {
-      //       agentid: this.snScan.sharedAgentRef.value,
-      //       "sn-read": this.snScan.sharedSnRead.value
-      //     }
-      //   })
-      //   .then(() => {
-      //     this.firestore
-      //       .doc(docRefPath)
-      //       .update({
-      //         "sn-read": this.snScan.sharedSnRead.value,
-      //         "agent-ref": this.snScan.sharedAgentRef.value,
-      //         "sn-geo-latitude": this.snScan.sharedSnGeoLatitude.value,
-      //         "sn-geo-longitude": this.snScan.sharedSnGeoLongitude.value,
-      //         "sn-geo-accuracy": this.snScan.sharedSnGeoAccuracy.value,
-      //         "sn-geo-timestamp": this.snScan.sharedSnGeoTimestamp.value,
-      //         "sn-pic": imgRefPath
-      //       })
-      //       .then(() => {
-      //         this.router.navigateByUrl(standbyRoute);
-      //       });
-      //   });
     }
   }
 }
