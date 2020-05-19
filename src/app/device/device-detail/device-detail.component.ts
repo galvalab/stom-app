@@ -1,7 +1,9 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AngularFirestore } from "@angular/fire/firestore";
-import { AngularFireStorage } from "@angular/fire/storage";
+// import { AngularFirestore } from "@angular/fire/firestore";
+// import { AngularFireStorage } from "@angular/fire/storage";
+import { StomWsService } from "../../shared/stom-ws.service";
+
 import {
   MatDialog,
   MatDialogRef,
@@ -11,11 +13,23 @@ import {
 import { UrlPathService } from "../../shared/url-path.service";
 
 export interface DialogData {
+  devaddr: string;
+  devmodel: string;
+  devowner: string;
+  isfinished: boolean;
+  snacc: string;
+  snlat: string;
+  snlong: string;
+  sntime: string;
+  snpicref: string;
+  snread: string;
+  tagacc: string;
+  taglat: string;
+  taglong: string;
+  tagtime: string;
+  tagpicref: string;
+  tagread: string;
   sn: string;
-  model: string;
-  shipto: string;
-  devOwner: string;
-  isFinished: boolean;
 }
 
 export interface DeleteDialogData {
@@ -49,10 +63,11 @@ export class DeviceDetailComponent implements OnInit {
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
-    private firestore: AngularFirestore,
-    private fireStorage: AngularFireStorage,
+    // private firestore: AngularFirestore,
+    // private fireStorage: AngularFireStorage,
     private urlpath: UrlPathService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private stomws: StomWsService
   ) {}
 
   ngOnInit() {
@@ -72,7 +87,7 @@ export class DeviceDetailComponent implements OnInit {
       // Set Custom Header Text
       this.urlpath.setHeaderText("Device Detail");
 
-      this.getDeviceDetail(groupid, customerid, deviceid);
+      this.getDeviceDetail(groupid, customerid, deviceid, agentid);
 
       // Open Dialog if route contain edit command
       if (params.get("devcommand") === "edit") {
@@ -87,12 +102,9 @@ export class DeviceDetailComponent implements OnInit {
             customerid +
             "/device/" +
             deviceid,
-          "/sto-activity/" +
-            groupid +
-            "/customer/" +
-            customerid +
-            "/device/" +
-            deviceid
+          agentid,
+          customerid,
+          deviceid
         );
       } else if (params.get("devcommand") === "delete") {
         // console.log('Open delete dialog');
@@ -107,12 +119,8 @@ export class DeviceDetailComponent implements OnInit {
             customerid +
             "/device/" +
             deviceid,
-          "/sto-activity/" +
-            groupid +
-            "/customer/" +
-            customerid +
-            "/device/" +
-            deviceid
+          customerid,
+          deviceid
         );
       } else if (params.get("devcommand") === "finish") {
         // console.log('Open finish dialog');
@@ -127,169 +135,155 @@ export class DeviceDetailComponent implements OnInit {
             customerid +
             "/device/" +
             deviceid,
-          "/sto-activity/" +
-            groupid +
-            "/customer/" +
-            customerid +
-            "/device/" +
-            deviceid
+          agentid,
+          customerid,
+          deviceid
         );
       }
     });
   }
 
-  getDeviceDetail(groupid: string, customerid: string, deviceid: string) {
+  getDeviceDetail(
+    groupid: string,
+    customerid: string,
+    deviceid: string,
+    agentid: string
+  ) {
     // Get Device Detail
-    const devicedetail = this.firestore
-      .collection("sto-activity")
-      .doc(groupid)
-      .collection("customer")
-      .doc(customerid)
-      .collection("device")
-      .doc(deviceid)
-      .snapshotChanges();
+    this.stomws.getDevices(agentid, customerid, deviceid).subscribe(resp => {
+      if (resp !== null) {
 
-    devicedetail.subscribe(result => {
-      this.sn = result.payload.get("sn");
-      this.model = result.payload.get("model");
-      this.devAddress = result.payload.get("address");
+        this.sn = resp.Body.Row[0][1];
+        this.model = resp.Body.Row[0][2];
+        this.devAddress = resp.Body.Row[0][3];
 
-      this.deviceOwner = result.payload.get("dev-owner");
+        this.deviceOwner = resp.Body.Row[0][4];
 
-      this.snRead = result.payload.get("sn-read");
-      this.tagRead = result.payload.get("tag-read");
+        this.snRead = resp.Body.Row[0][11];
+        this.tagRead = resp.Body.Row[0][17];
 
-      if (
-        typeof result.payload.get("sn-geo-latitude") === "undefined" ||
-        typeof result.payload.get("sn-geo-longitude") === "undefined"
-      ) {
-        this.snGeo = "";
-      } else {
-        this.snGeo =
-          result.payload.get("sn-geo-latitude") +
-          ", " +
-          result.payload.get("sn-geo-longitude");
-      }
+        this.snGeo = resp.Body.Row[0][17] + ", " + resp.Body.Row[0][17];
 
-      this.tagGeo = "";
-      if (
-        typeof result.payload.get("tag-geo-latitude") === "undefined" ||
-        typeof result.payload.get("tag-geo-longitude") === "undefined"
-      ) {
-        this.tagGeo = "";
-      } else {
-        this.tagGeo =
-          result.payload.get("tag-geo-latitude") +
-          ", " +
-          result.payload.get("tag-geo-longitude");
-      }
+        if (
+          resp.Body.Row[0][7].length === 0 ||
+          resp.Body.Row[0][8].length === 0
+        ) {
+          this.snGeo = "";
+        } else {
+          this.snGeo = resp.Body.Row[0][7] + ", " + resp.Body.Row[0][8];
+        }
 
-      const snurl = result.payload.get("sn-pic");
-      const tagurl = result.payload.get("tag-pic");
+        if (
+          resp.Body.Row[0][13].length === 0 ||
+          resp.Body.Row[0][14].length === 0
+        ) {
+          this.tagGeo = "";
+        } else {
+          this.tagGeo = resp.Body.Row[0][13] + ", " + resp.Body.Row[0][14];
+        }
 
-      if (typeof snurl === "undefined" || String(snurl).length === 0) {
-        // do nothing
-      } else {
-        this.fireStorage.storage
-          .refFromURL(snurl)
-          .getDownloadURL()
-          .then(url => (this.snPicUrl = url))
-          .catch(err => {
-            console.log(err);
+        // Get Sequence no
+        this.tagOrdinalNo = resp.Body.Row[0][18];
+
+        // Image of Asset Tagging
+        const snref = resp.Body.Row[0][10];
+        const tagref = resp.Body.Row[0][16];
+
+        if (snref.length === 0) {
+          // do nothing
+        } else {
+          this.stomws.getImage(snref).subscribe(imgResp => {
+            if (imgResp !== null) {
+              this.snPicUrl = imgResp.Body.Row[0][2];
+            }
           });
-      }
+        }
 
-      if (typeof tagurl === "undefined" || String(tagurl).length === 0) {
-        // do nothing
+        if (tagref.length === 0) {
+          // do nothing
+        } else {
+          this.stomws.getImage(tagref).subscribe(imgResp => {
+            if (imgResp !== null) {
+              this.tagPicUrl = imgResp.Body.Row[0][2];
+            }
+          });
+        }
+
+        this.urlpath.setLoadingAnimation(false);
       } else {
-        this.fireStorage.storage
-          .refFromURL(tagurl)
-          .getDownloadURL()
-          .then(url => {
-            this.tagPicUrl = url;
-          })
-          .catch(err => {
-            console.log(err);
-          });
-
-        this.fireStorage.storage
-          .refFromURL(tagurl)
-          .getMetadata()
-          .then(meta => {
-            this.tagOrdinalNo = meta.customMetadata.ordinalno;
-          });
+        this.urlpath.setLoadingAnimation(false);
       }
-
-      this.urlpath.setLoadingAnimation(false);
     });
   }
 
-  openModifyDialog(standbyRoute: string, docRefPath: string): void {
-    this.firestore
-      .doc(docRefPath)
-      .get()
-      .subscribe(fsdata => {
-        this.dialog
-          .open(DialogUpdateDeviceComponent, {
-            width: "350px",
-            data: {
-              sn: fsdata.get("sn"),
-              model: fsdata.get("model"),
-              shipto: fsdata.get("address"),
-              devOwner: fsdata.get("dev-owner"),
-              isFinished: fsdata.get("is-finished")
-            }
-          })
-          .afterClosed()
-          .subscribe(result => {
-            if (typeof result === "undefined") {
-              this.router.navigateByUrl(standbyRoute);
-              // console.log('Canceling modify');
-            } else {
-              this.router
-                .navigateByUrl(standbyRoute)
-                .then(() => {
-                  this.firestore
-                    .doc(docRefPath)
-                    .get()
-                    .subscribe(item => {
-                      const logId = String(Date.now());
-
-                      // Logging
-                      Object.keys(item.data()).forEach(key => {
-                        this.firestore
-                          .doc(docRefPath)
-                          .collection("log")
-                          .doc(logId)
-                          .set(
-                            {
-                              [key]: item.get(key)
-                            },
-                            {
-                              merge: true
-                            }
-                          );
-                      });
-                    });
-                })
-                .then(() => {
-                  this.firestore.doc(docRefPath).update({
-                    address: result.shipto,
-                    sn: result.sn,
-                    model: result.model,
-                    "dev-owner": result.devOwner,
-                    "is-finished": false
-                  });
-                });
-            }
-          });
-      });
+  openModifyDialog(
+    standbyRoute: string,
+    agentid: string,
+    cid: string,
+    snid: string
+  ): void {
+    this.stomws.getDevices(agentid, cid, snid).subscribe(resp => {
+      this.dialog
+        .open(DialogUpdateDeviceComponent, {
+          width: "350px",
+          data: {
+            devaddr: resp.Body.Row[0][3],
+            devmodel: resp.Body.Row[0][2],
+            devowner: resp.Body.Row[0][4],
+            isfinished: Boolean(JSON.parse(resp.Body.Row[0][5])),
+            snacc: resp.Body.Row[0][6],
+            snlat: resp.Body.Row[0][7],
+            snlong: resp.Body.Row[0][8],
+            sntime: resp.Body.Row[0][9],
+            snpicref: resp.Body.Row[0][10],
+            snread: resp.Body.Row[0][11],
+            tagacc: resp.Body.Row[0][12],
+            taglat: resp.Body.Row[0][13],
+            taglong: resp.Body.Row[0][14],
+            tagtime: resp.Body.Row[0][15],
+            tagpicref: resp.Body.Row[0][16],
+            tagread: resp.Body.Row[0][17],
+            sn: resp.Body.Row[0][1]
+          }
+        })
+        .afterClosed()
+        .subscribe(result => {
+          if (typeof result === "undefined") {
+            this.router.navigateByUrl(standbyRoute);
+            // console.log('Canceling modify');
+          } else {
+            this.router.navigateByUrl(standbyRoute).then(() => {
+              const snData = [
+                result.devaddr,
+                result.devmodel,
+                result.devowner,
+                resp.Body.Row[0][5],
+                resp.Body.Row[0][6],
+                resp.Body.Row[0][7],
+                resp.Body.Row[0][8],
+                resp.Body.Row[0][9],
+                resp.Body.Row[0][10],
+                resp.Body.Row[0][11],
+                resp.Body.Row[0][12],
+                resp.Body.Row[0][13],
+                resp.Body.Row[0][14],
+                resp.Body.Row[0][15],
+                resp.Body.Row[0][16],
+                resp.Body.Row[0][17],
+                result.sn
+              ];
+              this.stomws.updateDevice(agentid, snid, snData).subscribe();
+            });
+          }
+        });
+    });
   }
 
   openDeleteDialog(
     deleteRoute: string,
     cancelRoute: string,
-    docRefPath: string
+    agentid: string,
+    snid: string
   ): void {
     this.dialog
       .open(DialogDeleteDeviceComponent, {
@@ -305,7 +299,7 @@ export class DeviceDetailComponent implements OnInit {
         } else {
           this.router.navigateByUrl(deleteRoute).then(() => {
             // console.log('Deleting...');
-            this.firestore.doc(docRefPath).delete();
+            this.stomws.deleteDevice(agentid, snid).subscribe();
           });
         }
       });
@@ -314,28 +308,66 @@ export class DeviceDetailComponent implements OnInit {
   openFinishDialog(
     finishRoute: string,
     cancelRoute: string,
-    docRefPath: string
+    agentid: string,
+    cid: string,
+    snid: string
   ): void {
-    this.dialog
-      .open(DialogFinishDeviceComponent, {
-        width: "350px",
-        data: {
-          isFinished: true
-        }
-      })
-      .afterClosed()
-      .subscribe(result => {
-        if (typeof result === "undefined") {
-          this.router.navigateByUrl(cancelRoute);
-        } else {
-          this.router.navigateByUrl(finishRoute).then(() => {
-            // console.log('Finishing...');
-            this.firestore.doc(docRefPath).update({
-              "is-finished": true
+    this.stomws.getDevices(agentid, cid, snid).subscribe(resp => {
+      this.dialog
+        .open(DialogFinishDeviceComponent, {
+          width: "350px",
+          data: {
+            devaddr: resp.Body.Row[0][3],
+            devmodel: resp.Body.Row[0][2],
+            devowner: resp.Body.Row[0][4],
+            isfinished: Boolean(JSON.parse(resp.Body.Row[0][5])),
+            snacc: resp.Body.Row[0][6],
+            snlat: resp.Body.Row[0][7],
+            snlong: resp.Body.Row[0][8],
+            sntime: resp.Body.Row[0][9],
+            snpicref: resp.Body.Row[0][10],
+            snread: resp.Body.Row[0][11],
+            tagacc: resp.Body.Row[0][12],
+            taglat: resp.Body.Row[0][13],
+            taglong: resp.Body.Row[0][14],
+            tagtime: resp.Body.Row[0][15],
+            tagpicref: resp.Body.Row[0][16],
+            tagread: resp.Body.Row[0][17],
+            sn: resp.Body.Row[0][1]
+          }
+        })
+        .afterClosed()
+        .subscribe(result => {
+          if (typeof result === "undefined") {
+            this.router.navigateByUrl(cancelRoute);
+          } else {
+            this.router.navigateByUrl(finishRoute).then(() => {
+              console.log("Finishing...");
+
+              const snData = [
+                resp.Body.Row[0][3],
+                resp.Body.Row[0][2],
+                resp.Body.Row[0][4],
+                "1",
+                resp.Body.Row[0][6],
+                resp.Body.Row[0][7],
+                resp.Body.Row[0][8],
+                resp.Body.Row[0][9],
+                resp.Body.Row[0][10],
+                resp.Body.Row[0][11],
+                resp.Body.Row[0][12],
+                resp.Body.Row[0][13],
+                resp.Body.Row[0][14],
+                resp.Body.Row[0][15],
+                resp.Body.Row[0][16],
+                resp.Body.Row[0][17],
+                resp.Body.Row[0][1]
+              ];
+              this.stomws.updateDevice(agentid, snid, snData).subscribe();
             });
-          });
-        }
-      });
+          }
+        });
+    });
   }
 }
 

@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HttpClientModule } from "@angular/common/http";
 
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
@@ -88,13 +89,18 @@ import { WebcamModule } from "ngx-webcam";
 import { CameraComponent } from "./device/camera/camera.component";
 import { SnScanComponent } from "./device/sn-scan/sn-scan.component";
 import { TagScanComponent } from "./device/tag-scan/tag-scan.component";
-import { NgxScannerComponent } from './device/ngx-scanner/ngx-scanner.component';
+import { SnScanBarcodeComponent } from './device/sn-scan-barcode/sn-scan-barcode.component';
+import { SnScanImageComponent } from './device/sn-scan-image/sn-scan-image.component';
+import { TagScanQrcodeComponent } from './device/tag-scan-qrcode/tag-scan-qrcode.component';
+import { TagScanImageComponent } from './device/tag-scan-image/tag-scan-image.component';
+import { StomWsService } from './shared/stom-ws.service';
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     BrowserAnimationsModule,
+    HttpClientModule,
 
     ZXingScannerModule,
 
@@ -169,14 +175,18 @@ import { NgxScannerComponent } from './device/ngx-scanner/ngx-scanner.component'
     CameraComponent,
     SnScanComponent,
     TagScanComponent,
-    NgxScannerComponent
+    SnScanBarcodeComponent,
+    SnScanImageComponent,
+    TagScanQrcodeComponent,
+    TagScanImageComponent
   ],
   bootstrap: [AppComponent],
   providers: [
     UrlPathService,
     TagScanService,
     SnScanService,
-    GeolocationService
+    GeolocationService,
+    StomWsService
   ],
   entryComponents: [
     WrongCredSnackbarComponent,

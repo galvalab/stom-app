@@ -3,14 +3,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { WebcamImage } from "ngx-webcam";
 
-import { AngularFirestore } from "@angular/fire/firestore";
-import { AngularFireStorage } from "@angular/fire/storage";
+import { Guid } from "guid-typescript";
 
 import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
 import { TagScanService } from "../../shared/tag-scan.service";
-
-import { BrowserQRCodeReader } from "@zxing/library";
+import { StomWsService } from "../../shared/stom-ws.service";
 
 @Component({
   selector: "app-tag-scan",
@@ -20,20 +18,20 @@ import { BrowserQRCodeReader } from "@zxing/library";
 export class TagScanComponent implements OnInit {
   scanCoordinate: Position;
   qrResultString: string;
-
-  webcamImage: WebcamImage = null;
+  imageResult;
 
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
-    private firestore: AngularFirestore,
-    private fireStorage: AngularFireStorage,
     private geoloc: GeolocationService,
     private urlpath: UrlPathService,
-    private tagScan: TagScanService
+    private tagScan: TagScanService,
+    private stomws: StomWsService
   ) {}
 
   ngOnInit() {
+    this.qrcodeRead();
+    this.imageCaptured();
     this.runLocationService();
 
     this.actRouter.paramMap.subscribe(params => {
@@ -69,22 +67,13 @@ export class TagScanComponent implements OnInit {
         "/device/" +
         deviceid +
         "";
-      const docRefPath =
-        "/sto-activity/" +
-        groupid +
-        "/customer/" +
-        customerid +
-        "/device/" +
-        deviceid;
 
-      const imgRefPath = "gs://cust-sto.appspot.com/CapturedTag";
-      const imgRefName = "[" + agentid + "][" + deviceid + "].jpeg";
       this.tagScanSaving(
         istagsaving,
         saveStanbyRoute,
-        docRefPath,
-        imgRefPath,
-        imgRefName
+        agentid,
+        customerid,
+        deviceid
       );
 
       // Get Agent Reference
@@ -104,81 +93,113 @@ export class TagScanComponent implements OnInit {
     });
   }
 
-  handleImages(webcamImage: WebcamImage) {
-    this.webcamImage = webcamImage;
-
-    this.tagScan.setImageCaptured(webcamImage.imageAsBase64);
-
-    this.qrcodeRead(webcamImage.imageAsDataUrl);
+  qrcodeRead() {
+    this.qrResultString = this.tagScan.sharedTagRead.value;
   }
 
-  qrcodeRead(imgUrl: string) {
-    const barReader = new BrowserQRCodeReader();
-    barReader
-      .decodeFromImage(undefined, imgUrl)
-      .then(result => {
-        this.qrResultString = encodeURIComponent(result.getText());
-
-        this.tagScan.setTagRead(encodeURIComponent(result.getText()));
-      })
-      .catch(err => {
-        // console.error(err);
-        this.qrResultString = "#N/A";
-
-        this.tagScan.setTagRead("#N/A");
-      });
+  imageCaptured() {
+    this.imageResult = this.tagScan.sharedImageCaptured.value;
   }
 
   tagScanSaving(
     istagsaving: string,
     standbyRoute: string,
-    docRefPath: string,
-    imgRefPath: string,
-    imgRefName: string
+    agentid: string,
+    cid: string,
+    snid: string
   ) {
     if (istagsaving === "saving") {
-      this.fireStorage.storage
-        .refFromURL(imgRefPath + "/" + imgRefName)
-        .putString(this.tagScan.sharedImageCaptured.value, "base64", {
-          contentType: "image/jpeg",
-          customMetadata: {
-            ordinalno: "wait for 3 second, before RE-SCAN!",
-            agentid: this.tagScan.sharedAgentRef.value,
-            "tag-read": this.tagScan.sharedTagRead.value
-          }
-        })
-        .then(() => {
-          // Save to firestore database
-          this.firestore.doc(docRefPath).update({
-            "tag-read": this.tagScan.sharedTagRead.value,
-            "tag-geo-latitude": this.tagScan.sharedTagGeoLatitude.value,
-            "tag-geo-longitude": this.tagScan.sharedTagGeoLongitude.value,
-            "tag-geo-accuracy": this.tagScan.sharedTagGeoAccuracy.value,
-            "tag-geo-timestamp": this.tagScan.sharedTagGeoTimestamp.value,
-            "tag-pic": imgRefPath + "/" + imgRefName
-          });
-        })
-        .then(() => {
-          // Update Ordinal Number
-          this.fireStorage.storage
-            .refFromURL(imgRefPath)
-            .listAll()
-            .then(listItem => {
-              const fCount = "000000" + listItem.items.length.toString();
-              const fCountStr = fCount.substr(fCount.length - 6);
+      // Default set to Display Loading Animation
+      this.urlpath.setLoadingAnimation(true);
 
-              this.fireStorage.storage
-                .refFromURL(imgRefPath + "/" + imgRefName)
-                .updateMetadata({
-                  customMetadata: {
-                    ordinalno: fCountStr
-                  }
-                });
-            });
-        })
-        .then(() => {
-          this.router.navigateByUrl(standbyRoute);
-        });
+      // Get Device first
+      this.stomws.getDevices(agentid, cid, snid).subscribe(devResp => {
+        const storef = String(Guid.create()).toUpperCase();
+
+        const devData = [
+          devResp.Body.Row[0][3],
+          devResp.Body.Row[0][2],
+          devResp.Body.Row[0][4],
+          devResp.Body.Row[0][5],
+
+          devResp.Body.Row[0][6],
+          devResp.Body.Row[0][7],
+          devResp.Body.Row[0][8],
+          devResp.Body.Row[0][9],
+          devResp.Body.Row[0][10],
+          devResp.Body.Row[0][11],
+
+          String(this.tagScan.sharedTagGeoAccuracy.value),
+          String(this.tagScan.sharedTagGeoLatitude.value),
+          String(this.tagScan.sharedTagGeoLongitude.value),
+          String(this.tagScan.sharedTagGeoTimestamp.value),
+          storef,
+          this.tagScan.sharedTagRead.value,
+
+          devResp.Body.Row[0][1]
+        ];
+
+        const ext = "jpeg";
+        const data_url = this.tagScan.sharedImageCaptured.value;
+
+        // Save the image first
+        this.stomws
+          .addQrcodeImage(snid, storef, ext, data_url)
+          .subscribe(imgresp => {
+            // Save the data then
+            this.stomws
+              .updateDevice(agentid, snid, devData)
+              .subscribe(devresp => {
+                // Go to view page
+                this.router.navigateByUrl(standbyRoute);
+              });
+          });
+
+        this.router.navigateByUrl(standbyRoute);
+      });
+
+      // this.fireStorage.storage
+      //   .refFromURL(imgRefPath + "/" + imgRefName)
+      //   .putString(this.tagScan.sharedImageCaptured.value, "data_url", {
+      //     contentType: "image/jpeg",
+      //     customMetadata: {
+      //       ordinalno: "wait for 3 second, before RE-SCAN!",
+      //       agentid: this.tagScan.sharedAgentRef.value,
+      //       "tag-read": this.tagScan.sharedTagRead.value
+      //     }
+      //   })
+      //   .then(() => {
+      //     // Save to firestore database
+      //     this.firestore.doc(docRefPath).update({
+      //       "tag-read": this.tagScan.sharedTagRead.value,
+      //       "tag-geo-latitude": this.tagScan.sharedTagGeoLatitude.value,
+      //       "tag-geo-longitude": this.tagScan.sharedTagGeoLongitude.value,
+      //       "tag-geo-accuracy": this.tagScan.sharedTagGeoAccuracy.value,
+      //       "tag-geo-timestamp": this.tagScan.sharedTagGeoTimestamp.value,
+      //       "tag-pic": imgRefPath + "/" + imgRefName
+      //     });
+      //   })
+      //   .then(() => {
+      //     // Update Ordinal Number
+      //     this.fireStorage.storage
+      //       .refFromURL(imgRefPath)
+      //       .listAll()
+      //       .then(listItem => {
+      //         const fCount = "000000" + listItem.items.length.toString();
+      //         const fCountStr = fCount.substr(fCount.length - 6);
+
+      //         this.fireStorage.storage
+      //           .refFromURL(imgRefPath + "/" + imgRefName)
+      //           .updateMetadata({
+      //             customMetadata: {
+      //               ordinalno: fCountStr
+      //             }
+      //           });
+      //       });
+      //   })
+      //   .then(() => {
+      //     this.router.navigateByUrl(standbyRoute);
+      //   });
     }
   }
 }

@@ -1,0 +1,10 @@
+<div class="mat-app-background basic-container">
+  <zxing-scanner [formats]="['QR_CODE']" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+</div>
+<mat-toolbar>
+	<mat-toolbar-row>
+		<span class="example-spacer"></span>
+		<h5>Point to Tag QR</h5>
+		<span class="example-spacer"></span>
+	</mat-toolbar-row>
+</mat-toolbar>

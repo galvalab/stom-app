@@ -3,16 +3,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { WebcamImage } from "ngx-webcam";
 
-import { AngularFirestore } from "@angular/fire/firestore";
-import { AngularFireStorage } from "@angular/fire/storage";
+import { Guid } from "guid-typescript";
 
 import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
 import { SnScanService } from "../../shared/sn-scan.service";
-
-import { BrowserBarcodeReader } from "@zxing/library";
-
-declare var require: any;
+import { StomWsService } from "../../shared/stom-ws.service";
 
 @Component({
   selector: "app-sn-scan",
@@ -22,20 +18,21 @@ declare var require: any;
 export class SnScanComponent implements OnInit {
   scanCoordinate: Position;
   qrResultString: string;
-
-  webcamImage: WebcamImage = null;
+  imageResult;
 
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
-    private firestore: AngularFirestore,
-    private fireStorage: AngularFireStorage,
     private geoloc: GeolocationService,
     private urlpath: UrlPathService,
-    private snScan: SnScanService
+    private snScan: SnScanService,
+    private stomws: StomWsService
   ) {}
 
   ngOnInit() {
+    this.barcodeRead();
+    this.imageCaptured();
+
     this.runLocationService();
 
     this.actRouter.paramMap.subscribe(params => {
@@ -85,7 +82,13 @@ export class SnScanComponent implements OnInit {
         "/" +
         deviceid +
         ".jpeg";
-      this.snScanSaving(issnsaving, saveStanbyRoute, docRefPath, imgRefPath);
+      this.snScanSaving(
+        issnsaving,
+        saveStanbyRoute,
+        agentid,
+        customerid,
+        deviceid
+      );
 
       // Get Agent Reference
       const agentRef = "/agent/" + agentid;
@@ -104,68 +107,69 @@ export class SnScanComponent implements OnInit {
     });
   }
 
-  handleImages(webcamImage: WebcamImage) {
-    this.webcamImage = webcamImage;
-
-    // Save image
-    this.snScan.setImageCaptured(webcamImage.imageAsBase64);
-
-    // Read barcode
-    this.barcodeRead(webcamImage.imageAsDataUrl);
-
-    console.log(webcamImage.imageData);
+  barcodeRead() {
+    this.qrResultString = this.snScan.sharedSnRead.value;
   }
 
-  barcodeRead(imgUrl: string) {
-    const barReader = new BrowserBarcodeReader();
-    barReader
-      .decodeFromImage(undefined, imgUrl)
-      .then(result => {
-        this.qrResultString = result.getText();
-
-        this.snScan.setSnRead(result.getText());
-      })
-      .catch(err => {
-        // console.error(err);
-
-        this.qrResultString = "#N/A";
-
-        this.snScan.setSnRead("#N/A");
-      });
+  imageCaptured() {
+    this.imageResult = this.snScan.sharedImageCaptured.value;
   }
 
   snScanSaving(
     issnsaving: string,
     standbyRoute: string,
-    docRefPath: string,
-    imgRefPath: string
+    agentid: string,
+    cid: string,
+    snid: string
   ) {
     if (issnsaving === "saving") {
-      this.fireStorage.storage
-        .refFromURL(imgRefPath)
-        .putString(this.snScan.sharedImageCaptured.value, "base64", {
-          contentType: "image/jpeg",
-          customMetadata: {
-            agentid: this.snScan.sharedAgentRef.value,
-            "sn-read": this.snScan.sharedSnRead.value
-          }
-        })
-        .then(() => {
-          this.firestore
-            .doc(docRefPath)
-            .update({
-              "sn-read": this.snScan.sharedSnRead.value,
-              "agent-ref": this.snScan.sharedAgentRef.value,
-              "sn-geo-latitude": this.snScan.sharedSnGeoLatitude.value,
-              "sn-geo-longitude": this.snScan.sharedSnGeoLongitude.value,
-              "sn-geo-accuracy": this.snScan.sharedSnGeoAccuracy.value,
-              "sn-geo-timestamp": this.snScan.sharedSnGeoTimestamp.value,
-              "sn-pic": imgRefPath
-            })
-            .then(() => {
-              this.router.navigateByUrl(standbyRoute);
-            });
-        });
+      // Default set to Display Loading Animation
+      this.urlpath.setLoadingAnimation(true);
+
+      // Get Device first
+      this.stomws.getDevices(agentid, cid, snid).subscribe(devResp => {
+        // console.log(devResp);
+        const storef = String(Guid.create()).toUpperCase();
+
+        const devData = [
+          devResp.Body.Row[0][3],
+          devResp.Body.Row[0][2],
+          devResp.Body.Row[0][4],
+          devResp.Body.Row[0][5],
+
+          String(this.snScan.sharedSnGeoAccuracy.value),
+          String(this.snScan.sharedSnGeoLatitude.value),
+          String(this.snScan.sharedSnGeoLongitude.value),
+          String(this.snScan.sharedSnGeoTimestamp.value),
+          storef,
+          this.snScan.sharedSnRead.value,
+          
+          devResp.Body.Row[0][12],
+          devResp.Body.Row[0][13],
+          devResp.Body.Row[0][14],
+          devResp.Body.Row[0][15],
+          devResp.Body.Row[0][16],
+          devResp.Body.Row[0][17],
+          
+          devResp.Body.Row[0][1]
+        ];
+
+        const ext = "jpeg";
+        const data_url = this.snScan.sharedImageCaptured.value;
+
+        // Save the image first
+        this.stomws
+          .addBarcodeImage(storef, ext, data_url)
+          .subscribe(imgresp => {
+            // Save the data then
+            this.stomws
+              .updateDevice(agentid, snid, devData)
+              .subscribe(devresp => {
+                // Go to view page
+                this.router.navigateByUrl(standbyRoute);
+              });
+          });
+      });
     }
   }
 }

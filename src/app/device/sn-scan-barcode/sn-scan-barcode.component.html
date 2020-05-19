@@ -1,0 +1,10 @@
+<div class="mat-app-background basic-container">
+  <zxing-scanner [formats]="['CODE_128', 'EAN_13']" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+</div>
+<mat-toolbar>
+	<mat-toolbar-row>
+		<span class="example-spacer"></span>
+		<h5>Point to Device Barcode</h5>
+		<span class="example-spacer"></span>
+	</mat-toolbar-row>
+</mat-toolbar>

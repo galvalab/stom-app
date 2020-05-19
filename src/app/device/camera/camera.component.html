@@ -2,10 +2,11 @@
 	[allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable" [videoOptions]="videoOptions"
 	(cameraSwitched)="cameraWasSwitched($event)" (initError)="handleInitError($event)" [captureImageData]="true">
 </webcam>
-<mat-toolbar color="background">
+<mat-toolbar color="primary" class="my-mat-toolbar" (click)="triggerSnapshot()">
 	<mat-toolbar-row>
-		<mat-icon (click)="showNextWebcam(true);">flip_camera_android</mat-icon>
+		<!-- <mat-icon (click)="showNextWebcam(true);">flip_camera_android</mat-icon> -->
 		<span class="example-spacer"></span>
-		<mat-icon (click)="triggerSnapshot();" class="example-icon" aria-hidden="false">photo_camera</mat-icon>
+		<mat-icon class="example-icon" aria-hidden="false">photo_camera</mat-icon>
+    <span class="example-spacer"></span>
 	</mat-toolbar-row>
 </mat-toolbar>

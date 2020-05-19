@@ -20,7 +20,11 @@ export class TopBarComponent implements OnInit {
   invoiceid: string;
 
   snscanning: string;
+  snbarcodescanning: string;
+  snimagescanning: string;
   tagscanning: string;
+  tagqrcodescanning: string;
+  tagimagescanning: string;
 
   isCustEditor: boolean;
   isDeviceEditor: boolean;
@@ -62,6 +66,8 @@ export class TopBarComponent implements OnInit {
         this.invoiceid = event.state.root.firstChild.params.invoiceid;
         this.snscanning = event.state.root.firstChild.params.snscanning;
         this.tagscanning = event.state.root.firstChild.params.tagscanning;
+        this.snbarcodescanning = event.state.root.firstChild.params.snbarcodescanning;
+        this.snimagescanning = event.state.root.firstChild.params.snimagescanning;
 
         if (
           typeof this.customerid !== "undefined" &&
@@ -89,7 +95,9 @@ export class TopBarComponent implements OnInit {
           typeof this.customerid !== "undefined" &&
           typeof this.deviceid !== "undefined" &&
           typeof this.invoiceid === "undefined" &&
-          typeof this.snscanning !== "undefined"
+          typeof this.snscanning !== "undefined" &&
+          typeof this.snbarcodescanning === "undefined" &&
+          typeof this.snimagescanning === "undefined"
         ) {
           this.isSNScanSave = true;
         } else {
@@ -100,7 +108,9 @@ export class TopBarComponent implements OnInit {
           typeof this.customerid !== "undefined" &&
           typeof this.deviceid !== "undefined" &&
           typeof this.invoiceid === "undefined" &&
-          typeof this.tagscanning !== "undefined"
+          typeof this.tagscanning !== "undefined" &&
+          typeof this.tagqrcodescanning === "undefined" &&
+          typeof this.tagimagescanning === "undefined"
         ) {
           this.isTagScanSave = true;
         } else {

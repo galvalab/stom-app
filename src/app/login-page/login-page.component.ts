@@ -3,9 +3,8 @@ import { Router } from "@angular/router";
 
 import { MatSnackBar } from "@angular/material/snack-bar";
 
-import { AngularFirestore } from "@angular/fire/firestore";
-
 import { UrlPathService } from "../shared/url-path.service";
+import { StomWsService } from "../shared/stom-ws.service";
 
 @Component({
   selector: "app-login-page",
@@ -17,10 +16,10 @@ export class LoginPageComponent implements OnInit {
   durationInSeconds = 5;
 
   constructor(
-    private firestore: AngularFirestore,
     private router: Router,
     private urlpath: UrlPathService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private stomws: StomWsService
   ) {}
 
   ngOnInit() {
@@ -35,50 +34,24 @@ export class LoginPageComponent implements OnInit {
   }
 
   getAgentID(username: string, password: string) {
-    this.loginVerification(username, password).then((retval: string) => {
-      if (retval[1] === "") {
-        console.log("Wrong username/password");
+    // Start the animation
+    this.urlpath.setLoadingAnimation(true);
+    this.stomws.mobileLogin(username, password).subscribe(resp => {
+      const agentid = String(resp.Body.Row[0][0]);
+      const logResp = String(resp.Body.Row[0][1]);
+      const groupid = String(resp.Body.Row[0][2]);
 
-        this.openSnackBar();
+      if (logResp === "True") {
+        localStorage.setItem("isAuth", "true");
+        localStorage.setItem("agentid", agentid);
+        localStorage.setItem("groupid", groupid);
+
+        this.router.navigateByUrl( "/" + groupid + "/" + agentid + "/customer");
       } else {
-        console.log('logged in');
-        this.router.navigateByUrl(
-          "/" + retval[0] + "/" + retval[1] + "/customer"
-        );
+        this.openSnackBar();
       }
 
       this.urlpath.setLoadingAnimation(false);
-    });
-  }
-
-  loginVerification(username: string, password: string) {
-    this.urlpath.setLoadingAnimation(true);
-
-    return new Promise(resolve => {
-      this.firestore
-        .collection("agent", ref =>
-          ref
-            .where("username", "==", username)
-            .where("password", "==", password)
-        )
-        .get()
-        .subscribe(snapshot => {
-          let retAgentId: string;
-          let groupid: string;
-
-          if (snapshot.empty) {
-            // console.log('Wrong username / password');
-            retAgentId = "";
-          } else {
-            snapshot.forEach(doc => {
-              groupid = String(doc.get("group"));
-              retAgentId = String(doc.id);
-            });
-          }
-
-          const retval = [groupid, retAgentId];
-          resolve(retval);
-        });
     });
   }
 }

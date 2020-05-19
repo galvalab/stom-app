@@ -7,15 +7,15 @@
         </mat-form-field>
 			<mat-form-field class="example-full-width">
 				<mat-label>Device Model</mat-label>
-				<input matInput [(ngModel)]="data.model" />
+				<input matInput [(ngModel)]="data.devmodel" />
         </mat-form-field>
 				<mat-form-field class="example-full-width">
 					<mat-label>Shipto Address</mat-label>
-					<textarea matInput [(ngModel)]="data.shipto"></textarea>
+					<textarea matInput [(ngModel)]="data.devaddr"></textarea>
 				</mat-form-field>
 				<mat-form-field class="example-full-width">
 					<mat-label>Entity</mat-label>
-					<mat-select [(value)]="data.devOwner">
+					<mat-select [(value)]="data.devowner">
 						<mat-option value="-">None</mat-option>
 						<mat-option value="EPK">EPK</mat-option>
 						<mat-option value="GTC">GTC</mat-option>
