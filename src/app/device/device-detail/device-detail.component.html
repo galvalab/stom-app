@@ -45,27 +45,50 @@
 		</mat-card-actions>
 	</mat-card>
 	<br>
-	<mat-card class="example-card">
-		<mat-card-header>
-			<div mat-card-avatar>
-				<i class="material-icons dummy-avatar">code</i>
-			</div>
-			<mat-card-title>QR Code Asset Tag</mat-card-title>
-			<mat-card-subtitle>
-				<div *ngIf="tagRead === '#N/A'; then thenTag else elseTag"></div>
-				<ng-template #thenTag>
-					<b style="color: red; font-size: larger">#N/A</b>
-				</ng-template>
-				<ng-template #elseTag>{{ tagRead }}</ng-template>
-			</mat-card-subtitle>
-		</mat-card-header>
-		<img mat-card-image *ngIf="tagPicUrl" src="{{ tagPicUrl }}" alt="no tag pic available">
-		<mat-card-content>
-			<p>QR Sequence Number <b class="ordinal-no">{{ tagOrdinalNo }}</b></p>
-			<p>Geopoint: {{ tagGeo }}</p>
-		</mat-card-content>
-		<mat-card-actions>
-			<button mat-button [routerLink]="['tag/scan']">Modify</button>
-		</mat-card-actions>
-	</mat-card>
+	<div *ngIf="isPurchased; then PurchaseIsTrue else PurchaseIsFalse"></div>
+	<ng-template #PurchaseIsTrue>
+		<mat-card class="example-card">
+			<mat-card-header>
+				<div mat-card-avatar>
+					<i class="material-icons dummy-avatar">code</i>
+				</div>
+				<mat-card-title>No Asset Tagging allowed</mat-card-title>
+				<mat-card-subtitle>
+					This Device is belong to Customer
+				</mat-card-subtitle>
+			</mat-card-header>
+			<mat-card-content>
+        <p></p>
+				<p>This Device is recognized as the Customer Asset, therefore, no Asset Tagging activity is allowed here</p>
+        
+        <p>If you believe this message is a mistake, please contact Galva Hot Line number</p>
+			</mat-card-content>
+			<mat-card-actions></mat-card-actions>
+		</mat-card>
+	</ng-template>
+	<ng-template #PurchaseIsFalse>
+		<mat-card class="example-card">
+			<mat-card-header>
+				<div mat-card-avatar>
+					<i class="material-icons dummy-avatar">code</i>
+				</div>
+				<mat-card-title>QR Code Asset Tag</mat-card-title>
+				<mat-card-subtitle>
+					<div *ngIf="tagRead === '#N/A'; then thenTag else elseTag"></div>
+					<ng-template #thenTag>
+						<b style="color: red; font-size: larger">#N/A</b>
+					</ng-template>
+					<ng-template #elseTag>{{ tagRead }}</ng-template>
+				</mat-card-subtitle>
+			</mat-card-header>
+			<img mat-card-image *ngIf="tagPicUrl" src="{{ tagPicUrl }}" alt="no tag pic available">
+			<mat-card-content>
+				<p>QR Sequence Number <b class="ordinal-no">{{ tagOrdinalNo }}</b></p>
+				<p>Geopoint: {{ tagGeo }}</p>
+			</mat-card-content>
+			<mat-card-actions>
+				<button mat-button [routerLink]="['tag/scan']">Modify</button>
+			</mat-card-actions>
+		</mat-card>
+	</ng-template>
 </div>

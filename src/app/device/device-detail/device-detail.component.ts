@@ -50,6 +50,7 @@ export class DeviceDetailComponent implements OnInit {
   model: string;
   devAddress: string;
   deviceOwner: string;
+  isPurchased: boolean;
 
   snRead: string;
   snPicUrl: string;
@@ -163,6 +164,8 @@ export class DeviceDetailComponent implements OnInit {
         this.tagRead = resp.Body.Row[0][17];
 
         this.snGeo = resp.Body.Row[0][17] + ", " + resp.Body.Row[0][17];
+
+        this.isPurchased = resp.Body.Row[0][19].toString().toLowerCase() === 'true';
 
         if (
           resp.Body.Row[0][7].length === 0 ||
