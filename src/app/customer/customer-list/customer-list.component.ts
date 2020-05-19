@@ -71,85 +71,91 @@ export class CustomerListComponent implements OnInit {
         // Clear customers first
         this.customers = [];
 
-        if (resp.Body.Row.length > 0) {
-          resp.Body.Row.forEach(item => {
-            const fsCustName = item[2].toLowerCase();
+        if (resp === null) {
+          this.urlpath.setLoadingAnimation(false);
+        } else {
+          if (resp.Body.Row.length > 0) {
+            resp.Body.Row.forEach(item => {
+              const fsCustName = item[2].toLowerCase();
 
-            const isFinished = Boolean(JSON.parse(item[7]));
-            const isProgress = Boolean(JSON.parse(item[6]));
+              const isFinished = Boolean(JSON.parse(item[7]));
+              const isProgress = Boolean(JSON.parse(item[6]));
 
-            let statusCss = "";
+              let statusCss = "";
 
-            if (isFinished) {
-              statusCss = "customer-processed";
-            } else if (isProgress) {
-              statusCss = "customer-progress";
-            }
+              if (isFinished) {
+                statusCss = "customer-processed";
+              } else if (isProgress) {
+                statusCss = "customer-progress";
+              }
 
-            this.stomws.getDevices(agentid, item[0], "0").subscribe(snItem => {
-              const custurl =
-                "/" + groupid + "/" + agentid + "/customer/" + item[0];
+              this.stomws
+                .getDevices(agentid, item[0], "0")
+                .subscribe(snItem => {
+                  const custurl =
+                    "/" + groupid + "/" + agentid + "/customer/" + item[0];
 
-              const snList = [];
-              if (snItem !== null) {
-                snItem.Body.Row.forEach(snItemArr => {
-                  snList.push([snItemArr[1], snItemArr[0]]);
-                });
+                  const snList = [];
+                  if (snItem !== null) {
+                    snItem.Body.Row.forEach(snItemArr => {
+                      snList.push([snItemArr[1], snItemArr[0]]);
+                    });
 
-                if (fsCustName.search(this.searchKeyword) === -1) {
-                  // Display no Customer, unless has SN Data
-                  snList.forEach(sn => {
-                    if (
-                      String(sn[0])
-                        .toLowerCase()
-                        .search(this.searchKeyword) !== -1 &&
-                      String(this.searchKeyword).length > 0
-                    ) {
+                    if (fsCustName.search(this.searchKeyword) === -1) {
+                      // Display no Customer, unless has SN Data
+                      snList.forEach(sn => {
+                        if (
+                          String(sn[0])
+                            .toLowerCase()
+                            .search(this.searchKeyword) !== -1 &&
+                          String(this.searchKeyword).length > 0
+                        ) {
+                          this.customers.push([
+                            custurl,
+                            item[1],
+                            item[2],
+                            item[3].substr(0, 20).concat("..."),
+                            "(SN Search: " + String(sn[0]) + ")",
+                            String(sn[1]),
+                            statusCss
+                          ]);
+                        }
+                      });
+                    } else {
+                      // Display Based on Customer Filter only
                       this.customers.push([
                         custurl,
                         item[1],
                         item[2],
-                        item[3].substr(0, 20).concat("..."),
-                        "(SN Search: " + String(sn[0]) + ")",
-                        String(sn[1]),
+                        item[3].substr(0, 40).concat("..."),
+                        undefined,
+                        undefined,
                         statusCss
                       ]);
                     }
-                  });
-                } else {
-                  // Display Based on Customer Filter only
-                  this.customers.push([
-                    custurl,
-                    item[1],
-                    item[2],
-                    item[3].substr(0, 40).concat("..."),
-                    undefined,
-                    undefined,
-                    statusCss
-                  ]);
-                }
-                this.urlpath.setLoadingAnimation(false);
-              } else {
-                // Display customer without SN list
-                this.customers.push([
-                  custurl,
-                  item[1],
-                  item[2],
-                  item[3].substr(0, 40).concat("..."),
-                  undefined,
-                  undefined,
-                  statusCss
-                ]);
+                    this.urlpath.setLoadingAnimation(false);
+                  } else {
+                    // Display customer without SN list
+                    this.customers.push([
+                      custurl,
+                      item[1],
+                      item[2],
+                      item[3].substr(0, 40).concat("..."),
+                      undefined,
+                      undefined,
+                      statusCss
+                    ]);
 
-                this.urlpath.setLoadingAnimation(false);
-              }
+                    this.urlpath.setLoadingAnimation(false);
+                  }
+                });
             });
-          });
 
-          // Short Cutomer by name
-          this.customers.sort();
-        } else {
-          this.urlpath.setLoadingAnimation(false);
+            // Short Cutomer by name
+            this.customers.sort();
+          } else {
+            this.urlpath.setLoadingAnimation(false);
+          }
         }
       });
     });
