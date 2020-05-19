@@ -37,20 +37,25 @@ export class LoginPageComponent implements OnInit {
     // Start the animation
     this.urlpath.setLoadingAnimation(true);
     this.stomws.mobileLogin(username, password).subscribe(resp => {
-      const agentid = String(resp.Body.Row[0][0]);
-      const logResp = String(resp.Body.Row[0][1]);
-      const groupid = String(resp.Body.Row[0][2]);
-
-      if (logResp === "True") {
-        localStorage.setItem("isAuth", "true");
-        localStorage.setItem("agentid", agentid);
-        localStorage.setItem("groupid", groupid);
-
-        this.router.navigateByUrl( "/" + groupid + "/" + agentid + "/customer");
-      } else {
+      if (resp === null) {
         this.openSnackBar();
-      }
+      } else {
+        const agentid = String(resp.Body.Row[0][0]);
+        const logResp = String(resp.Body.Row[0][1]);
+        const groupid = String(resp.Body.Row[0][2]);
 
+        if (logResp === "True") {
+          localStorage.setItem("isAuth", "true");
+          localStorage.setItem("agentid", agentid);
+          localStorage.setItem("groupid", groupid);
+
+          this.router.navigateByUrl(
+            "/" + groupid + "/" + agentid + "/customer"
+          );
+        } else {
+          this.openSnackBar();
+        }
+      }
       this.urlpath.setLoadingAnimation(false);
     });
   }
