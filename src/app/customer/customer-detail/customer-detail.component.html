@@ -36,9 +36,13 @@
 			<mat-toolbar>
 				<mat-toolbar-row>
 					<span class="example-spacer"></span>
-					<button mat-mini-fab color="primary" (click)="newDevice()">
-                        <mat-icon>add</mat-icon>
-                    </button>
+          <button mat-mini-fab color="primary" [matMenuTriggerFor]="afterMenu">
+            <mat-icon>add</mat-icon>
+          </button>
+          <mat-menu #afterMenu="matMenu" xPosition="after">
+            <button mat-menu-item (click)="newDevice()">Add New</button>
+            <button mat-menu-item (click)="moveDevice()">Add by QR</button>
+          </mat-menu>
 				</mat-toolbar-row>
 			</mat-toolbar>
 		</mat-tab>
