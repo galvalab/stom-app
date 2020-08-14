@@ -289,6 +289,34 @@ export class CustomerDetailComponent implements OnInit {
       });
     });
   }
+
+  moveDevice() {
+    this.urlpath.setLoadingAnimation(true);
+    this.actRouter.paramMap.subscribe(params => {
+      const groupid: string = params.get("groupid");
+      const agentid: string = params.get("agentid");
+      const customerid: string = params.get("customerid");
+
+      const nextRoute =
+        "/" +
+        groupid +
+        "/" +
+        agentid +
+        "/customer/" +
+        customerid +
+        "/device/move/to/here";
+      this.router.navigateByUrl(nextRoute);
+    });
+    // this.router.navigateByUrl(
+    //   "/" +
+    //     this.groupid +
+    //     "/" +
+    //     this.agentid +
+    //     "/warehouse/" +
+    //     this.warehouseid +
+    //     "/move"
+    // );
+  }
 }
 
 @Component({

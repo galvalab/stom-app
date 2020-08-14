@@ -94,6 +94,7 @@ import { SnScanImageComponent } from './device/sn-scan-image/sn-scan-image.compo
 import { TagScanQrcodeComponent } from './device/tag-scan-qrcode/tag-scan-qrcode.component';
 import { TagScanImageComponent } from './device/tag-scan-image/tag-scan-image.component';
 import { StomWsService } from './shared/stom-ws.service';
+import { DeviceMoveComponent } from './device/device-move/device-move.component';
 
 @NgModule({
   imports: [
@@ -178,7 +179,8 @@ import { StomWsService } from './shared/stom-ws.service';
     SnScanBarcodeComponent,
     SnScanImageComponent,
     TagScanQrcodeComponent,
-    TagScanImageComponent
+    TagScanImageComponent,
+    DeviceMoveComponent
   ],
   bootstrap: [AppComponent],
   providers: [
