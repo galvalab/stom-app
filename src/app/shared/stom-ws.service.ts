@@ -161,4 +161,18 @@ export class StomWsService {
       data_url
     );
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  checkQrCode(qrcode: string) {
+    const url =
+      "https://dems.galva.co.id/stom/warehouse/StomWHCheckQrCode.ashx";
+
+    const sessionCode = localStorage.getItem("sessionCode");
+
+    const formData: any = new FormData();
+    formData.append("SessionCode", sessionCode);
+    formData.append("qrcode", qrcode);
+
+    return this.http.post<wsResponseType>(url, formData);
+  }
 }

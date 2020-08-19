@@ -1,0 +1,37 @@
+<div class="mat-app-background basic-container">
+	<mat-card class="example-card">
+		<mat-card-header>
+			<mat-card-title>
+				<h3>Qr Tag Information</h3>
+			</mat-card-title>
+			<mat-card-subtitle>Scan device's Qr Code Tag to get the information</mat-card-subtitle>
+		</mat-card-header>
+	</mat-card>
+	<mat-accordion>
+		<mat-expansion-panel expanded="{{scannerEnabled}}">
+			<br />
+			<zxing-scanner [enable]="scannerEnabled" [formats]="['QR_CODE']" (scanSuccess)="onCodeResult($event)">
+			</zxing-scanner>
+		</mat-expansion-panel>
+	</mat-accordion>
+	<mat-card class="example-card">
+		<mat-card-header *ngFor="let item of QrResult">
+			<mat-card-title>{{ item[0] }}</mat-card-title>
+			<mat-card-subtitle>{{ item[1] }}</mat-card-subtitle>
+		</mat-card-header>
+		<img mat-card-image [src]="imageResult" alt="" *ngIf="imageResult">
+		<mat-card-actions>
+			<button mat-raised-button color="primary" disabled="{{ !validToSave }}" (click)="moveDeviceToWarehouse()">Move Now</button>
+		</mat-card-actions>
+	</mat-card>
+	<mat-divider></mat-divider>
+	<mat-card class="example-card">
+		<mat-card-title>Current Geopoint</mat-card-title>
+		<mat-card-content *ngIf="scanCoordinate">
+			<p>Latitude: {{ scanCoordinate.coords.latitude }}</p>
+			<p>Longitude: {{ scanCoordinate.coords.longitude }}</p>
+			<p>Accuracy: {{ scanCoordinate.coords.accuracy }} </p>
+			<p>Timestamp: {{ scanCoordinate.timestamp }}</p>
+		</mat-card-content>
+	</mat-card>
+</div>
