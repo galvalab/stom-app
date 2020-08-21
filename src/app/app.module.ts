@@ -95,6 +95,7 @@ import { TagScanQrcodeComponent } from './device/tag-scan-qrcode/tag-scan-qrcode
 import { TagScanImageComponent } from './device/tag-scan-image/tag-scan-image.component';
 import { StomWsService } from './shared/stom-ws.service';
 import { DeviceMoveComponent } from './device/device-move/device-move.component';
+import { DeviceMoveImageComponent } from './device/device-move-image/device-move-image.component';
 
 @NgModule({
   imports: [
@@ -180,7 +181,8 @@ import { DeviceMoveComponent } from './device/device-move/device-move.component'
     SnScanImageComponent,
     TagScanQrcodeComponent,
     TagScanImageComponent,
-    DeviceMoveComponent
+    DeviceMoveComponent,
+    DeviceMoveImageComponent
   ],
   bootstrap: [AppComponent],
   providers: [

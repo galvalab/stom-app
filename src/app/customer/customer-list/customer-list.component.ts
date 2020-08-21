@@ -161,26 +161,6 @@ export class CustomerListComponent implements OnInit {
     });
   }
 
-  newCustomer() {
-    console.log("Create new customer");
-    this.urlpath.setLoadingAnimation(true);
-
-    this.router.paramMap.subscribe(params => {
-      const groupid: string = params.get("groupid");
-      const agentid: string = params.get("agentid");
-
-      this.stomws.addCustomer(agentid).subscribe(resp => {
-        // console.log(resp);
-        const nextRoute =
-          "/" + groupid + "/" + agentid + "/customer/" + resp.Body.Row[0][0];
-
-        this.routeTo.navigateByUrl(nextRoute);
-
-        this.urlpath.setLoadingAnimation(false);
-      });
-    });
-  }
-
   onSearchTyped(event: any) {
     this.urlpath.setLoadingAnimation(true);
 

@@ -13,6 +13,7 @@ import { TagScanQrcodeComponent } from "./device/tag-scan-qrcode/tag-scan-qrcode
 import { TagScanImageComponent } from "./device/tag-scan-image/tag-scan-image.component";
 
 import { DeviceMoveComponent } from "./device/device-move/device-move.component";
+import { DeviceMoveImageComponent } from "./device/device-move-image/device-move-image.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
@@ -41,10 +42,10 @@ const routes: Routes = [
     path: ":groupid/:agentid/customer/:customerid/device/move/to/here",
     component: DeviceMoveComponent
   },
-  // {
-  //   path: ":groupid/:agentid/customer/:customerid/device/:deviceid/:devcommand",
-  //   component: DeviceMoveComponent
-  // },
+  {
+    path: ":groupid/:agentid/customer/:customerid/device/move/capture/image",
+    component: DeviceMoveImageComponent
+  },
 
   {
     path:

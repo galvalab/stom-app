@@ -21,7 +21,7 @@
 		</mat-card-header>
 		<img mat-card-image [src]="imageResult" alt="" *ngIf="imageResult">
 		<mat-card-actions>
-			<button mat-raised-button color="primary" disabled="{{ !validToSave }}" (click)="moveDeviceToWarehouse()">Move Now</button>
+			<button mat-raised-button color="primary" disabled="{{ !validToSave }}" (click)="moveDeviceToThisCustomer()">Move Now</button>
 		</mat-card-actions>
 	</mat-card>
 	<mat-divider></mat-divider>

@@ -58,6 +58,9 @@ export class DeviceMoveComponent implements OnInit {
 
       // Get location
       this.runLocationService();
+
+      // Set loading animation to false
+      this.urlpath.setLoadingAnimation(false);
     });
   }
 
@@ -86,9 +89,9 @@ export class DeviceMoveComponent implements OnInit {
           this.groupid +
           "/" +
           this.agentid +
-          "/warehouse/" +
+          "/customer/" +
           this.customerid +
-          "/move/image"
+          "/device/move/capture/image"
       );
     } else {
       this.imageResult = imageCaptured;
@@ -120,5 +123,48 @@ export class DeviceMoveComponent implements OnInit {
     localStorage.removeItem("qrCodeTagRead");
 
     this.imageResult = "";
+  }
+
+  moveDeviceToThisCustomer() {
+    const ext = "jpeg";
+    const data_url = this.imageResult;
+    const storef = String(Guid.create()).toUpperCase();
+
+    console.log("Device is moved");
+
+    // // Save the image first
+    // this.stomws.addBarcodeImage(storef, ext, data_url).subscribe(imgresp => {
+    //   // move the device then
+    //   this.stomws
+    //     .moveDevice(
+    //       String(this.warehouseid),
+    //       String(this.agentid),
+    //       String(this.scanCoordinate.coords.accuracy),
+    //       String(this.scanCoordinate.coords.latitude),
+    //       String(this.scanCoordinate.coords.longitude),
+    //       String(this.scanCoordinate.timestamp),
+    //       storef,
+    //       this.qrRead
+    //     )
+    //     .subscribe(res => {
+    //       console.log(res);
+    //       //Clear storage
+    //       this.clearStorage();
+
+    //       const deviceid: string = res.Body.Row[0][0];
+
+    //       // Navigate to device detail
+    //       this.router.navigateByUrl(
+    //         "/" +
+    //           this.groupid +
+    //           "/" +
+    //           this.agentid +
+    //           "/warehouse/" +
+    //           this.warehouseid +
+    //           "/device/" +
+    //           deviceid
+    //       );
+    //     });
+    // });
   }
 }
