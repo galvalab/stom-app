@@ -19,6 +19,8 @@ export class DeviceMoveComponent implements OnInit {
   agentid: string;
   customerid: string;
 
+  qrDeviceID: string;
+
   QrResult = [[]];
 
   scanCoordinate: Position;
@@ -101,6 +103,8 @@ export class DeviceMoveComponent implements OnInit {
         resp.Body.Row.forEach(item => {
           this.QrResult.push(item);
         });
+
+        this.qrDeviceID = this.QrResult[4][1];
       });
 
       // Activate the move button
@@ -130,41 +134,38 @@ export class DeviceMoveComponent implements OnInit {
     const data_url = this.imageResult;
     const storef = String(Guid.create()).toUpperCase();
 
-    console.log("Device is moved");
+    // Save the image first
+    this.stomws.addQrcodeImage(this.qrDeviceID, storef, ext, data_url).subscribe(imgresp => {
+      // move the device then
+      this.stomws
+        .moveDevice(
+          String(this.customerid),
+          String(this.agentid),
+          String(this.scanCoordinate.coords.accuracy),
+          String(this.scanCoordinate.coords.latitude),
+          String(this.scanCoordinate.coords.longitude),
+          String(this.scanCoordinate.timestamp),
+          storef,
+          this.qrRead
+        )
+        .subscribe(res => {
+          //Clear storage
+          this.clearStorage();
 
-    // // Save the image first
-    // this.stomws.addBarcodeImage(storef, ext, data_url).subscribe(imgresp => {
-    //   // move the device then
-    //   this.stomws
-    //     .moveDevice(
-    //       String(this.warehouseid),
-    //       String(this.agentid),
-    //       String(this.scanCoordinate.coords.accuracy),
-    //       String(this.scanCoordinate.coords.latitude),
-    //       String(this.scanCoordinate.coords.longitude),
-    //       String(this.scanCoordinate.timestamp),
-    //       storef,
-    //       this.qrRead
-    //     )
-    //     .subscribe(res => {
-    //       console.log(res);
-    //       //Clear storage
-    //       this.clearStorage();
+          const deviceid: string = res.Body.Row[0][0];
 
-    //       const deviceid: string = res.Body.Row[0][0];
-
-    //       // Navigate to device detail
-    //       this.router.navigateByUrl(
-    //         "/" +
-    //           this.groupid +
-    //           "/" +
-    //           this.agentid +
-    //           "/warehouse/" +
-    //           this.warehouseid +
-    //           "/device/" +
-    //           deviceid
-    //       );
-    //     });
-    // });
+          // Navigate to device detail
+          this.router.navigateByUrl(
+            "/" +
+              this.groupid +
+              "/" +
+              this.agentid +
+              "/customer/" +
+              this.customerid +
+              "/device/" +
+              deviceid
+          );
+        });
+    });
   }
 }

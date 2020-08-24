@@ -146,19 +146,6 @@ export class TopBarComponent implements OnInit {
     this.router.navigateByUrl(finishUrl);
   }
 
-  deleteCustomer() {
-    const deleteUrl =
-      "/" +
-      this.groupid +
-      "/" +
-      this.agentid +
-      "/customer/" +
-      this.customerid +
-      "/delete";
-
-    this.router.navigateByUrl(deleteUrl);
-  }
-
   modifyDevice() {
     const editUrl =
       "/" +

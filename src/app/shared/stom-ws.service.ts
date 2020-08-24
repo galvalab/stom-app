@@ -174,32 +174,29 @@ export class StomWsService {
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////
-  // moveDevice(
-  //   customerid: string,
-  //   agentid: string,
-  //   geoAcc: string,
-  //   geoLat: string,
-  //   geoLong: string,
-  //   geoTms: string,
-  //   picRef: string,
-  //   tagRead: string
-  // ) {
-  //   const url =
-  //     "https://dems.galva.co.id/stom/warehouse/StomWHMoveToWarehouse.ashx";
+  moveDevice(
+    customerid: string,
+    agentid: string,
+    geoAcc: string,
+    geoLat: string,
+    geoLong: string,
+    geoTms: string,
+    picRef: string,
+    tagRead: string
+  ) {
+    const url =
+      "https://dems.galva.co.id/stom/mobile/MoveToNewCustomer.ashx";
 
-  //   const sessionCode = localStorage.getItem("sessionCode");
+    const formData: any = new FormData();
+    formData.append("customerid", customerid);
+    formData.append("agentid", agentid);
+    formData.append("geoAcc", geoAcc);
+    formData.append("geoLat", geoLat);
+    formData.append("geoLong", geoLong);
+    formData.append("geoTms", geoTms);
+    formData.append("picRef", picRef);
+    formData.append("tagRead", tagRead);
 
-  //   const formData: any = new FormData();
-  //   formData.append("SessionCode", sessionCode);
-  //   formData.append("customerid", customerid);
-  //   formData.append("agentid", agentid);
-  //   formData.append("geoAcc", geoAcc);
-  //   formData.append("geoLat", geoLat);
-  //   formData.append("geoLong", geoLong);
-  //   formData.append("geoTms", geoTms);
-  //   formData.append("picRef", picRef);
-  //   formData.append("tagRead", tagRead);
-
-  //   return this.http.post<wsResponseType>(url, formData);
-  // }
+    return this.http.post<wsResponseType>(url, formData);
+  }
 }
