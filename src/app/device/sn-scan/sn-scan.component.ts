@@ -1,8 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { WebcamImage } from "ngx-webcam";
-
 import { Guid } from "guid-typescript";
 
 import { GeolocationService } from "../../shared/geolocation.service";
@@ -19,6 +17,8 @@ export class SnScanComponent implements OnInit {
   scanCoordinate: Position;
   qrResultString: string;
   imageResult;
+
+  fileToUpload: File = null;
 
   constructor(
     private actRouter: ActivatedRoute,
@@ -111,6 +111,20 @@ export class SnScanComponent implements OnInit {
     this.qrResultString = this.snScan.sharedSnRead.value;
   }
 
+  setFile(event) {
+    this.fileToUpload = event.target.files[0];
+
+    if (this.fileToUpload !== null) {
+      const reader = new FileReader();
+      reader.readAsDataURL(this.fileToUpload);
+      reader.onload = () => {
+        this.imageResult = reader.result.toString();
+
+        this.snScan.setImageCaptured(reader.result.toString());
+      };
+    }
+  }
+
   imageCaptured() {
     this.imageResult = this.snScan.sharedImageCaptured.value;
   }
@@ -143,14 +157,14 @@ export class SnScanComponent implements OnInit {
           String(this.snScan.sharedSnGeoTimestamp.value),
           storef,
           this.snScan.sharedSnRead.value,
-          
+
           devResp.Body.Row[0][12],
           devResp.Body.Row[0][13],
           devResp.Body.Row[0][14],
           devResp.Body.Row[0][15],
           devResp.Body.Row[0][16],
           devResp.Body.Row[0][17],
-          
+
           devResp.Body.Row[0][1]
         ];
 

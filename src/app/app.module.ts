@@ -3,7 +3,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 
-import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { ZXingScannerModule } from "@zxing/ngx-scanner";
 
 import { A11yModule } from "@angular/cdk/a11y";
 import { ClipboardModule } from "@angular/cdk/clipboard";
@@ -89,13 +89,11 @@ import { WebcamModule } from "ngx-webcam";
 import { CameraComponent } from "./device/camera/camera.component";
 import { SnScanComponent } from "./device/sn-scan/sn-scan.component";
 import { TagScanComponent } from "./device/tag-scan/tag-scan.component";
-import { SnScanBarcodeComponent } from './device/sn-scan-barcode/sn-scan-barcode.component';
-import { SnScanImageComponent } from './device/sn-scan-image/sn-scan-image.component';
-import { TagScanQrcodeComponent } from './device/tag-scan-qrcode/tag-scan-qrcode.component';
-import { TagScanImageComponent } from './device/tag-scan-image/tag-scan-image.component';
-import { StomWsService } from './shared/stom-ws.service';
-import { DeviceMoveComponent } from './device/device-move/device-move.component';
-import { DeviceMoveImageComponent } from './device/device-move-image/device-move-image.component';
+import { SnScanBarcodeComponent } from "./device/sn-scan-barcode/sn-scan-barcode.component";
+import { TagScanQrcodeComponent } from "./device/tag-scan-qrcode/tag-scan-qrcode.component";
+import { StomWsService } from "./shared/stom-ws.service";
+import { DeviceMoveComponent } from "./device/device-move/device-move.component";
+import { DeviceMoveImageComponent } from "./device/device-move-image/device-move-image.component";
 
 @NgModule({
   imports: [
@@ -178,9 +176,7 @@ import { DeviceMoveImageComponent } from './device/device-move-image/device-move
     SnScanComponent,
     TagScanComponent,
     SnScanBarcodeComponent,
-    SnScanImageComponent,
     TagScanQrcodeComponent,
-    TagScanImageComponent,
     DeviceMoveComponent,
     DeviceMoveImageComponent
   ],
