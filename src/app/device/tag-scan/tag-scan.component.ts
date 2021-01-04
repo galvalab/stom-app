@@ -10,6 +10,8 @@ import { UrlPathService } from "../../shared/url-path.service";
 import { TagScanService } from "../../shared/tag-scan.service";
 import { StomWsService } from "../../shared/stom-ws.service";
 
+import { NgxImageCompressService } from "ngx-image-compress";
+
 @Component({
   selector: "app-tag-scan",
   templateUrl: "./tag-scan.component.html",
@@ -28,7 +30,8 @@ export class TagScanComponent implements OnInit {
     private geoloc: GeolocationService,
     private urlpath: UrlPathService,
     private tagScan: TagScanService,
-    private stomws: StomWsService
+    private stomws: StomWsService,
+    private imageCompress: NgxImageCompressService
   ) {}
 
   ngOnInit() {
@@ -106,9 +109,17 @@ export class TagScanComponent implements OnInit {
       const reader = new FileReader();
       reader.readAsDataURL(this.fileToUpload);
       reader.onload = () => {
-        this.imageResult = reader.result.toString();
+        // this.imageResult = reader.result.toString();
 
-        this.tagScan.setImageCaptured(reader.result.toString());
+        // this.tagScan.setImageCaptured(reader.result.toString());
+
+        this.imageCompress
+          .compressFile(reader.result.toString(), 0, 60, 60)
+          .then(result => {
+            this.imageResult = result;
+
+            this.tagScan.setImageCaptured(result);
+          });
       };
     }
   }

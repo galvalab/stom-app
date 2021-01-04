@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 
 import { ZXingScannerModule } from "@zxing/ngx-scanner";
+import { NgxImageCompressService } from "ngx-image-compress";
 
 import { A11yModule } from "@angular/cdk/a11y";
 import { ClipboardModule } from "@angular/cdk/clipboard";
@@ -186,7 +187,8 @@ import { DeviceMoveImageComponent } from "./device/device-move-image/device-move
     TagScanService,
     SnScanService,
     GeolocationService,
-    StomWsService
+    StomWsService,
+    NgxImageCompressService
   ],
   entryComponents: [
     WrongCredSnackbarComponent,
