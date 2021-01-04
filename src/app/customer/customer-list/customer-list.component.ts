@@ -24,6 +24,7 @@ export interface wsResponseType {
   styleUrls: ["./customer-list.component.css"]
 })
 export class CustomerListComponent implements OnInit {
+
   customers = [];
   custSerialNumber = [];
 

@@ -1,26 +1,24 @@
 <div class="mat-app-background basic-container">
-  <mat-card class="example-card">
-    <mat-card-title>Tag QR Read</mat-card-title>
-    <mat-card-content *ngIf="qrResultString"
-      ><b>{{ qrResultString }}</b></mat-card-content
-    >
-    <mat-card-actions>
-      <button mat-raised-button [routerLink]="['qrcode/get']">Read</button>
-    </mat-card-actions>
-  </mat-card>
+	<mat-card class="example-card">
+		<mat-card-title>Tag QR Read</mat-card-title>
+		<mat-card-content *ngIf="qrResultString"><b>{{ qrResultString }}</b></mat-card-content>
+		<mat-card-actions>
+			<button mat-raised-button [routerLink]="['qrcode/get']">Read</button>
+		</mat-card-actions>
+	</mat-card>
 
-  <mat-card class="example-card">
-    <mat-card-title>Image Captured</mat-card-title>
-    <img
+	<mat-card class="example-card">
+		<mat-card-title>Image Captured</mat-card-title>
+		<img
       id="capturedImage"
       mat-card-image
       [src]="imageResult"
       alt=""
       *ngIf="imageResult"
     />
-    <mat-card-actions>
-      <!-- <button mat-raised-button [routerLink]="['image/get']">Capture</button> -->
-      <input
+		<mat-card-actions>
+			<!-- <button mat-raised-button [routerLink]="['image/get']">Capture</button> -->
+			<input
         mat-raised-button
         type="file"
         id="file"
@@ -28,15 +26,24 @@
         (change)="setFile($event)"
       />
     </mat-card-actions>
-  </mat-card>
+	</mat-card>
 
-  <mat-card class="example-card">
-    <mat-card-title>Scan Geopoint</mat-card-title>
-    <mat-card-content *ngIf="scanCoordinate">
-      <p>Latitude: {{ scanCoordinate.coords.latitude }}</p>
-      <p>Longitude: {{ scanCoordinate.coords.longitude }}</p>
-      <p>Accuracy: {{ scanCoordinate.coords.accuracy }}</p>
-      <p>Timestamp: {{ scanCoordinate.timestamp }}</p>
-    </mat-card-content>
-  </mat-card>
+	<mat-card class="example-card">
+		<mat-card-title>Warning</mat-card-title>
+		<mat-card-content>
+			<p>Bila upload tidak bisa dilakukan di depan mesin, lakukan upload di luar ruangan / gedung yang masih dekat
+				dengan lokasi.</p>
+			<p>Upload tidak dapat dilakukan di Kantor, karena lokasi <b>Geopoint</b> tetap disimpan</p>
+		</mat-card-content>
+	</mat-card>
+
+	<mat-card class="example-card">
+		<mat-card-title>Scan Geopoint</mat-card-title>
+		<mat-card-content *ngIf="scanCoordinate">
+			<p>Latitude: {{ scanCoordinate.coords.latitude }}</p>
+			<p>Longitude: {{ scanCoordinate.coords.longitude }}</p>
+			<p>Accuracy: {{ scanCoordinate.coords.accuracy }}</p>
+			<p>Timestamp: {{ scanCoordinate.timestamp }}</p>
+		</mat-card-content>
+	</mat-card>
 </div>

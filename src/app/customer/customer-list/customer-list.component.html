@@ -1,37 +1,37 @@
 <div class="mat-app-background basic-container">
-    <mat-accordion>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>Search</mat-panel-title>
-                <mat-panel-description></mat-panel-description>
-            </mat-expansion-panel-header>
+	<mat-accordion>
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>
+				<mat-panel-title>Search</mat-panel-title>
+				<mat-panel-description></mat-panel-description>
+			</mat-expansion-panel-header>
 
-            <mat-form-field class="example-form-field">
-                <mat-label class="search-input">Search Customer Name or Serial Number</mat-label>
-                <input class="search-input" matInput type="text" (keyup)="onSearchTyped($event)"
+			<mat-form-field class="example-form-field">
+				<mat-label class="search-input">Search Customer Name or Serial Number</mat-label>
+				<input class="search-input" matInput type="text" (keyup)="onSearchTyped($event)"
                     [(ngModel)]="searchKeyword">
-                <button mat-button *ngIf="searchKeyword" matSuffix mat-icon-button aria-label="Clear"
+				<button mat-button *ngIf="searchKeyword" matSuffix mat-icon-button aria-label="Clear"
                     (click)="searchKeyword=''">
                     <mat-icon>close</mat-icon>
                 </button>
-            </mat-form-field>
-        </mat-expansion-panel>
-    </mat-accordion>
-    <div *ngFor="let cust of customers">
-        <mat-card matRipple [ngClass]="cust[6]" [routerLink]="[cust[0]]" [queryParams]="{snsearch: cust[5]}">
-            <mat-card-header>
-                <div mat-card-avatar>
-                    <i class="material-icons dummy-avatar">account_circle</i>
-                </div>
-                <mat-card-title>{{ cust[2] }}</mat-card-title>
-                <mat-card-subtitle>{{ cust[1] }}</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content class="card-content">
-                <p>
-                    {{ cust[3] }} {{ cust[4] }}
-                </p>
-            </mat-card-content>
-        </mat-card>
-        <mat-divider></mat-divider>
-    </div>
+			</mat-form-field>
+		</mat-expansion-panel>
+	</mat-accordion>
+	<div *ngFor="let cust of customers">
+		<mat-card matRipple [ngClass]="cust[6]" [routerLink]="[cust[0]]" [queryParams]="{snsearch: cust[5]}">
+			<mat-card-header>
+				<div mat-card-avatar>
+					<i class="material-icons dummy-avatar">account_circle</i>
+				</div>
+				<mat-card-title>{{ cust[2] }}</mat-card-title>
+				<mat-card-subtitle>{{ cust[1] }}</mat-card-subtitle>
+			</mat-card-header>
+			<mat-card-content class="card-content">
+				<p>
+					{{ cust[3] }} {{ cust[4] }}
+				</p>
+			</mat-card-content>
+		</mat-card>
+		<mat-divider></mat-divider>
+	</div>
 </div>
