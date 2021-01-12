@@ -24,7 +24,6 @@ export interface wsResponseType {
   styleUrls: ["./customer-list.component.css"]
 })
 export class CustomerListComponent implements OnInit {
-
   customers = [];
   custSerialNumber = [];
 
@@ -173,5 +172,25 @@ export class CustomerListComponent implements OnInit {
     });
 
     this.nameFilter$.next(this.searchKeyword);
+  }
+
+  newCustomer() {
+    console.log("Create new customer");
+    this.urlpath.setLoadingAnimation(true);
+
+    this.router.paramMap.subscribe(params => {
+      const groupid: string = params.get("groupid");
+      const agentid: string = params.get("agentid");
+
+      this.stomws.addCustomer(agentid).subscribe(resp => {
+        // console.log(resp);
+        const nextRoute =
+          "/" + groupid + "/" + agentid + "/customer/" + resp.Body.Row[0][0];
+
+        this.routeTo.navigateByUrl(nextRoute);
+
+        this.urlpath.setLoadingAnimation(false);
+      });
+    });
   }
 }
