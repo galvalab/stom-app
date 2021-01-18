@@ -189,63 +189,66 @@ export class CustomGeopointInputComponent implements OnInit {
   }
 
   saveCustomGeopoint() {
-    let data: Array<string> = [];
+    const data = [
+      String(this.input_latitude),
+      String(this.input_longitude),
 
-    data.push(String(this.input_latitude));
-    data.push(String(this.input_longitude));
+      String(this.ip_asn),
+      String(this.ip_city),
+      String(this.ip_continent_code),
+      String(this.ip_country),
+      String(this.ip_country_area),
+      String(this.ip_country_calling_code),
+      String(this.ip_country_capital),
+      String(this.ip_country_code),
+      String(this.ip_country_code_iso3),
+      String(this.ip_country_name),
+      String(this.ip_country_population),
+      String(this.ip_country_tld),
+      String(this.ip_currency),
+      String(this.ip_currency_name),
+      String(this.ip_in_eu),
+      String(this.ip_ip),
+      String(this.ip_languages),
+      String(this.ip_latitude),
+      String(this.ip_longitude),
+      String(this.ip_org),
+      String(this.ip_postal),
+      String(this.ip_region),
+      String(this.ip_region_code),
+      String(this.ip_timezone),
+      String(this.ip_utc_offset),
+      String(this.ip_version),
 
-    data.push(String(this.ip_asn));
-    data.push(String(this.ip_city));
-    data.push(String(this.ip_continent_code));
-    data.push(String(this.ip_country));
-    data.push(String(this.ip_country_area));
-    data.push(String(this.ip_country_calling_code));
-    data.push(String(this.ip_country_capital));
-    data.push(String(this.ip_country_code));
-    data.push(String(this.ip_country_code_iso3));
-    data.push(String(this.ip_country_name));
-    data.push(String(this.ip_country_population));
-    data.push(String(this.ip_country_tld));
-    data.push(String(this.ip_currency));
-    data.push(String(this.ip_currency_name));
-    data.push(String(this.ip_in_eu));
-    data.push(String(this.ip_ip));
-    data.push(String(this.ip_languages));
-    data.push(String(this.ip_latitude));
-    data.push(String(this.ip_longitude));
-    data.push(String(this.ip_org));
-    data.push(String(this.ip_postal));
-    data.push(String(this.ip_region));
-    data.push(String(this.ip_region_code));
-    data.push(String(this.ip_timezone));
-    data.push(String(this.ip_utc_offset));
-    data.push(String(this.ip_version));
+      String(this.dev_browser),
+      String(this.dev_browser_version),
+      String(this.dev_device),
+      String(this.dev_deviceType),
+      String(this.dev_orientation),
+      String(this.dev_os),
+      String(this.dev_os_version),
+      String(this.dev_userAgent),
 
-    data.push(String(this.dev_browser));
-    data.push(String(this.dev_browser_version));
-    data.push(String(this.dev_device));
-    data.push(String(this.dev_deviceType));
-    data.push(String(this.dev_orientation));
-    data.push(String(this.dev_os));
-    data.push(String(this.dev_os_version));
-    data.push(String(this.dev_userAgent));
+      String(this.dev_isMobile),
+      String(this.dev_isTablet),
+      String(this.dev_isDesktopDevice),
 
-    data.push(String(this.dev_isMobile));
-    data.push(String(this.dev_isTablet));
-    data.push(String(this.dev_isDesktopDevice));
+      String(this.dev_windowWidth),
+      String(this.dev_windowHeight),
+      String(this.dev_screenWidth),
+      String(this.dev_screenHeight),
 
-    data.push(String(this.dev_windowWidth));
-    data.push(String(this.dev_windowHeight));
-    data.push(String(this.dev_screenWidth));
-    data.push(String(this.dev_screenHeight));
+      String(this.gpsCoordinate.coords.latitude),
+      String(this.gpsCoordinate.coords.longitude),
+      String(this.gpsCoordinate.coords.accuracy),
+      String(this.gpsCoordinate.timestamp),
 
-    data.push(String(this.gpsCoordinate.coords.latitude));
-    data.push(String(this.gpsCoordinate.coords.longitude));
-    data.push(String(this.gpsCoordinate.coords.accuracy));
-    data.push(String(this.gpsCoordinate.timestamp));
+      String(this.agentid),
+      String(this.deviceid)
+    ];
 
-    console.log(this.agentid);
-    console.log(this.deviceid);
-    console.log(data);
+    this.stomws.addCustomGeopoint(data).subscribe(result => {
+      console.log(result);
+    });
   }
 }
