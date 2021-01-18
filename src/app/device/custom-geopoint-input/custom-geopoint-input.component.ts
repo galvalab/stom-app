@@ -189,7 +189,6 @@ export class CustomGeopointInputComponent implements OnInit {
   }
 
   saveCustomGeopoint() {
-    console.log("saved");
 
     let data: Array<string> = [];
 
