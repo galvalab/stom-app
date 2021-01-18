@@ -18,6 +18,12 @@ import { combineLatest } from "rxjs";
   }
 })
 export class CustomGeopointInputComponent implements OnInit {
+  agentid: string;
+  deviceid: string;
+
+  input_latitude: string;
+  input_longitude: string;
+
   dev_ip: string;
 
   ip_asn: string;
@@ -85,21 +91,20 @@ export class CustomGeopointInputComponent implements OnInit {
 
     this.actRouter.paramMap.subscribe(params => {
       const groupid: string = params.get("groupid");
-      const agentid: string = params.get("agentid");
+      this.agentid = params.get("agentid");
       const customerid: string = params.get("customerid");
-      const deviceid: string = params.get("deviceid");
-      const issnsaving: string = params.get("issnsaving");
+      this.deviceid = params.get("deviceid");
 
       // Get previous router path
       const prevurl =
         "/" +
         groupid +
         "/" +
-        agentid +
+        this.agentid +
         "/customer/" +
         customerid +
         "/device/" +
-        deviceid;
+        this.deviceid;
       this.urlpath.setPrevUrl(prevurl);
 
       // Set Custom Header Text
@@ -185,5 +190,64 @@ export class CustomGeopointInputComponent implements OnInit {
 
   saveCustomGeopoint() {
     console.log("saved");
+
+    let data: Array<string> = [];
+
+    data.push(String(this.input_latitude));
+    data.push(String(this.input_longitude));
+
+    data.push(String(this.ip_asn));
+    data.push(String(this.ip_city));
+    data.push(String(this.ip_continent_code));
+    data.push(String(this.ip_country));
+    data.push(String(this.ip_country_area));
+    data.push(String(this.ip_country_calling_code));
+    data.push(String(this.ip_country_capital));
+    data.push(String(this.ip_country_code));
+    data.push(String(this.ip_country_code_iso3));
+    data.push(String(this.ip_country_name));
+    data.push(String(this.ip_country_population));
+    data.push(String(this.ip_country_tld));
+    data.push(String(this.ip_currency));
+    data.push(String(this.ip_currency_name));
+    data.push(String(this.ip_in_eu));
+    data.push(String(this.ip_ip));
+    data.push(String(this.ip_languages));
+    data.push(String(this.ip_latitude));
+    data.push(String(this.ip_longitude));
+    data.push(String(this.ip_org));
+    data.push(String(this.ip_postal));
+    data.push(String(this.ip_region));
+    data.push(String(this.ip_region_code));
+    data.push(String(this.ip_timezone));
+    data.push(String(this.ip_utc_offset));
+    data.push(String(this.ip_version));
+
+    data.push(String(this.dev_browser));
+    data.push(String(this.dev_browser_version));
+    data.push(String(this.dev_device));
+    data.push(String(this.dev_deviceType));
+    data.push(String(this.dev_orientation));
+    data.push(String(this.dev_os));
+    data.push(String(this.dev_os_version));
+    data.push(String(this.dev_userAgent));
+
+    data.push(String(this.dev_isMobile));
+    data.push(String(this.dev_isTablet));
+    data.push(String(this.dev_isDesktopDevice));
+
+    data.push(String(this.dev_windowWidth));
+    data.push(String(this.dev_windowHeight));
+    data.push(String(this.dev_screenWidth));
+    data.push(String(this.dev_screenHeight));
+
+    data.push(String(this.gpsCoordinate.coords.latitude));
+    data.push(String(this.gpsCoordinate.coords.longitude));
+    data.push(String(this.gpsCoordinate.coords.accuracy));
+    data.push(String(this.gpsCoordinate.timestamp));
+
+    console.log(this.agentid);
+    console.log(this.deviceid);
+    console.log(data);
   }
 }

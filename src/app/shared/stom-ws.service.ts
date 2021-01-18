@@ -162,10 +162,38 @@ export class StomWsService {
     );
   }
 
+  addCustomGeopoint(agentid: string, snid: string, snData: Array<string>) {
+    const url =
+      "https://dems.galva.co.id/stom/mobile/UpdateStomDevice.ashx?agentid=" +
+      agentid +
+      "&snid=" +
+      snid;
+
+    const formData: any = new FormData();
+    formData.append("devaddr", snData[0]);
+    formData.append("devmodel", snData[1]);
+    formData.append("devowner", snData[2]);
+    formData.append("isfinished", snData[3]);
+    formData.append("snacc", snData[4]);
+    formData.append("snlat", snData[5]);
+    formData.append("snlong", snData[6]);
+    formData.append("sntime", snData[7]);
+    formData.append("snpicref", snData[8]);
+    formData.append("snread", snData[9]);
+    formData.append("tagacc", snData[10]);
+    formData.append("taglat", snData[11]);
+    formData.append("taglong", snData[12]);
+    formData.append("tagtime", snData[13]);
+    formData.append("tagpicref", snData[14]);
+    formData.append("tagread", snData[15]);
+    formData.append("sn", snData[16]);
+
+    return this.http.post<wsResponseType>(url, formData);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////
   checkQrCode(qrcode: string) {
-    const url =
-      "https://dems.galva.co.id/stom/mobile/CheckQrCode.ashx";
+    const url = "https://dems.galva.co.id/stom/mobile/CheckQrCode.ashx";
 
     const formData: any = new FormData();
     formData.append("qrcode", qrcode);
@@ -184,8 +212,7 @@ export class StomWsService {
     picRef: string,
     tagRead: string
   ) {
-    const url =
-      "https://dems.galva.co.id/stom/mobile/MoveToNewCustomer.ashx";
+    const url = "https://dems.galva.co.id/stom/mobile/MoveToNewCustomer.ashx";
 
     const formData: any = new FormData();
     formData.append("customerid", customerid);
