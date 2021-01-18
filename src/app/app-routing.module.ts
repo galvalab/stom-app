@@ -10,10 +10,10 @@ import { SnScanBarcodeComponent } from "./device/sn-scan-barcode/sn-scan-barcode
 import { TagScanComponent } from "./device/tag-scan/tag-scan.component";
 import { TagScanQrcodeComponent } from "./device/tag-scan-qrcode/tag-scan-qrcode.component";
 
-import { CustomGeopointInputComponent } from "./device/custom-geopoint-input/custom-geopoint.component";
-
 import { DeviceMoveComponent } from "./device/device-move/device-move.component";
 import { DeviceMoveImageComponent } from "./device/device-move-image/device-move-image.component";
+
+import { CustomGeopointInputComponent } from "./device/custom-geopoint-input/custom-geopoint.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
