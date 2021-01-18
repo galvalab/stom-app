@@ -74,8 +74,6 @@ export class TopBarComponent implements OnInit {
           event.state.root.firstChild.params.snimagescanning;
         this.devicetracking = event.state.root.firstChild.params.devicetracking;
 
-        console.log(tdevicetracking);
-
         if (
           typeof this.customerid !== "undefined" &&
           typeof this.deviceid === "undefined" &&
@@ -129,9 +127,9 @@ export class TopBarComponent implements OnInit {
           typeof this.deviceid !== "undefined" &&
           typeof this.devicetracking !== "undefined"
         ) {
-          // this.isTagScanSave = true;
+          this.isDeviceEditor = false;
         } else {
-          // this.isTagScanSave = false;
+          this.isDeviceEditor = true;
         }
       }
     });

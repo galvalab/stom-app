@@ -2,10 +2,12 @@
 	<mat-card class="example-card">
 		<mat-card-title>Warning</mat-card-title>
 		<mat-card-content>
-			<p>Bila upload tidak bisa dilakukan di depan mesin, lakukan upload di luar ruangan / gedung yang masih dekat
-				dengan lokasi.</p>
-			<p>Mohon untuk tidak melakukan upload di Kantor / di lokasi yang terlalu jauh dari mesin, karena lokasi
-				<b>Geopoint</b> untuk deteksi mesin tetap disimpan</p>
+			<p>Halaman ini difungsikan untuk menginput lokasi Geopoint Mesin yang tidak dapat dikunjungi, karena suatu
+				hal yang penting.</p>
+			<p>Bila informasi Geopoint Mesin <b>tidak didapatkan secara otomatis</b> saat pengambilan photo / gambar,
+				dan diganti dengan input di bawah, maka <b>Server akan menyimpan informasi pengganti Geopoint</b> di
+				bawah.</p>
+			<p>Penggunaan fitur berikut, berarti setuju dengan kebijakan.</p>
 		</mat-card-content>
 	</mat-card>
 	<br />
@@ -22,7 +24,7 @@
       </mat-form-field>
 		</mat-card-content>
 		<mat-card-actions>
-			<button mat-raised-button color="primary" (click)="updateDevice()">Save</button>
+			<button mat-raised-button color="primary" disabled="{{ !isSaveDisplay }}" (click)="saveCustomGeopoint()">{{ saveButtonTitle }}</button>
 		</mat-card-actions>
 	</mat-card>
 	<br />

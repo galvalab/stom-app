@@ -7,6 +7,8 @@ import { StomWsService } from "../../shared/stom-ws.service";
 import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
 
+import { combineLatest } from "rxjs";
+
 @Component({
   selector: "app-custom-geopoint-input",
   templateUrl: "./custom-geopoint-input.component.html",
@@ -65,6 +67,9 @@ export class CustomGeopointInputComponent implements OnInit {
 
   gpsCoordinate: Position;
 
+  isSaveDisplay: boolean = false;
+  saveButtonTitle: string = "Waiting...";
+
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
@@ -75,6 +80,9 @@ export class CustomGeopointInputComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Default set to Display Loading Animation
+    this.urlpath.setLoadingAnimation(true);
+
     this.actRouter.paramMap.subscribe(params => {
       const groupid: string = params.get("groupid");
       const agentid: string = params.get("agentid");
@@ -104,12 +112,6 @@ export class CustomGeopointInputComponent implements OnInit {
         // Get Device IP Info
         this.getIpInfo(result.ip);
       });
-
-      // Get Device info
-      this.getDeviceInfo();
-
-      // Get PinPoint pinpointCoordinate
-      this.runLocationService();
     });
   }
 
@@ -143,6 +145,21 @@ export class CustomGeopointInputComponent implements OnInit {
       this.ip_timezone = infoResult.timezone;
       this.ip_utc_offset = infoResult.utc_offset;
       this.ip_version = infoResult.version;
+
+      // Get GPS Coordinate
+      this.geoloc.getCurrentPosition().subscribe((pos: Position) => {
+        this.gpsCoordinate = pos;
+
+        // Get Device Info
+        this.getDeviceInfo();
+
+        // Disable Animation
+        this.urlpath.setLoadingAnimation(false);
+
+        // Enable save button
+        this.isSaveDisplay = true;
+        this.saveButtonTitle = "Save";
+      });
     });
   }
 
@@ -166,9 +183,7 @@ export class CustomGeopointInputComponent implements OnInit {
     this.dev_windowHeight = event.target.innerHeight;
   }
 
-  runLocationService() {
-    this.geoloc.getCurrentPosition().subscribe((pos: Position) => {
-      this.gpsCoordinate = pos;
-    });
+  saveCustomGeopoint() {
+    console.log("saved");
   }
 }
