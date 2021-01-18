@@ -262,7 +262,7 @@ export class CustomerDetailComponent implements OnInit {
         } else {
           this.router.navigateByUrl(deleteRoute).then(() => {
             // console.log('Deleting...');
-            this.stomws.deleteCustomer(agentid, cid).subscribe();
+            //this.stomws.deleteCustomer(agentid, cid).subscribe();
           });
         }
       });

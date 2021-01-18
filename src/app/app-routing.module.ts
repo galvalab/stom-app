@@ -7,12 +7,11 @@ import { CustomerDetailComponent } from "./customer/customer-detail/customer-det
 import { DeviceDetailComponent } from "./device/device-detail/device-detail.component";
 import { SnScanComponent } from "./device/sn-scan/sn-scan.component";
 import { SnScanBarcodeComponent } from "./device/sn-scan-barcode/sn-scan-barcode.component";
-import { SnScanImageComponent } from "./device/sn-scan-image/sn-scan-image.component";
 import { TagScanComponent } from "./device/tag-scan/tag-scan.component";
 import { TagScanQrcodeComponent } from "./device/tag-scan-qrcode/tag-scan-qrcode.component";
-import { TagScanImageComponent } from "./device/tag-scan-image/tag-scan-image.component";
 
 import { DeviceMoveComponent } from "./device/device-move/device-move.component";
+import { DeviceMoveImageComponent } from "./device/device-move-image/device-move-image.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
@@ -41,10 +40,10 @@ const routes: Routes = [
     path: ":groupid/:agentid/customer/:customerid/device/move/to/here",
     component: DeviceMoveComponent
   },
-  // {
-  //   path: ":groupid/:agentid/customer/:customerid/device/:deviceid/:devcommand",
-  //   component: DeviceMoveComponent
-  // },
+  {
+    path: ":groupid/:agentid/customer/:customerid/device/move/capture/image",
+    component: DeviceMoveImageComponent
+  },
 
   {
     path:
@@ -56,12 +55,6 @@ const routes: Routes = [
       ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/:snscanning/barcode/:snbarcodescanning",
     component: SnScanBarcodeComponent
   },
-  {
-    path:
-      ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/:snscanning/image/:snimagescanning",
-    component: SnScanImageComponent
-  },
-
   {
     path:
       ":groupid/:agentid/customer/:customerid/device/:deviceid/sn/:snscanning/:issnsaving",
@@ -77,11 +70,6 @@ const routes: Routes = [
     path:
       ":groupid/:agentid/customer/:customerid/device/:deviceid/tag/:tagscanning/qrcode/:tagqrcodescanning",
     component: TagScanQrcodeComponent
-  },
-  {
-    path:
-      ":groupid/:agentid/customer/:customerid/device/:deviceid/tag/:tagscanning/image/:tagimagescanning",
-    component: TagScanImageComponent
   },
   {
     path:

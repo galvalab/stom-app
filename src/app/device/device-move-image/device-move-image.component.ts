@@ -2,19 +2,16 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { UrlPathService } from "../../shared/url-path.service";
-import { SnScanService } from "../../shared/sn-scan.service";
-
 import { WebcamImage } from "ngx-webcam";
 
 @Component({
-  selector: "app-sn-scan-image",
-  templateUrl: "./sn-scan-image.component.html",
-  styleUrls: ["./sn-scan-image.component.css"]
+  selector: "app-device-move-image",
+  templateUrl: "./device-move-image.component.html",
+  styleUrls: ["./device-move-image.component.css"]
 })
-export class SnScanImageComponent implements OnInit {
+export class DeviceMoveImageComponent implements OnInit {
   constructor(
     private actRouter: ActivatedRoute,
-    private snScan: SnScanService,
     private router: Router,
     private urlpath: UrlPathService
   ) {}
@@ -28,25 +25,19 @@ export class SnScanImageComponent implements OnInit {
 
       // Get previous router path
       const prevurl =
-        "/" +
-        groupid +
-        "/" +
-        agentid +
-        "/customer/" +
-        customerid +
-        "/device/" +
-        deviceid +
-        "/sn/scan";
+        "/" + groupid + "/" + agentid + "/customer/" + customerid + "/device/move/to/here";
       this.urlpath.setPrevUrl(prevurl);
 
       // Set Custom Header Text
-      this.urlpath.setHeaderText("SN Image Capture");
+      this.urlpath.setHeaderText("Capture Qr Image");
+
+      // Clear first
+      localStorage.removeItem("devQrCodeImage");
     });
   }
 
   handleImages(webcamImage: WebcamImage) {
-    // Save image
-    this.snScan.setImageCaptured(webcamImage.imageAsDataUrl);
+    localStorage.setItem("devQrCodeImage", webcamImage.imageAsDataUrl);
     
     this.router.navigateByUrl(this.urlpath.sharedPrevUrl.value);
   }

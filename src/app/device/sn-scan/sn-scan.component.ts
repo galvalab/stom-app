@@ -1,14 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { WebcamImage } from "ngx-webcam";
-
 import { Guid } from "guid-typescript";
 
 import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
 import { SnScanService } from "../../shared/sn-scan.service";
 import { StomWsService } from "../../shared/stom-ws.service";
+
+import { NgxImageCompressService } from "ngx-image-compress";
 
 @Component({
   selector: "app-sn-scan",
@@ -20,13 +20,16 @@ export class SnScanComponent implements OnInit {
   qrResultString: string;
   imageResult;
 
+  fileToUpload: File = null;
+
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
     private geoloc: GeolocationService,
     private urlpath: UrlPathService,
     private snScan: SnScanService,
-    private stomws: StomWsService
+    private stomws: StomWsService,
+    private imageCompress: NgxImageCompressService
   ) {}
 
   ngOnInit() {
@@ -111,6 +114,37 @@ export class SnScanComponent implements OnInit {
     this.qrResultString = this.snScan.sharedSnRead.value;
   }
 
+  setFile(event) {
+    this.fileToUpload = event.target.files[0];
+
+    if (this.fileToUpload !== null) {
+      const reader = new FileReader();
+      reader.readAsDataURL(this.fileToUpload);
+      reader.onload = () => {
+        // this.imageResult = reader.result.toString();
+        // this.snScan.setImageCaptured(reader.result.toString());
+
+        this.imageCompress
+          .compressFile(reader.result.toString(), 0, 60, 60)
+          .then(result => {
+            this.imageResult = result;
+
+            this.snScan.setImageCaptured(result);
+
+            console.log(
+              "Actual size",
+              this.imageCompress.byteCount(reader.result.toString())
+            );
+
+            console.log(
+              "Compressed size",
+              this.imageCompress.byteCount(result)
+            );
+          });
+      };
+    }
+  }
+
   imageCaptured() {
     this.imageResult = this.snScan.sharedImageCaptured.value;
   }
@@ -143,14 +177,14 @@ export class SnScanComponent implements OnInit {
           String(this.snScan.sharedSnGeoTimestamp.value),
           storef,
           this.snScan.sharedSnRead.value,
-          
+
           devResp.Body.Row[0][12],
           devResp.Body.Row[0][13],
           devResp.Body.Row[0][14],
           devResp.Body.Row[0][15],
           devResp.Body.Row[0][16],
           devResp.Body.Row[0][17],
-          
+
           devResp.Body.Row[0][1]
         ];
 

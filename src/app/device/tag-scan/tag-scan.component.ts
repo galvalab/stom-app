@@ -10,6 +10,8 @@ import { UrlPathService } from "../../shared/url-path.service";
 import { TagScanService } from "../../shared/tag-scan.service";
 import { StomWsService } from "../../shared/stom-ws.service";
 
+import { NgxImageCompressService } from "ngx-image-compress";
+
 @Component({
   selector: "app-tag-scan",
   templateUrl: "./tag-scan.component.html",
@@ -20,13 +22,16 @@ export class TagScanComponent implements OnInit {
   qrResultString: string;
   imageResult;
 
+  fileToUpload: File = null;
+
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
     private geoloc: GeolocationService,
     private urlpath: UrlPathService,
     private tagScan: TagScanService,
-    private stomws: StomWsService
+    private stomws: StomWsService,
+    private imageCompress: NgxImageCompressService
   ) {}
 
   ngOnInit() {
@@ -97,6 +102,28 @@ export class TagScanComponent implements OnInit {
     this.qrResultString = this.tagScan.sharedTagRead.value;
   }
 
+  setFile(event) {
+    this.fileToUpload = event.target.files[0];
+
+    if (this.fileToUpload !== null) {
+      const reader = new FileReader();
+      reader.readAsDataURL(this.fileToUpload);
+      reader.onload = () => {
+        // this.imageResult = reader.result.toString();
+
+        // this.tagScan.setImageCaptured(reader.result.toString());
+
+        this.imageCompress
+          .compressFile(reader.result.toString(), 0, 60, 60)
+          .then(result => {
+            this.imageResult = result;
+
+            this.tagScan.setImageCaptured(result);
+          });
+      };
+    }
+  }
+
   imageCaptured() {
     this.imageResult = this.tagScan.sharedImageCaptured.value;
   }
@@ -157,49 +184,6 @@ export class TagScanComponent implements OnInit {
 
         this.router.navigateByUrl(standbyRoute);
       });
-
-      // this.fireStorage.storage
-      //   .refFromURL(imgRefPath + "/" + imgRefName)
-      //   .putString(this.tagScan.sharedImageCaptured.value, "data_url", {
-      //     contentType: "image/jpeg",
-      //     customMetadata: {
-      //       ordinalno: "wait for 3 second, before RE-SCAN!",
-      //       agentid: this.tagScan.sharedAgentRef.value,
-      //       "tag-read": this.tagScan.sharedTagRead.value
-      //     }
-      //   })
-      //   .then(() => {
-      //     // Save to firestore database
-      //     this.firestore.doc(docRefPath).update({
-      //       "tag-read": this.tagScan.sharedTagRead.value,
-      //       "tag-geo-latitude": this.tagScan.sharedTagGeoLatitude.value,
-      //       "tag-geo-longitude": this.tagScan.sharedTagGeoLongitude.value,
-      //       "tag-geo-accuracy": this.tagScan.sharedTagGeoAccuracy.value,
-      //       "tag-geo-timestamp": this.tagScan.sharedTagGeoTimestamp.value,
-      //       "tag-pic": imgRefPath + "/" + imgRefName
-      //     });
-      //   })
-      //   .then(() => {
-      //     // Update Ordinal Number
-      //     this.fireStorage.storage
-      //       .refFromURL(imgRefPath)
-      //       .listAll()
-      //       .then(listItem => {
-      //         const fCount = "000000" + listItem.items.length.toString();
-      //         const fCountStr = fCount.substr(fCount.length - 6);
-
-      //         this.fireStorage.storage
-      //           .refFromURL(imgRefPath + "/" + imgRefName)
-      //           .updateMetadata({
-      //             customMetadata: {
-      //               ordinalno: fCountStr
-      //             }
-      //           });
-      //       });
-      //   })
-      //   .then(() => {
-      //     this.router.navigateByUrl(standbyRoute);
-      //   });
     }
   }
 }

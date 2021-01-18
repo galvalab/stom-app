@@ -161,6 +161,19 @@ export class CustomerListComponent implements OnInit {
     });
   }
 
+  onSearchTyped(event: any) {
+    this.urlpath.setLoadingAnimation(true);
+
+    this.searchKeyword = String(event.target.value).toLowerCase();
+    this.routeTo.navigate([this.routeTo.url.split("?")[0]], {
+      queryParams: {
+        keyword: this.searchKeyword
+      }
+    });
+
+    this.nameFilter$.next(this.searchKeyword);
+  }
+
   newCustomer() {
     console.log("Create new customer");
     this.urlpath.setLoadingAnimation(true);
@@ -179,18 +192,5 @@ export class CustomerListComponent implements OnInit {
         this.urlpath.setLoadingAnimation(false);
       });
     });
-  }
-
-  onSearchTyped(event: any) {
-    this.urlpath.setLoadingAnimation(true);
-
-    this.searchKeyword = String(event.target.value).toLowerCase();
-    this.routeTo.navigate([this.routeTo.url.split("?")[0]], {
-      queryParams: {
-        keyword: this.searchKeyword
-      }
-    });
-
-    this.nameFilter$.next(this.searchKeyword);
   }
 }

@@ -3,16 +3,37 @@
 		<mat-card-title>SN Barcode Read</mat-card-title>
 		<mat-card-content *ngIf="qrResultString"><b>{{ qrResultString }}</b></mat-card-content>
 		<mat-card-actions>
-			<button mat-button [routerLink]="['barcode/get']">Capture</button>
+			<button mat-raised-button [routerLink]="['barcode/get']">Read</button>
 		</mat-card-actions>
 	</mat-card>
 
 	<mat-card class="example-card">
 		<mat-card-title>Image Captured</mat-card-title>
-		<img id="capturedImage" mat-card-image [src]="imageResult" alt="" *ngIf="imageResult">
+		<img
+      id="capturedImage"
+      mat-card-image
+      [src]="imageResult"
+      alt=""
+      *ngIf="imageResult"
+    />
 		<mat-card-actions>
-			<button mat-button [routerLink]="['image/get']">Capture</button>
-		</mat-card-actions>
+			<input
+        mat-raised-button
+        type="file"
+        id="file"
+        accept="image/x-png,image/gif,image/jpeg,image/jpg"
+        (change)="setFile($event)"
+      />
+    </mat-card-actions>
+	</mat-card>
+
+	<mat-card class="example-card">
+		<mat-card-title>Warning</mat-card-title>
+		<mat-card-content>
+			<p>Bila upload tidak bisa dilakukan di depan mesin, lakukan upload di luar ruangan / gedung yang masih dekat
+				dengan lokasi.</p>
+			<p>Mohon untuk tidak melakukan upload di Kantor / di lokasi yang terlalu jauh dari mesin, karena lokasi <b>Geopoint</b> untuk deteksi mesin tetap disimpan</p>
+		</mat-card-content>
 	</mat-card>
 
 	<mat-card class="example-card">
@@ -20,7 +41,7 @@
 		<mat-card-content *ngIf="scanCoordinate">
 			<p>Latitude: {{ scanCoordinate.coords.latitude }}</p>
 			<p>Longitude: {{ scanCoordinate.coords.longitude }}</p>
-			<p>Accuracy: {{ scanCoordinate.coords.accuracy }} </p>
+			<p>Accuracy: {{ scanCoordinate.coords.accuracy }}</p>
 			<p>Timestamp: {{ scanCoordinate.timestamp }}</p>
 		</mat-card-content>
 	</mat-card>
