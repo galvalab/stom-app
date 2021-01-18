@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
+import { DeviceDetectorService } from "ngx-device-detector";
+
 import { StomWsService } from "../../shared/stom-ws.service";
 import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
@@ -8,15 +10,68 @@ import { UrlPathService } from "../../shared/url-path.service";
 @Component({
   selector: "app-custom-geopoint-input",
   templateUrl: "./custom-geopoint-input.component.html",
-  styleUrls: ["./custom-geopoint-input.component.css"]
+  styleUrls: ["./custom-geopoint-input.component.css"],
+  host: {
+    "(window:resize)": "onWindowResize($event)"
+  }
 })
 export class CustomGeopointInputComponent implements OnInit {
+  dev_ip: string;
+
+  ip_asn: string;
+  ip_city: string;
+  ip_continent_code: string;
+  ip_country: string;
+  ip_country_area: string;
+  ip_country_calling_code: string;
+  ip_country_capital: string;
+  ip_country_code: string;
+  ip_country_code_iso3: string;
+  ip_country_name: string;
+  ip_country_population: string;
+  ip_country_tld: string;
+  ip_currency: string;
+  ip_currency_name: string;
+  ip_in_eu: boolean;
+  ip_ip: string;
+  ip_languages: string;
+  ip_latitude: number;
+  ip_longitude: number;
+  ip_org: string;
+  ip_postal: string;
+  ip_region: string;
+  ip_region_code: string;
+  ip_timezone: string;
+  ip_utc_offset: string;
+  ip_version: string;
+
+  dev_screenWidth: number = window.outerWidth;
+  dev_screenHeight: number = window.outerHeight;
+  dev_windowWidth: number = window.innerWidth;
+  dev_windowHeight: number = window.innerHeight;
+
+  dev_browser: string;
+  dev_browser_version: string;
+  dev_device: string;
+  dev_deviceType: string;
+  dev_orientation: string;
+  dev_os: string;
+  dev_os_version: string;
+  dev_userAgent: string;
+
+  dev_isMobile: boolean;
+  dev_isTablet: boolean;
+  dev_isDesktopDevice: boolean;
+
+  gpsCoordinate: Position;
+
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
     private geoloc: GeolocationService,
     private urlpath: UrlPathService,
-    private stomws: StomWsService
+    private stomws: StomWsService,
+    private deviceService: DeviceDetectorService
   ) {}
 
   ngOnInit() {
@@ -40,7 +95,80 @@ export class CustomGeopointInputComponent implements OnInit {
       this.urlpath.setPrevUrl(prevurl);
 
       // Set Custom Header Text
-      this.urlpath.setHeaderText("Serial Number Scanning");
+      this.urlpath.setHeaderText("Custom Geopoint Input");
+
+      // Get Device Public IP
+      this.geoloc.getClientIp().subscribe(result => {
+        this.dev_ip = result.ip;
+
+        // Get Device IP Info
+        this.getIpInfo(result.ip);
+      });
+
+      // Get Device info
+      this.getDeviceInfo();
+
+      // Get PinPoint pinpointCoordinate
+      this.runLocationService();
+    });
+  }
+
+  getIpInfo(ip: string) {
+    this.geoloc.getClientInfo(ip).subscribe(infoResult => {
+      // console.log(infoResult);
+
+      this.ip_asn = infoResult.asn;
+      this.ip_city = infoResult.city;
+      this.ip_continent_code = infoResult.continent_code;
+      this.ip_country = infoResult.country;
+      this.ip_country_area = infoResult.country_area;
+      this.ip_country_calling_code = infoResult.country_calling_code;
+      this.ip_country_capital = infoResult.country_capital;
+      this.ip_country_code = infoResult.country_code;
+      this.ip_country_code_iso3 = infoResult.country_code_iso3;
+      this.ip_country_name = infoResult.country_name;
+      this.ip_country_population = infoResult.country_population;
+      this.ip_country_tld = infoResult.country_tld;
+      this.ip_currency = infoResult.currency;
+      this.ip_currency_name = infoResult.currency_name;
+      this.ip_in_eu = infoResult.in_eu;
+      this.ip_ip = infoResult.ip;
+      this.ip_languages = infoResult.languages;
+      this.ip_latitude = infoResult.latitude;
+      this.ip_longitude = infoResult.longitude;
+      this.ip_org = infoResult.org;
+      this.ip_postal = infoResult.postal;
+      this.ip_region = infoResult.region;
+      this.ip_region_code = infoResult.region_code;
+      this.ip_timezone = infoResult.timezone;
+      this.ip_utc_offset = infoResult.utc_offset;
+      this.ip_version = infoResult.version;
+    });
+  }
+
+  getDeviceInfo() {
+    this.dev_browser = this.deviceService.browser;
+    this.dev_browser_version = this.deviceService.browser_version;
+    this.dev_device = this.deviceService.device;
+    this.dev_deviceType = this.deviceService.deviceType;
+    this.dev_orientation = this.deviceService.orientation;
+    this.dev_os = this.deviceService.os;
+    this.dev_os_version = this.deviceService.os_version;
+    this.dev_userAgent = this.deviceService.userAgent;
+
+    this.dev_isMobile = this.deviceService.isMobile();
+    this.dev_isTablet = this.deviceService.isTablet();
+    this.dev_isDesktopDevice = this.deviceService.isDesktop();
+  }
+
+  onWindowResize(event) {
+    this.dev_windowWidth = event.target.innerWidth;
+    this.dev_windowHeight = event.target.innerHeight;
+  }
+
+  runLocationService() {
+    this.geoloc.getCurrentPosition().subscribe((pos: Position) => {
+      this.gpsCoordinate = pos;
     });
   }
 }

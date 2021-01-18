@@ -6,6 +6,35 @@ export interface jsonIp {
   ip: string;
 }
 
+export interface jsonIpInfo {
+  asn: string;
+  city: string;
+  continent_code: string;
+  country: string;
+  country_area: string;
+  country_calling_code: string;
+  country_capital: string;
+  country_code: string;
+  country_code_iso3: string;
+  country_name: string;
+  country_population: string;
+  country_tld: string;
+  currency: string;
+  currency_name: string;
+  in_eu: boolean;
+  ip: string;
+  languages: string;
+  latitude: number;
+  longitude: number;
+  org: string;
+  postal: string;
+  region: string;
+  region_code: string;
+  timezone: string;
+  utc_offset: string;
+  version: string;
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -38,6 +67,6 @@ export class GeolocationService {
     // const url = "https://ipwhois.app/json/" + ip;
     const url = "https://ipapi.co/" + ip + "/json/";
 
-    return this.http.get<string>(url);
+    return this.http.get<jsonIpInfo>(url);
   }
 }

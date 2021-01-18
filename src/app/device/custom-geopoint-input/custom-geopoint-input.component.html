@@ -1,1 +1,92 @@
-it's work
+<div class="mat-app-background basic-container">
+	<mat-card class="example-card">
+		<mat-card-title>Warning</mat-card-title>
+		<mat-card-content>
+			<p>Bila upload tidak bisa dilakukan di depan mesin, lakukan upload di luar ruangan / gedung yang masih dekat
+				dengan lokasi.</p>
+			<p>Mohon untuk tidak melakukan upload di Kantor / di lokasi yang terlalu jauh dari mesin, karena lokasi
+				<b>Geopoint</b> untuk deteksi mesin tetap disimpan</p>
+		</mat-card-content>
+	</mat-card>
+	<br />
+	<mat-card class="example-card">
+		<mat-card-title>Input Device Geopoint</mat-card-title>
+		<mat-card-content>
+			<mat-form-field class="example-form-field">
+				<mat-label>Latitude</mat-label>
+				<input matInput placeholder="Example: -6.445081">
+      </mat-form-field>
+				<mat-form-field class="example-form-field">
+					<mat-label>Longitude</mat-label>
+					<input matInput placeholder="Example: 106.819896">
+      </mat-form-field>
+		</mat-card-content>
+		<mat-card-actions>
+			<button mat-raised-button color="primary" (click)="updateDevice()">Save</button>
+		</mat-card-actions>
+	</mat-card>
+	<br />
+	<mat-card class="example-card">
+		<mat-card-title>Internet Connection Info</mat-card-title>
+		<mat-card-content>
+			<p><b>IP</b>: {{ dev_ip }}</p>
+			<p><b>ASN Code</b>: {{ ip_asn }}</p>
+			<p><b>City</b>: {{ ip_city }}</p>
+			<p><b>Continent Code</b>: {{ ip_continent_code }}</p>
+			<p><b>Country</b>: {{ ip_country }}</p>
+			<p><b>Country Area</b>: {{ ip_country_area }}</p>
+			<p><b>Country Calling Code</b>: {{ ip_country_calling_code }}</p>
+			<p><b>Country Capital</b>: {{ ip_country_capital }}</p>
+			<p><b>Country Code</b>: {{ ip_country_code }}</p>
+			<p><b>Country Code ISO3</b>: {{ ip_country_code_iso3 }}</p>
+			<p><b>Country Name</b>: {{ ip_country_name }}</p>
+			<p><b>Country Population</b>: {{ ip_country_population }}</p>
+			<p><b>Country TLD</b>: {{ ip_country_tld }}</p>
+			<p><b>Currency</b>: {{ ip_currency }}</p>
+			<p><b>Currency Name</b>: {{ ip_currency_name }}</p>
+			<p><b>IN_EU</b>: {{ ip_in_eu }}</p>
+			<!-- <p><b>ASN</b>: {{ ip_ip }}</p> -->
+			<p><b>Languages</b>: {{ ip_languages }}</p>
+			<p><b>Latitude</b>: {{ ip_latitude }}</p>
+			<p><b>Longitude</b>: {{ ip_longitude }}</p>
+			<p><b>Org</b>: {{ ip_org }}</p>
+			<p><b>Postal</b>: {{ ip_postal }}</p>
+			<p><b>Region</b>: {{ ip_region }}</p>
+			<p><b>Region Code</b>: {{ ip_region_code }}</p>
+			<p><b>Timezone</b>: {{ ip_timezone }}</p>
+			<p><b>UTC Offset</b>: {{ ip_utc_offset }}</p>
+			<p><b>Version</b>: {{ ip_version }}</p>
+		</mat-card-content>
+	</mat-card>
+	<br />
+	<mat-card class="example-card">
+		<mat-card-title>Device Info</mat-card-title>
+		<mat-card-content>
+			<p><b>Screen Width</b>: {{ dev_screenWidth }}px</p>
+			<p><b>Screen Height</b>: {{ dev_screenHeight }}px</p>
+			<p><b>Window Width</b>: {{ dev_windowWidth }}px</p>
+			<p><b>Window Height</b>: {{ dev_windowHeight }}px</p>
+			<p><b>Browser Name</b>: {{ dev_browser }}</p>
+			<p><b>Browser Version</b>: {{ dev_browser_version }}</p>
+			<p><b>Device Name</b>: {{ dev_device }}</p>
+			<p><b>Device Type</b>: {{ dev_deviceType }}</p>
+			<p><b>Device Orientation</b>: {{ dev_orientation }}</p>
+			<p><b>Device OS</b>: {{ dev_os }}</p>
+			<p><b>OS Version</b>: {{ dev_os_version }}</p>
+			<p><b>User Agent</b>: {{ dev_userAgent }}</p>
+			<p><b>Is Mobile</b>: {{ dev_isMobile }}</p>
+			<p><b>Is Tablet</b>: {{ dev_isTablet }}</p>
+			<p><b>Is Desktop Device</b>: {{ dev_isDesktopDevice }}</p>
+		</mat-card-content>
+	</mat-card>
+	<br />
+	<mat-card class="example-card">
+		<mat-card-title>GPS Coordinate</mat-card-title>
+		<mat-card-content *ngIf="gpsCoordinate">
+			<p><b>Latitude</b>: {{ gpsCoordinate.coords.latitude }}</p>
+			<p><b>Longitude</b>: {{ gpsCoordinate.coords.longitude }}</p>
+			<p><b>Accuracy</b>: {{ gpsCoordinate.coords.accuracy }}</p>
+			<p><b>Timestamp</b>: {{ gpsCoordinate.timestamp }}</p>
+		</mat-card-content>
+	</mat-card>
+</div>
