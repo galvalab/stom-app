@@ -189,7 +189,6 @@ export class CustomGeopointInputComponent implements OnInit {
   }
 
   saveCustomGeopoint() {
-
     let data: Array<string> = [];
 
     data.push(String(this.input_latitude));

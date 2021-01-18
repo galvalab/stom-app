@@ -164,10 +164,7 @@ export class StomWsService {
 
   addCustomGeopoint(agentid: string, snid: string, snData: Array<string>) {
     const url =
-      "https://dems.galva.co.id/stom/mobile/UpdateStomDevice.ashx?agentid=" +
-      agentid +
-      "&snid=" +
-      snid;
+      "https://dems.galva.co.id/stom/mobile/AddStomCustomGeopoint.ashx";
 
     const formData: any = new FormData();
     formData.append("devaddr", snData[0]);
