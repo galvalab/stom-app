@@ -114,19 +114,12 @@
 				<i class="material-icons dummy-avatar">location_on</i>
 			</div>
 			<mat-card-title>Input Custom Geopoint Here</mat-card-title>
-			<mat-card-subtitle>
-				<div *ngIf="snRead === '#N/A'; then thenSN else elseSN"></div>
-				<ng-template #thenSN>
-					<b style="color: red; font-size: larger">#N/A</b>
-				</ng-template>
-				<ng-template #elseSN>{{ snRead }}</ng-template>
-			</mat-card-subtitle>
+			<mat-card-subtitle></mat-card-subtitle>
 		</mat-card-header>
 		<br />
 		<mat-card-content>
-			<p>
-				Geopoint: {{ snGeo }}
-			</p>
+			<p><b>Custom Latitude</b>: {{ input_latitude }}</p>
+			<p><b>Custom Longitude</b>: {{ input_longitude }}</p>
 		</mat-card-content>
 		<mat-card-actions>
 			<button mat-raised-button [routerLink]="['geopoint/devicetracker']">Modify</button>

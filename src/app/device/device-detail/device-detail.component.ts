@@ -61,6 +61,9 @@ export class DeviceDetailComponent implements OnInit {
   tagGeo: string;
   tagOrdinalNo = "";
 
+  input_latitude: string;
+  input_longitude: string;
+
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
@@ -141,6 +144,10 @@ export class DeviceDetailComponent implements OnInit {
           deviceid
         );
       }
+
+      // Get Custom Latitude, Longitude
+      this.input_latitude = localStorage.getItem("input_latitude");
+      this.input_longitude = localStorage.getItem("input_longitude");
     });
   }
 
@@ -153,7 +160,6 @@ export class DeviceDetailComponent implements OnInit {
     // Get Device Detail
     this.stomws.getDevices(agentid, customerid, deviceid).subscribe(resp => {
       if (resp !== null) {
-
         this.sn = resp.Body.Row[0][1];
         this.model = resp.Body.Row[0][2];
         this.devAddress = resp.Body.Row[0][3];
@@ -165,7 +171,8 @@ export class DeviceDetailComponent implements OnInit {
 
         this.snGeo = resp.Body.Row[0][17] + ", " + resp.Body.Row[0][17];
 
-        this.isPurchased = resp.Body.Row[0][19].toString().toLowerCase() === 'true';
+        this.isPurchased =
+          resp.Body.Row[0][19].toString().toLowerCase() === "true";
 
         if (
           resp.Body.Row[0][7].length === 0 ||

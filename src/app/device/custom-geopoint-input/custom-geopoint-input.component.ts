@@ -18,6 +18,8 @@ import { combineLatest } from "rxjs";
   }
 })
 export class CustomGeopointInputComponent implements OnInit {
+  groupid: string;
+  customerid: string;
   agentid: string;
   deviceid: string;
 
@@ -90,19 +92,19 @@ export class CustomGeopointInputComponent implements OnInit {
     this.urlpath.setLoadingAnimation(true);
 
     this.actRouter.paramMap.subscribe(params => {
-      const groupid: string = params.get("groupid");
+      this.groupid = params.get("groupid");
       this.agentid = params.get("agentid");
-      const customerid: string = params.get("customerid");
+      this.customerid = params.get("customerid");
       this.deviceid = params.get("deviceid");
 
       // Get previous router path
       const prevurl =
         "/" +
-        groupid +
+        this.groupid +
         "/" +
         this.agentid +
         "/customer/" +
-        customerid +
+        this.customerid +
         "/device/" +
         this.deviceid;
       this.urlpath.setPrevUrl(prevurl);
@@ -118,6 +120,10 @@ export class CustomGeopointInputComponent implements OnInit {
         this.getIpInfo(result.ip);
       });
     });
+
+    // Clear local storage
+    localStorage.removeItem("input_latitude");
+    localStorage.removeItem("input_longitude");
   }
 
   getIpInfo(ip: string) {
@@ -189,6 +195,13 @@ export class CustomGeopointInputComponent implements OnInit {
   }
 
   saveCustomGeopoint() {
+    // Default set to Display Loading Animation
+    this.urlpath.setLoadingAnimation(true);
+
+    // Disable Save button
+    this.isSaveDisplay = false;
+    this.saveButtonTitle = "Saving...";
+
     const data = [
       String(this.input_latitude),
       String(this.input_longitude),
@@ -248,7 +261,22 @@ export class CustomGeopointInputComponent implements OnInit {
     ];
 
     this.stomws.addCustomGeopoint(data).subscribe(result => {
-      console.log(result);
+      localStorage.setItem("input_latitude", this.input_latitude);
+      localStorage.setItem("input_longitude", this.input_longitude);
+
+      // Back to device detail
+      const deviceDetailRoute =
+        "/" +
+        this.groupid +
+        "/" +
+        this.agentid +
+        "/customer/" +
+        this.customerid +
+        "/device/" +
+        this.deviceid +
+        "";
+
+      this.router.navigateByUrl(deviceDetailRoute);
     });
   }
 }
