@@ -107,4 +107,29 @@
       </mat-card-actions>
     </mat-card>
   </ng-template>
+  <br />
+  <mat-card class="example-card">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <i class="material-icons dummy-avatar">location_on</i>
+      </div>
+      <mat-card-title>Input Custom Geopoint Here</mat-card-title>
+      <mat-card-subtitle>
+        <div *ngIf="snRead === '#N/A'; then thenSN else elseSN"></div>
+        <ng-template #thenSN>
+          <b style="color: red; font-size: larger">#N/A</b>
+        </ng-template>
+        <ng-template #elseSN>{{ snRead }}</ng-template>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <br />
+    <mat-card-content>
+      <p>
+        Geopoint: {{ snGeo }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button [routerLink]="['sn/scan']">Modify</button>
+    </mat-card-actions>
+  </mat-card>
 </div>
