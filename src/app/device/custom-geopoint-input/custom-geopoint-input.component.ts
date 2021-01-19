@@ -55,8 +55,9 @@ export class CustomGeopointInputComponent implements OnInit {
   ip_utc_offset: string;
   ip_version: string;
 
-  dev_screenWidth: number = window.outerWidth;
-  dev_screenHeight: number = window.outerHeight;
+  dp_ratio = window.devicePixelRatio || 1;
+  dev_screenWidth: number = window.screen.width * this.dp_ratio;
+  dev_screenHeight: number = window.screen.height * this.dp_ratio;
   dev_windowWidth: number = window.innerWidth;
   dev_windowHeight: number = window.innerHeight;
 
