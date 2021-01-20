@@ -20,3 +20,7 @@
 .example-spacer {
   flex: 1 1 auto;
 }
+
+agm-map {
+  height: 300px;
+}

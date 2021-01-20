@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { DeviceDetectorService } from "ngx-device-detector";
+import { GeocodeService } from "../../shared/geocode.service";
 
 import { StomWsService } from "../../shared/stom-ws.service";
 import { GeolocationService } from "../../shared/geolocation.service";
 import { UrlPathService } from "../../shared/url-path.service";
-
-import { combineLatest } from "rxjs";
+import { Location } from "../../shared/location-model";
 
 @Component({
   selector: "app-custom-geopoint-input",
@@ -18,13 +18,18 @@ import { combineLatest } from "rxjs";
   }
 })
 export class CustomGeopointInputComponent implements OnInit {
+  address =
+    "Pengacara/ LBH Jl. Raya Abdul Gani, Jatimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16414 0813-8501-3347 https://maps.app.goo.gl/d5kyhjtRahgtJnsk8";
+  location: Location;
+  loading: boolean;
+
   groupid: string;
   customerid: string;
   agentid: string;
   deviceid: string;
 
-  input_latitude: string;
-  input_longitude: string;
+  input_latitude: string = "0.0";
+  input_longitude: string = "0.0";
 
   dev_ip: string;
 
@@ -85,12 +90,16 @@ export class CustomGeopointInputComponent implements OnInit {
     private geoloc: GeolocationService,
     private urlpath: UrlPathService,
     private stomws: StomWsService,
-    private deviceService: DeviceDetectorService
+    private deviceService: DeviceDetectorService,
+    private geocodeService: GeocodeService,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     // Default set to Display Loading Animation
     this.urlpath.setLoadingAnimation(true);
+
+    this.showLocation();
 
     this.actRouter.paramMap.subscribe(params => {
       this.groupid = params.get("groupid");
@@ -125,6 +134,24 @@ export class CustomGeopointInputComponent implements OnInit {
     // Clear local storage
     localStorage.removeItem("input_latitude");
     localStorage.removeItem("input_longitude");
+  }
+
+  showLocation() {
+    this.addressToCoordinates();
+  }
+
+  addressToCoordinates() {
+    this.loading = true;
+    this.geocodeService
+      .geocodeAddress(this.address)
+      .subscribe((location: Location) => {
+        this.location = location;
+        this.loading = false;
+        this.ref.detectChanges();
+
+        this.input_latitude = String(this.location.lat);
+        this.input_longitude = String(this.location.lng);
+      });
   }
 
   getIpInfo(ip: string) {
