@@ -11,32 +11,42 @@
 		</mat-card-content>
 	</mat-card>
 	<br />
-	<form (ngSubmit)="showLocation()">
-		<input type="text" [(ngModel)]="address" required [ngModelOptions]="{standalone: true}">
-		<button type="submit">Show Location</button>
-	</form>
-
+	<mat-card class="example-card">
+		<mat-card-title>Input Google Maps Full Address</mat-card-title>
+		<mat-card-content>
+			<p>Masukkan Alamat lengkap (dan link bila ada) dari <b>WhatsApp share loc</b>, atau sejenisnya. Contoh:</p>
+			<p><i>Pengacara/ LBH Jl. Raya Abdul Gani, Jatimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16414 0813-8501-3347 https://maps.app.goo.gl/d5kyhjtRahgtJnsk8</i>
+			</p>
+		</mat-card-content>
+		<mat-card-content>
+			<mat-form-field class="example-form-field">
+				<mat-label>Input Address Here</mat-label>
+				<input matInput placeholder="Jl. Raya Abdul Gani, Jatimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16414 https://maps.app.goo.gl/d5kyhjtRahgtJnsk8"
+        [(ngModel)]="address" required [ngModelOptions]="{standalone: true}">
+			</mat-form-field>
+		</mat-card-content>
+		<mat-card-actions>
+			<button mat-raised-button color="accent" (click)="showLocation()">Show Location</button>
+		</mat-card-actions>
+	</mat-card>
+	<br />
+	<p *ngIf="loading">Loading...</p>
 	<agm-map [latitude]="location?.lat" [longitude]="location?.lng" [zoom]="8" [disableDefaultUI]="false"
 		[zoomControl]="false">
 		<agm-marker [latitude]="location?.lat" [longitude]="location?.lng">
 		</agm-marker>
 	</agm-map>
-	<p *ngIf="loading">Loading...</p>
 	<br />
 	<mat-card class="example-card">
-		<mat-card-title>Input Device Geopoint</mat-card-title>
+		<mat-card-title>Geopoint from Full Addres</mat-card-title>
 		<mat-card-content>
 			<mat-form-field class="example-form-field">
-				<mat-label>Input Full Google Maps Address</mat-label>
-				<input matInput placeholder="Pengacara/ LBH Jl. Raya Abdul Gani, Jatimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16414 0813-8501-3347 https://maps.app.goo.gl/d5kyhjtRahgtJnsk8">
+				<mat-label>Latitude</mat-label>
+				<input matInput placeholder="Example: -6.445081" value="{{input_latitude}}" disabled>
 			</mat-form-field>
 				<mat-form-field class="example-form-field">
-					<mat-label>Latitude</mat-label>
-					<input matInput placeholder="Example: -6.445081" value="{{input_latitude}}" disabled>
-			</mat-form-field>
-					<mat-form-field class="example-form-field">
-						<mat-label>Longitude</mat-label>
-						<input matInput placeholder="Example: 106.819896" value="{{input_longitude}}" disabled>
+					<mat-label>Longitude</mat-label>
+					<input matInput placeholder="Example: 106.819896" value="{{input_longitude}}" disabled>
       </mat-form-field>
 		</mat-card-content>
 		<mat-card-actions>

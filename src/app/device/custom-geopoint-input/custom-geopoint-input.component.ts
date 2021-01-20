@@ -18,8 +18,7 @@ import { Location } from "../../shared/location-model";
   }
 })
 export class CustomGeopointInputComponent implements OnInit {
-  address =
-    "Pengacara/ LBH Jl. Raya Abdul Gani, Jatimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16414 0813-8501-3347 https://maps.app.goo.gl/d5kyhjtRahgtJnsk8";
+  address = "";
   location: Location;
   loading: boolean;
 
