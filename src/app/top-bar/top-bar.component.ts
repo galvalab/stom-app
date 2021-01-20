@@ -89,7 +89,8 @@ export class TopBarComponent implements OnInit {
           typeof this.deviceid !== "undefined" &&
           typeof this.invoiceid === "undefined" &&
           typeof this.snscanning === "undefined" &&
-          typeof this.tagscanning === "undefined"
+          typeof this.tagscanning === "undefined" &&
+          typeof this.devicetracking === "undefined"
         ) {
           this.isDeviceEditor = true;
         } else {
@@ -122,15 +123,15 @@ export class TopBarComponent implements OnInit {
           this.isTagScanSave = false;
         }
 
-        if (
-          typeof this.customerid !== "undefined" &&
-          typeof this.deviceid !== "undefined" &&
-          typeof this.devicetracking !== "undefined"
-        ) {
-          this.isDeviceEditor = false;
-        } else {
-          this.isDeviceEditor = true;
-        }
+        // if (
+        //   typeof this.customerid !== "undefined" &&
+        //   typeof this.deviceid !== "undefined" &&
+        //   typeof this.devicetracking !== "undefined"
+        // ) {
+        //   this.isDeviceEditor = false;
+        // } else {
+        //   this.isDeviceEditor = true;
+        // }
       }
     });
   }
