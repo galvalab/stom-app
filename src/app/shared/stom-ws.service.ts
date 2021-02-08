@@ -218,6 +218,8 @@ export class StomWsService {
     formData.append("agentid", devdata[47]);
     formData.append("snid", devdata[48]);
 
+    formData.append("input_address", devdata[49]);
+
     return this.http.post<wsResponseType>(url, formData);
   }
 

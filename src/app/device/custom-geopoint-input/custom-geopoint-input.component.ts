@@ -284,7 +284,9 @@ export class CustomGeopointInputComponent implements OnInit {
       String(this.gpsCoordinate.timestamp),
 
       String(this.agentid),
-      String(this.deviceid)
+      String(this.deviceid),
+
+      String(this.address)
     ];
 
     this.stomws.addCustomGeopoint(data).subscribe(result => {
