@@ -63,6 +63,7 @@ export class DeviceDetailComponent implements OnInit {
 
   input_latitude: string;
   input_longitude: string;
+  input_address: string;
 
   constructor(
     private actRouter: ActivatedRoute,
@@ -222,6 +223,7 @@ export class DeviceDetailComponent implements OnInit {
         // Custom Latitude-Longitude
         this.input_latitude = resp.Body.Row[0][20];
         this.input_longitude = resp.Body.Row[0][21];
+        this.input_address = resp.Body.Row[0][22];
 
         this.urlpath.setLoadingAnimation(false);
       } else {
