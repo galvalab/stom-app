@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, Observer, of } from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { environment } from "../../environments/environment";
 
 export interface jsonIp {
   ip: string;
@@ -35,6 +36,23 @@ export interface jsonIpInfo {
   version: string;
 }
 
+export interface myPosition {
+  coords: {
+    latitude: number;
+    longitude: number;
+    accuracy: number;
+  };
+  timestamp: number;
+}
+
+export interface apiLoc {
+  accuracy: number;
+  location: {
+    lat: number;
+    lng: number;
+  };
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -42,19 +60,55 @@ export class GeolocationService {
   constructor(private http: HttpClient) {}
 
   getCurrentPosition(): Observable<Position> {
-    return Observable.create((observer: Observer<Position>) => {
-      // Invokes getCurrentPosition method of Geolocation API.
-      navigator.geolocation.getCurrentPosition(
-        (position: Position) => {
-          observer.next(position);
-          observer.complete();
-        },
-        (error: PositionError) => {
-          console.log("Geolocation service: " + error.message);
-          observer.error(error);
-        }
-      );
+    return new Observable((observer: Observer<Position>) => {
+      this.http
+        .post<apiLoc>(
+          "https://www.googleapis.com/geolocation/v1/geolocate?key=" +
+            environment.gcpConfig.apiKey,
+          {}
+        )
+        .subscribe(
+          result => {
+            let myPos: Position = {
+              coords: {
+                accuracy: result.accuracy,
+                latitude: result.location.lat,
+                longitude: result.location.lng,
+                altitude: null,
+                altitudeAccuracy: null,
+                heading: null,
+                speed: null
+              },
+              timestamp: Date.now()
+            };
+
+            // console.log(myPos);
+
+            observer.next(myPos);
+            observer.complete();
+          },
+          (error: HttpErrorResponse) => {
+            console.log("Google Location API Error: " + error.message);
+            observer.error(error);
+          }
+        );
     });
+
+    // return new Observable((observer: Observer<Position>) => {
+    //   // Invokes getCurrentPosition method of Geolocation API.
+    //   navigator.geolocation.getCurrentPosition(
+    //     (position: Position) => {
+    //       console.log(position);
+
+    //       observer.next(position);
+    //       observer.complete();
+    //     },
+    //     (error: PositionError) => {
+    //       console.log("Geolocation service: " + error.message);
+    //       observer.error(error);
+    //     }
+    //   );
+    // });
   }
 
   getClientIp() {
