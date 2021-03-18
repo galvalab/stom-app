@@ -317,9 +317,15 @@ export class DeviceDetailComponent implements OnInit {
             // console.log("Deleting...", result);
             // console.log(localStorage.getItem("delete_reason"));
             const reason: string = localStorage.getItem("delete_reason");
+            const hiddenid: string = localStorage.getItem("hiddenid");
             localStorage.removeItem("delete_reason");
+            localStorage.removeItem("hiddenid");
 
-            // this.stomws.deleteDevice(agentid, snid, "8", reason).subscribe();
+            // console.log(agentid, snid, hiddenid, "reason: " + reason);
+
+            this.stomws
+              .deleteDevice(agentid, snid, hiddenid, reason)
+              .subscribe();
           });
         }
       });
@@ -421,16 +427,12 @@ export class DialogDeleteDeviceComponent {
   ) {}
 
   onOK() {
+    localStorage.setItem("hiddenid", this.selectedReason.toString());
     localStorage.setItem("delete_reason", window.btoa(this.reason));
   }
 
   onNoClick(): void {
     this.dialogRef.close();
-  }
-
-  onReasonSelected() {
-    console.log(this.selectedReason);
-    // this.reason = this.selectedReason.toString();
   }
 }
 
