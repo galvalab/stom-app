@@ -124,7 +124,7 @@ export class DeviceDetailComponent implements OnInit {
             customerid +
             "/device/" +
             deviceid,
-          customerid,
+          agentid,
           deviceid
         );
       } else if (params.get("devcommand") === "finish") {
