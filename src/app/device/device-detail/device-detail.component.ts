@@ -315,7 +315,7 @@ export class DeviceDetailComponent implements OnInit {
         } else {
           this.router.navigateByUrl(deleteRoute).then(() => {
             // console.log("Deleting...", result);
-            console.log(localStorage.getItem("delete_reason"));
+            // console.log(localStorage.getItem("delete_reason"));
             localStorage.removeItem("delete_reason");
 
             this.stomws.deleteDevice(agentid, snid).subscribe();
