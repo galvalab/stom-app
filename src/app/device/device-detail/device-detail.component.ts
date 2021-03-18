@@ -316,9 +316,10 @@ export class DeviceDetailComponent implements OnInit {
           this.router.navigateByUrl(deleteRoute).then(() => {
             // console.log("Deleting...", result);
             // console.log(localStorage.getItem("delete_reason"));
+            const reason: string = localStorage.getItem("delete_reason");
             localStorage.removeItem("delete_reason");
 
-            this.stomws.deleteDevice(agentid, snid).subscribe();
+            // this.stomws.deleteDevice(agentid, snid, "8", reason).subscribe();
           });
         }
       });
@@ -412,7 +413,8 @@ export class DialogUpdateDeviceComponent {
   styleUrls: ["./device-detail.component.css"]
 })
 export class DialogDeleteDeviceComponent {
-  reason: string;
+  reason: string = "";
+  selectedReason: number;
   constructor(
     public dialogRef: MatDialogRef<DialogDeleteDeviceComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DeleteDialogData
@@ -424,6 +426,11 @@ export class DialogDeleteDeviceComponent {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  onReasonSelected() {
+    console.log(this.selectedReason);
+    // this.reason = this.selectedReason.toString();
   }
 }
 
