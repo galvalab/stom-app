@@ -61,10 +61,6 @@ export class DeviceDetailComponent implements OnInit {
   tagGeo: string;
   tagOrdinalNo = "";
 
-  input_latitude: string;
-  input_longitude: string;
-  input_address: string;
-
   constructor(
     private actRouter: ActivatedRoute,
     private router: Router,
@@ -124,7 +120,7 @@ export class DeviceDetailComponent implements OnInit {
             customerid +
             "/device/" +
             deviceid,
-          agentid,
+          customerid,
           deviceid
         );
       } else if (params.get("devcommand") === "finish") {
@@ -145,10 +141,6 @@ export class DeviceDetailComponent implements OnInit {
           deviceid
         );
       }
-
-      // Get Custom Latitude, Longitude
-      this.input_latitude = localStorage.getItem("input_latitude");
-      this.input_longitude = localStorage.getItem("input_longitude");
     });
   }
 
@@ -161,6 +153,7 @@ export class DeviceDetailComponent implements OnInit {
     // Get Device Detail
     this.stomws.getDevices(agentid, customerid, deviceid).subscribe(resp => {
       if (resp !== null) {
+
         this.sn = resp.Body.Row[0][1];
         this.model = resp.Body.Row[0][2];
         this.devAddress = resp.Body.Row[0][3];
@@ -172,8 +165,7 @@ export class DeviceDetailComponent implements OnInit {
 
         this.snGeo = resp.Body.Row[0][17] + ", " + resp.Body.Row[0][17];
 
-        this.isPurchased =
-          resp.Body.Row[0][19].toString().toLowerCase() === "true";
+        this.isPurchased = resp.Body.Row[0][19].toString().toLowerCase() === 'true';
 
         if (
           resp.Body.Row[0][7].length === 0 ||
@@ -219,11 +211,6 @@ export class DeviceDetailComponent implements OnInit {
             }
           });
         }
-
-        // Custom Latitude-Longitude
-        this.input_latitude = resp.Body.Row[0][20];
-        this.input_longitude = resp.Body.Row[0][21];
-        this.input_address = resp.Body.Row[0][22];
 
         this.urlpath.setLoadingAnimation(false);
       } else {
@@ -314,18 +301,8 @@ export class DeviceDetailComponent implements OnInit {
           this.router.navigateByUrl(cancelRoute);
         } else {
           this.router.navigateByUrl(deleteRoute).then(() => {
-            // console.log("Deleting...", result);
-            // console.log(localStorage.getItem("delete_reason"));
-            const reason: string = localStorage.getItem("delete_reason");
-            const hiddenid: string = localStorage.getItem("hiddenid");
-            localStorage.removeItem("delete_reason");
-            localStorage.removeItem("hiddenid");
-
-            // console.log(agentid, snid, hiddenid, "reason: " + reason);
-
-            this.stomws
-              .deleteDevice(agentid, snid, hiddenid, reason)
-              .subscribe();
+            // console.log('Deleting...');
+            this.stomws.deleteDevice(agentid, snid).subscribe();
           });
         }
       });
@@ -419,17 +396,10 @@ export class DialogUpdateDeviceComponent {
   styleUrls: ["./device-detail.component.css"]
 })
 export class DialogDeleteDeviceComponent {
-  reason: string = "";
-  selectedReason: number;
   constructor(
     public dialogRef: MatDialogRef<DialogDeleteDeviceComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DeleteDialogData
   ) {}
-
-  onOK() {
-    localStorage.setItem("hiddenid", this.selectedReason.toString());
-    localStorage.setItem("delete_reason", window.btoa(this.reason));
-  }
 
   onNoClick(): void {
     this.dialogRef.close();

@@ -1,28 +1,10 @@
 <div class="mat-app-background basic-container">
-  <h1 mat-dialog-title>Delete Confirmation</h1>
-  <p>
-    Are you sure to delete this Device?
-  </p>
-  <mat-form-field appearance="outline" class="example-full-width">
-    <mat-label>Select a reason</mat-label>
-    <mat-select [(ngModel)]="selectedReason">
-      <mat-option>None</mat-option>
-      <mat-option value="3">Has been pulled out</mat-option>
-      <mat-option value="7">Is not exist</mat-option>
-      <mat-option value="9">Is already scrapped</mat-option>
-      <mat-option value="6">Others</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field class="example-full-width" [style.display]="selectedReason === '6' ? 'block' : 'none'">
-    <mat-label>Write something here</mat-label>
-    <textarea matInput [(ngModel)]="reason"></textarea>
-  </mat-form-field>
-  <div mat-dialog-actions>
-    <button mat-raised-button (click)="onNoClick()" cdkFocusInitial>
-      Cancel
-    </button>
-    <button mat-raised-button [mat-dialog-close]="data" (click)="onOK()" [disabled]="selectedReason === undefined || selectedReason === '6' && reason.length === 0 ? true : false">
-      Ok
-    </button>
-  </div>
+	<h1 mat-dialog-title>Delete Confirmation</h1>
+	<p>
+		Are you sure to delete this Device?
+	</p>
+	<div mat-dialog-actions>
+		<button mat-button (click)="onNoClick()" cdkFocusInitial>Cancel</button>
+		<button mat-button [mat-dialog-close]="data">Ok</button>
+	</div>
 </div>

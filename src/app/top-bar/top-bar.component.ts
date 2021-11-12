@@ -26,8 +26,6 @@ export class TopBarComponent implements OnInit {
   tagqrcodescanning: string;
   tagimagescanning: string;
 
-  devicetracking: string;
-
   isCustEditor: boolean;
   isDeviceEditor: boolean;
   isSNScanSave: boolean;
@@ -68,11 +66,8 @@ export class TopBarComponent implements OnInit {
         this.invoiceid = event.state.root.firstChild.params.invoiceid;
         this.snscanning = event.state.root.firstChild.params.snscanning;
         this.tagscanning = event.state.root.firstChild.params.tagscanning;
-        this.snbarcodescanning =
-          event.state.root.firstChild.params.snbarcodescanning;
-        this.snimagescanning =
-          event.state.root.firstChild.params.snimagescanning;
-        this.devicetracking = event.state.root.firstChild.params.devicetracking;
+        this.snbarcodescanning = event.state.root.firstChild.params.snbarcodescanning;
+        this.snimagescanning = event.state.root.firstChild.params.snimagescanning;
 
         if (
           typeof this.customerid !== "undefined" &&
@@ -89,8 +84,7 @@ export class TopBarComponent implements OnInit {
           typeof this.deviceid !== "undefined" &&
           typeof this.invoiceid === "undefined" &&
           typeof this.snscanning === "undefined" &&
-          typeof this.tagscanning === "undefined" &&
-          typeof this.devicetracking === "undefined"
+          typeof this.tagscanning === "undefined"
         ) {
           this.isDeviceEditor = true;
         } else {
@@ -122,16 +116,6 @@ export class TopBarComponent implements OnInit {
         } else {
           this.isTagScanSave = false;
         }
-
-        // if (
-        //   typeof this.customerid !== "undefined" &&
-        //   typeof this.deviceid !== "undefined" &&
-        //   typeof this.devicetracking !== "undefined"
-        // ) {
-        //   this.isDeviceEditor = false;
-        // } else {
-        //   this.isDeviceEditor = true;
-        // }
       }
     });
   }

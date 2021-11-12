@@ -13,8 +13,6 @@ import { TagScanQrcodeComponent } from "./device/tag-scan-qrcode/tag-scan-qrcode
 import { DeviceMoveComponent } from "./device/device-move/device-move.component";
 import { DeviceMoveImageComponent } from "./device/device-move-image/device-move-image.component";
 
-import { CustomGeopointInputComponent } from "./device/custom-geopoint-input/custom-geopoint-input.component";
-
 const routes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
   { path: "login", component: LoginPageComponent },
@@ -77,12 +75,6 @@ const routes: Routes = [
     path:
       ":groupid/:agentid/customer/:customerid/device/:deviceid/tag/:tagscanning/:istagsaving",
     component: TagScanComponent
-  },
-
-  {
-    path:
-      ":groupid/:agentid/customer/:customerid/device/:deviceid/geopoint/:devicetracking",
-    component: CustomGeopointInputComponent
   }
 ];
 
