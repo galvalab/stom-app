@@ -5,6 +5,7 @@ import { HttpClientModule } from "@angular/common/http";
 
 import { ZXingScannerModule } from "@zxing/ngx-scanner";
 import { NgxImageCompressService } from "ngx-image-compress";
+import { AgmCoreModule } from "@agm/core";
 
 import { A11yModule } from "@angular/cdk/a11y";
 import { ClipboardModule } from "@angular/cdk/clipboard";
@@ -95,6 +96,8 @@ import { TagScanQrcodeComponent } from "./device/tag-scan-qrcode/tag-scan-qrcode
 import { StomWsService } from "./shared/stom-ws.service";
 import { DeviceMoveComponent } from "./device/device-move/device-move.component";
 import { DeviceMoveImageComponent } from "./device/device-move-image/device-move-image.component";
+import { CustomGeopointInputComponent } from "./device/custom-geopoint-input/custom-geopoint-input.component";
+import { GeocodeService } from "./shared/geocode.service";
 
 @NgModule({
   imports: [
@@ -102,8 +105,15 @@ import { DeviceMoveImageComponent } from "./device/device-move-image/device-move
     FormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    ReactiveFormsModule,
 
     ZXingScannerModule,
+    AgmCoreModule.forRoot({
+      // please get your own API key here:
+      // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
+      // apiKey: "AIzaSyDWof-wn0QGXZ44Msyx54KPoIsfkHvOlbA"
+      apiKey: environment.gcpConfig.apiKey
+    }),
 
     A11yModule,
     ClipboardModule,
@@ -179,7 +189,8 @@ import { DeviceMoveImageComponent } from "./device/device-move-image/device-move
     SnScanBarcodeComponent,
     TagScanQrcodeComponent,
     DeviceMoveComponent,
-    DeviceMoveImageComponent
+    DeviceMoveImageComponent,
+    CustomGeopointInputComponent
   ],
   bootstrap: [AppComponent],
   providers: [
@@ -188,7 +199,8 @@ import { DeviceMoveImageComponent } from "./device/device-move-image/device-move
     SnScanService,
     GeolocationService,
     StomWsService,
-    NgxImageCompressService
+    NgxImageCompressService,
+    GeocodeService
   ],
   entryComponents: [
     WrongCredSnackbarComponent,

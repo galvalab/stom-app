@@ -1,0 +1,26 @@
+.basic-container {
+  padding: 10px;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.example-card {
+  max-width: 400px;
+}
+
+.bold-value {
+  font-size: x-large;
+}
+
+.example-form-field {
+  width: 100%;
+}
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+agm-map {
+  height: 300px;
+}

@@ -5,14 +5,17 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: 'AIzaSyAmvCDn63rPhSJS2Z1Gef5iNhKTVMijdKw',
-    authDomain: 'cust-sto.firebaseapp.com',
-    databaseURL: 'https://cust-sto.firebaseio.com',
-    projectId: 'cust-sto',
-    storageBucket: 'cust-sto.appspot.com',
-    messagingSenderId: '283113616253',
-    appId: '1:283113616253:web:cbc2a9eb9822dcc7d59214',
-    measurementId: 'G-5YES4LR3JM'
+    apiKey: "AIzaSyAmvCDn63rPhSJS2Z1Gef5iNhKTVMijdKw",
+    authDomain: "cust-sto.firebaseapp.com",
+    databaseURL: "https://cust-sto.firebaseio.com",
+    projectId: "cust-sto",
+    storageBucket: "cust-sto.appspot.com",
+    messagingSenderId: "283113616253",
+    appId: "1:283113616253:web:cbc2a9eb9822dcc7d59214",
+    measurementId: "G-5YES4LR3JM"
+  },
+  gcpConfig: {
+    apiKey: "AIzaSyDWof-wn0QGXZ44Msyx54KPoIsfkHvOlbA"
   }
   // firebaseConfig: {
   //   apiKey: 'AIzaSyAc94PfVEi4_J-IUQu7zO5R15i6Y7x3bNQ',
